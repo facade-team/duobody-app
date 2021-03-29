@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { StyleSheet, Button, View, Image } from 'react-native';
+import { StyleSheet, Button, View, Text, Image } from 'react-native';
 
 const Line_underline = () => (
     <View style={styles.underline} />
