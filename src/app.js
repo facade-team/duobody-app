@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import HomeScreen from '../src/#1_auth/auth'
+import HomeScreen from './screens/#1_auth/auth';
 
 export default function App() {
   return (
