@@ -1,14 +1,15 @@
 import React, {Component} from 'react';
 import { StyleSheet, Button, View, Text, Image, TextInput, TouchableOpacity } from 'react-native';
 import GrayTextButton from '../../components/GrayTextButton';
-import GreenButton from '../../components/GreenButton';
+import GreenButton_auth from '../../components/GreenButton_auth'
 import UnderLinedTextInput from '../../components/UnderlinedTextInput';
 import { Spacing } from '../../styles';
 import {Dimensions,PixelRatio} from 'react-native';
+import { BLACK, WHITE } from '../../styles/colors';
 
 const HomeScreen = () => {
   const [loginText, setLoginText] = React.useState('');
-  const [singupText, setSignupText] = React.useState('');
+  const [signupText, setSignupText] = React.useState('');
   return (
     <View style={styles.container}>
       <View style={styles.logo_container}>
@@ -26,10 +27,10 @@ const HomeScreen = () => {
             alignItems: 'center'
           }}>
             <UnderLinedTextInput placeHolderValue={'아이디'}  value={loginText} onChangeText={setLoginText} />
-            <UnderLinedTextInput placeHolderValue={'비밀번호'} value={singupText} onChangeText={setSignupText} />
+            <UnderLinedTextInput placeHolderValue={'비밀번호'} value={signupText} onChangeText={setSignupText} />
           </View>
         </View>
-        <GreenButton content={'로그인'} />
+        <GreenButton_auth content={'로그인'} />
         <View style={{
           width: Spacing.SCALE_200,
           flexDirection: 'row',
@@ -48,7 +49,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'column',
-    backgroundColor: '#fff',
+    backgroundColor: WHITE,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -61,16 +62,10 @@ const styles = StyleSheet.create({
       flex: 1,
       alignItems: 'center',
       justifyContent: 'center',
-      width: "100%",
+      width: BLACK,
   },
   squarelogo: {
       width: 250,
       height: 250,
-  },
-  underline: {
-      marginVertical: 10,
-      borderBottomColor: 'black',
-      borderBottomWidth: 11,
-      height: 1,
   },
 });

@@ -11,8 +11,8 @@ const styles = StyleSheet.create({
   innerButtonTextStyle: {
     color: Colors.GRAY,
     textAlign: 'center',
-    fontSize: 12,
-    fontWeight: 800,
+    fontSize: 16,
+    fontWeight: "800",
   },
 });
 
