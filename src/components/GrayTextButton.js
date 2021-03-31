@@ -1,6 +1,6 @@
 import React from 'react'
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
-import {Colors} from '../styles'
+import {Colors, Typography} from '../styles'
 
 const styles = StyleSheet.create({
   buttonStyle: {
@@ -11,8 +11,8 @@ const styles = StyleSheet.create({
   innerButtonTextStyle: {
     color: Colors.GRAY,
     textAlign: 'center',
-    fontSize: 16,
-    fontWeight: "800",
+    fontSize: 12,
+    fontWeight: Typography.FONT_WEIGHT_BOLD,
   },
 });
 

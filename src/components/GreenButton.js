@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
   innerButtonTextStyle: {
     color: Colors.WHITE,
     textAlign: 'center',
-    fontSize: Typography.FONT_SIZE_16,
+    fontSize: Typography.FONT_SIZE_12,
     fontWeight: Typography.FONT_WEIGHT_BOLD,
   },
 });
