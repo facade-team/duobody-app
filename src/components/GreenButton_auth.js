@@ -5,7 +5,7 @@ import {Colors, Mixins, Spacing, Typography} from '../styles'
 const styles = StyleSheet.create({
   buttonStyle: {
     backgroundColor: Colors.PRIMARY,
-    borderRadius: Spacing.SCALE_12,
+    borderRadius: Spacing.SCALE_18,
     padding: Spacing.SCALE_8,
     width: Spacing.SCALE_200,
 
@@ -13,13 +13,13 @@ const styles = StyleSheet.create({
   innerButtonTextStyle: {
     color: Colors.WHITE,
     textAlign: 'center',
-    fontSize: Typography.FONT_SIZE_12,
+    fontSize: Typography.FONT_SIZE_16,
     fontWeight: Typography.FONT_WEIGHT_BOLD,
   },
 });
 
 
-const GreenButton = ({content}) => {
+const GreenButton_auth = ({content}) => {
   return(
     <TouchableOpacity style={styles.buttonStyle}>
       <Text style={styles.innerButtonTextStyle}>{content}</Text>
@@ -27,4 +27,4 @@ const GreenButton = ({content}) => {
   )
 }
 
-export default GreenButton
+export default GreenButton_auth

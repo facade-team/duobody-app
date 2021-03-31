@@ -9,10 +9,10 @@ const UnderLinedTextInput = ({placeHolderValue, value, onChangeText}) => {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        width: '100%',
+        width: Spacing.SCALE_200,
         backgroundColor: Colors.WHITE,
         borderBottomColor: Colors.GRAY,
-        borderBottomWidth: 1,
+        borderBottomWidth: 2,
         marginBottom: Spacing.SCALE_18,
         padding: Spacing.SCALE_8,
     }}>
