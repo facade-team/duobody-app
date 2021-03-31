@@ -7,7 +7,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.PRIMARY,
     borderRadius: Spacing.SCALE_12,
     padding: Spacing.SCALE_8,
-    width: Spacing.SCALE_200,
+    width: Mixins.scaleSize(200),
 
   },
   innerButtonTextStyle: {
