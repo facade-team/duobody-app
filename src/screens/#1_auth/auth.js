@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
       flex: 1,
       alignItems: 'center',
       justifyContent: 'center',
-      width: BLACK,
+      width: Spacing.SCALE_200,
   },
   squarelogo: {
       width: 250,
