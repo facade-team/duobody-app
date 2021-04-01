@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import { View } from 'react-native';
 import GrayTextButton from '../../components/GrayTextButton';
@@ -28,8 +28,8 @@ const LogoImage = styled.Image`
 `
 
 export default () => {
-  const [loginText, setLoginText] = React.useState('');
-  const [singupText, setSignupText] = React.useState('');
+  const [loginText, setLoginText] = useState('');
+  const [singupText, setSignupText] = useState('');
   return (
   <Container>
     <LogoContainer>
