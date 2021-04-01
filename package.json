@@ -29,7 +29,8 @@
     "react-native-screens": "^2.18.1",
     "react-native-svg": "^12.1.0",
     "react-native-web": "~0.13.12",
-    "rn-placeholder": "^3.0.3"
+    "rn-placeholder": "^3.0.3",
+    "styled-components": "^5.2.3"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0",
