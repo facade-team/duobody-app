@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
-      width: Mixins.scaleSize(200),
+      width: Spacing.SCALE_200,
   },
   squarelogo: {
       width: 250,
