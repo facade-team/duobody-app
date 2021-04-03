@@ -60,7 +60,11 @@ const styles = StyleSheet.create({
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
+<<<<<<< HEAD
       width: Mixins.scaleSize(200),
+=======
+      width: Spacing.SCALE_200,
+>>>>>>> 954cb8b13bcf1c67bd427da7818ef6314e1bcc26
   },
   squarelogo: {
       width: 250,
