@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import { View } from 'react-native';
+import { Text, View } from 'react-native';
 import GrayTextButton from '../../components/GrayTextButton';
 import GreenButton from '../../components/GreenButton';
-import UnderLinedTextInput_ from '../../components/UnderlinedTextInput_login';
 import { Spacing } from '../../styles';
+import UnderLinedTextInput from '../../components/UnderlinedTextInput';
 
 const Container = styled.View`
   flex: 1;
@@ -20,6 +20,7 @@ const LogoContainer = styled.View`
 const AuthContainer = styled.View`
   flex: 1;
   justify-content: center;
+  align-items: center;
 `
 
 const LogoImage = styled.Image`
@@ -27,20 +28,24 @@ const LogoImage = styled.Image`
   height: ${Spacing.SCALE_200};
 `
 
+const GuideText = styled.Text`
+  font-size: 10;
+  margin-bottom: ${Spacing.SCALE_8};
+`
+
 export default () => {
-  const [loginText, setLoginText] = useState('');
-  const [singupText, setSignupText] = useState('');
+  const [secretText, setSecretText] = useState('');
   return (
   <Container>
     <LogoContainer>
       <LogoImage source={require('../../assets/logo_square.png')} />
     </LogoContainer>
     <AuthContainer>
-      <UnderLinedTextInput_ placeholder={'아이디'}  value={loginText} onChangeText={setLoginText} />
-      <UnderLinedTextInput_ placeholder={'비밀번호'} value={singupText} onChangeText={setSignupText} secureTextEntry={true} />
-      <GreenButton content={'로그인'} />
+      <GuideText>이메일 인증코드를 입력하세요</GuideText>
+      <UnderLinedTextInput placeholder={'인증코드'}  value={secretText} onChangeText={setSecretText} />
+      <GreenButton content={'회원가입 완료'} />
       <View style={{alignSelf:'flex-end'}}>
-        <GrayTextButton content='회원가입' />
+        <GrayTextButton content='로그인' />
       </View>
     </AuthContainer>
   </Container>

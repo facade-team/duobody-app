@@ -2,9 +2,9 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import { View } from 'react-native';
 import GrayTextButton from '../../components/GrayTextButton';
-import GreenButton from '../../components/GreenButton';
-import UnderLinedTextInput_ from '../../components/UnderlinedTextInput_login';
+import UnderLinedTextInput from '../../components/UnderlinedTextInput';
 import { Spacing } from '../../styles';
+import GreenButton from '../../components/GreenButton';
 
 const Container = styled.View`
   flex: 1;
@@ -36,8 +36,8 @@ export default () => {
       <LogoImage source={require('../../assets/logo_square.png')} />
     </LogoContainer>
     <AuthContainer>
-      <UnderLinedTextInput_ placeholder={'아이디'}  value={loginText} onChangeText={setLoginText} />
-      <UnderLinedTextInput_ placeholder={'비밀번호'} value={singupText} onChangeText={setSignupText} secureTextEntry={true} />
+      <UnderLinedTextInput placeholder={'아이디'}  value={loginText} onChangeText={setLoginText} />
+      <UnderLinedTextInput placeholder={'비밀번호'} value={singupText} onChangeText={setSignupText} secureTextEntry={true} />
       <GreenButton content={'로그인'} />
       <View style={{alignSelf:'flex-end'}}>
         <GrayTextButton content='회원가입' />
