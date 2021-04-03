@@ -1,33 +1,35 @@
 import React from 'react';
-import { View, TextInput } from 'react-native';
+import styled from 'styled-components';
 import { Colors, Spacing } from '../styles'
 
-const UnderLinedTextInput = ({placeHolderValue, value, onChangeText}) => {
-  return(
-    <View 
-      style={{
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: Spacing.SCALE_200,
-        backgroundColor: Colors.WHITE,
-        borderBottomColor: Colors.GRAY,
-        borderBottomWidth: 2,
-        marginBottom: Spacing.SCALE_18,
-        padding: Spacing.SCALE_8,
-    }}>
-      <TextInput
-        onChangeText={text => onChangeText(text)}
-        value={value}
-        placeholder={placeHolderValue}
-        editable
-        maxLength={40}
-        style={{
-          textAlign: 'center'
-        }}
-      />
-  </View>
-  )
-}
+const Container = styled.View`
+  margin-bottom: 18px;
+`;
+
+const TextInput = styled.TextInput`
+  width: ${Spacing.SCALE_200};
+  padding-bottom: ${Spacing.SCALE_8};
+  background-color: ${Colors.WHITE};
+  border-bottom-color: ${Colors.GRAY};
+  border-bottom-width: 2;
+  color: ${Colors.GRAY};
+  text-align: center;
+`;
+
+const UnderLinedTextInput = ({
+  placeholder,
+  value,
+  onChangeText,
+  secureTextEntry = false,
+}) => (
+  <Container>
+    <TextInput 
+      placeholder={placeholder}
+      value={value}
+      onChangeText={text => onChangeText(text)}
+      secureTextEntry={secureTextEntry}
+    />
+  </Container>
+)
 
 export default UnderLinedTextInput
