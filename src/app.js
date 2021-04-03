@@ -1,11 +1,11 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import HomeScreen from './screens/#2_dashboard/dashboard';
+import HomeScreen from './screens/#1_auth/signUp';
 
-export default function App() {
+const App = () => {
   return (
     <View style={styles.container}>
-      <HomeScreen></HomeScreen>
+      <HomeScreen />
     </View>
   );
 }
@@ -15,3 +15,5 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 });
+
+export default App

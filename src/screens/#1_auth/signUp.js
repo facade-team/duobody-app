@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { View } from 'react-native';
 import GrayTextButton from '../../components/GrayTextButton';
 import GreenButton from '../../components/GreenButton';
-import UnderLinedTextInput_ from '../../components/UnderlinedTextInput_login';
+import UnderLinedTextInput from '../../components/UnderlinedTextInput';
 import { Spacing } from '../../styles';
 
 const Container = styled.View`
@@ -38,10 +38,10 @@ export default () => {
       <LogoImage source={require('../../assets/logo_square.png')} />
     </LogoContainer>
     <AuthContainer>
-      <UnderLinedTextInput_ placeholder={'이름'}  value={nameText} onChangeText={setNameText} />
-      <UnderLinedTextInput_ placeholder={'아이디'}  value={idText} onChangeText={setIdtext} />
-      <UnderLinedTextInput_ placeholder={'비밀번호'} value={passwordText} onChangeText={setPasswordText} secureTextEntry={true} />
-      <UnderLinedTextInput_ placeholder={'비밀번호 확인'} value={checkPasswordText} onChangeText={setCheckPasswordText} secureTextEntry={true} />
+      <UnderLinedTextInput placeholder={'이름'}  value={nameText} onChangeText={setNameText} />
+      <UnderLinedTextInput placeholder={'아이디'}  value={idText} onChangeText={setIdtext} />
+      <UnderLinedTextInput placeholder={'비밀번호'} value={passwordText} onChangeText={setPasswordText} secureTextEntry={true} />
+      <UnderLinedTextInput placeholder={'비밀번호 확인'} value={checkPasswordText} onChangeText={setCheckPasswordText} secureTextEntry={true} />
       <GreenButton content={'인증코드 발송'} />
       <View style={{alignSelf:'flex-end'}}>
         <GrayTextButton content='로그인' />

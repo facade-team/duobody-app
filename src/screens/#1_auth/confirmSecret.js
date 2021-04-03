@@ -3,8 +3,8 @@ import styled from 'styled-components'
 import { Text, View } from 'react-native';
 import GrayTextButton from '../../components/GrayTextButton';
 import GreenButton from '../../components/GreenButton';
-import UnderLinedTextInput_ from '../../components/UnderlinedTextInput_login';
 import { Spacing } from '../../styles';
+import UnderLinedTextInput from '../../components/UnderlinedTextInput';
 
 const Container = styled.View`
   flex: 1;
@@ -42,7 +42,7 @@ export default () => {
     </LogoContainer>
     <AuthContainer>
       <GuideText>이메일 인증코드를 입력하세요</GuideText>
-      <UnderLinedTextInput_ placeholder={'인증코드'}  value={secretText} onChangeText={setSecretText} />
+      <UnderLinedTextInput placeholder={'인증코드'}  value={secretText} onChangeText={setSecretText} />
       <GreenButton content={'회원가입 완료'} />
       <View style={{alignSelf:'flex-end'}}>
         <GrayTextButton content='로그인' />
