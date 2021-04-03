@@ -9,6 +9,4 @@ PR log
 
 해결해야할 사항
 -----------
-### auth.js   
-* 아이디, 비밀번호 입력 부분 UnderLinedTextInput의 'placeHolder'가 WEB에서는 잘 작동하지만, IOS와 Android에서는 작동하지 않음
-* 로그인 버튼이 비밀번호 입력 부분의 영역을 잡아먹음  
+
