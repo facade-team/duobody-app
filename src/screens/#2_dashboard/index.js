@@ -2,13 +2,14 @@ import React, { Component} from 'react';
 import {StyleSheet, Text, Image, View, TouchableOpacity } from 'react-native';
 import { Colors, Mixins, Spacing, Typography } from '../../styles'
 import { Footer_dash } from '../../components/Footer_dash'
+import { Link } from '@react-navigation/native';
 
-class Dash_cal extends Component {
+class Dash_index extends Component {
     render() {
         return (
             <View style = {StyleSheet.container}>
                 <View style = {{flex:1,backgroundColor: Colors.WHITE}}>
-                    <Text style = {{fontSize:30}}>달력, 스케쥴 박스</Text>
+                    <Link to Dash_dash></Link>
                 </View>
                 <Footer_dash />
             </View>
@@ -23,4 +24,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default Dash_cal;
+export default Dash_index;
