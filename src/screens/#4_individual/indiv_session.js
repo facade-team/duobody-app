@@ -52,10 +52,10 @@ const inputStyles = StyleSheet.create({
   }
 });
 
-const InputTemp = ({newTodo, setNewTodo, addTodo}) => {
+const InputTemp = ({fieldValue, setFieldValue, addField}) => {
 
-  const addNewTodo = () => {
-    addTodo(newTodo)
+  const addNewFields = () => {
+    addField(fieldValue)
   }
 
   return (
@@ -65,10 +65,10 @@ const InputTemp = ({newTodo, setNewTodo, addTodo}) => {
                 style={inputStyles.inputText}
                 placeholder='운동을 선택하세요'
                 autoCorrect={ false }
-                value={newTodo}
-                onChangeText={(text) => setNewTodo(text)}
+                value={fieldValue}
+                onChangeText={(text) => setFieldValue(text)}
             />
-            <TouchableOpacity onPressOut={addNewTodo}>
+            <TouchableOpacity onPressOut={addNewFields}>
                 <MaterialCommunityIcons style={inputStyles.addBtn} size={30} name='plus-circle' />
             </TouchableOpacity>
         </View>
@@ -121,7 +121,6 @@ const Set = ({setNumber, weight, reps}) => {
     )
   }
 
-  console.log(weight)
   return (
     <View style={setsStyles.container}>
       <View style={setsStyles.setBox}>
@@ -134,11 +133,34 @@ const Set = ({setNumber, weight, reps}) => {
 }
 
 export default IndividualSession = () => {
-  const [loginText, setLoginText] = useState('');
-  const [singupText, setSignupText] = useState('');
   const [newTodo, setNewTodo] = useState('');
-
   const [todolist, setTodolist] = useState([])
+
+  // new field
+  const [fieldValue, setFieldValue] = useState('');
+  const [fields, setFields] = useState([]);
+
+  const addField = (field) => {
+    const newField = {
+      id: 3,
+      field,
+      sets: [],
+    }
+    setFields(oldFields => [...oldFields, newField])
+  }
+  // new set
+  const [sets, setSets] = useState([]);
+
+  const addSet = (weight, rep) => {
+    const newSet = {
+      id: 1,
+      setNumber: 2,
+      weight,
+      rep,
+    }
+
+    setSets(sets => [...sets, newSet])
+  }
 
   // useEffect(console.log(todolist))
 
@@ -198,7 +220,7 @@ export default IndividualSession = () => {
   ])
 
   useEffect(() => {
-    console.log(todolist)
+    // console.log(todolist)
   })
 
   return (
@@ -212,14 +234,14 @@ export default IndividualSession = () => {
         {
           sessions.map(data => (
             <View key={data.id}>
-              <Text style={{fontSize: Typography.FONT_SIZE_20}}>-{data.part}</Text>
+              <Text key={data.id} style={{fontSize: Typography.FONT_SIZE_20}}>-{data.part}</Text>
               {
                 data.fields.map(data => (
                   <View key={data.id} style={{margin:Spacing.SCALE_4}}>
-                    <Text style={{fontSize: Typography.FONT_SIZE_16}}>{data.field}</Text>
+                    <Text key={data.id} style={{fontSize: Typography.FONT_SIZE_16}}>{data.field}</Text>
                     {
                       data.sets.map(data => (
-                        <Set setNumber={data.setNumber} weight={data.weight} reps={data.rep} />
+                        <Set key={data.id} setNumber={data.setNumber} weight={data.weight} reps={data.rep} />
                       ))
                     }
                   </View>
@@ -228,7 +250,7 @@ export default IndividualSession = () => {
             </View>
           ))
         }
-        <InputTemp newTodo={newTodo} setNewTodo={setNewTodo} addTodo={addTodo} />
+        <InputTemp fieldValue={fieldValue} setFieldValue={setFieldValue} addField={addField} />
       </ScrollView>
     </View>
   </View>
@@ -253,3 +275,52 @@ export default IndividualSession = () => {
         }
 
 */
+
+/*
+
+const [sessions, setSessions] = useState([
+    {
+      id: 0,
+      part: '등',
+      fields: [
+        {
+          id: 0,
+          field: '렛풀다운',
+          sets: [
+            {
+              id: 0,
+              setNumber: 1,
+              weight: '40',
+              rep: '9'
+            },
+            {
+              id: 1,
+              setNumber: 2,
+              weight: '30',
+              rep: '8'
+            },
+          ]
+        },
+        {
+          id: 1,
+          field: '데드리프트',
+          sets: [
+            {
+              id: 0,
+              setNumber: 1,
+              weight: '80',
+              rep: '8'
+            },
+            {
+              id: 1,
+              setNumber: 2,
+              weight: '90',
+              rep: '5'
+            },
+          ]
+        },
+      ]
+    }
+  ])
+
+  */
