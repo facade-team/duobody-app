@@ -1,7 +1,6 @@
 import React, { Component} from 'react';
 import {StyleSheet, Text, Image, View, TouchableOpacity } from 'react-native';
 import { Colors, Mixins, Spacing, Typography } from '../../styles'
-import { Footer_dash } from '../../components/Footer_dash'
 
 class Dash_cal extends Component {
     render() {
@@ -10,7 +9,6 @@ class Dash_cal extends Component {
                 <View style = {{flex:1,backgroundColor: Colors.WHITE}}>
                     <Text style = {{fontSize:30}}>달력, 스케쥴 박스</Text>
                 </View>
-                <Footer_dash />
             </View>
         );
     }
