@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import HomeScreen from './screens/#1_auth/signUp';
+import HomeScreen from './screens/#4_individual/indiv_session';
 
 const App = () => {
   return (
