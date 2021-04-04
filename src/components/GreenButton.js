@@ -1,29 +1,27 @@
 import React from 'react'
-import { StyleSheet, Text, TouchableOpacity } from 'react-native';
-import {Colors, Mixins, Spacing, Typography} from '../styles'
+import {Colors, Spacing, Typography} from '../styles'
 
-const styles = StyleSheet.create({
-  buttonStyle: {
-    backgroundColor: Colors.PRIMARY,
-    borderRadius: Spacing.SCALE_12,
-    padding: Spacing.SCALE_8,
-    width: Spacing.SCALE_200,
+import styled from 'styled-components'
 
-  },
-  innerButtonTextStyle: {
-    color: Colors.WHITE,
-    textAlign: 'center',
-    fontSize: Typography.FONT_SIZE_16,
-    fontWeight: Typography.FONT_WEIGHT_BOLD,
-  },
-});
+const Container = styled.TouchableOpacity`
+  background-color: ${Colors.PRIMARY};
+  border-radius: ${Spacing.SCALE_18};
+  padding: 8px;
+  width: ${Spacing.SCALE_200};
+`
 
+const ButtonText = styled.Text`
+  color: ${Colors.WHITE};
+  text-align: center;
+  font-size: ${Typography.FONT_SIZE_16};
+  font-weight: ${Typography.FONT_WEIGHT_BOLD};
+`
 
 const GreenButton = ({content}) => {
   return(
-    <TouchableOpacity style={styles.buttonStyle}>
-      <Text style={styles.innerButtonTextStyle}>{content}</Text>
-    </TouchableOpacity>
+    <Container>
+      <ButtonText>{content}</ButtonText>
+    </Container>
   )
 }
 
