@@ -1,11 +1,12 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import HomeScreen from './screens/#1_auth/signUp';
+import Dash_cal from './screens/#2_dashboard/calendar';
+
 
 const App = () => {
   return (
     <View style={styles.container}>
-      <HomeScreen />
+      <Dash_cal/>
     </View>
   );
 }

@@ -1,3 +1,4 @@
+import React, {Component} from 'react';
 import {View} from 'react-native';
 import {Calendar} from 'react-native-calendars';
 import {LocaleConfig} from 'react-native-calendars';
@@ -13,7 +14,7 @@ LocaleConfig.defaultLocale = 'fr';
 
 const CalendarView = () => {
     return (
-      <View style={{ paddingTop: 50, flex: 1 }}>
+      <View style={{ margin: 5, paddingTop: 20, flex: 1, borderWidth:0.5}}>
         <Calendar
         // Initially visible month. Default = Date()
         current={'2021-04-03'}
