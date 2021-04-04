@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { View, Text } from 'react-native';
 import GrayTextButton from '../../components/GrayTextButton';
 import GreenButton from '../../components/GreenButton';
-import UnderLinedTextInput_ from '../../components/UnderlinedTextInput_login';
+import UnderLinedTextInput_ from '../../components/UnderlinedTextInput';
 import { Spacing, Colors, Typography } from '../../styles';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
