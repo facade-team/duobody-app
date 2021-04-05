@@ -5,7 +5,7 @@ import useInput from '../hooks/useInput';
 import { Spacing, Colors, Typography } from '../styles';
 import DeleteSetButton from './DeleteSetButton';
 
-export default ({setNumber, dbWeight, dbRep, dimensions, sessions, setSessions }) => {
+export default ({index, setNumber, dbWeight, dbRep, dimensions, sessions, setSessions }) => {
   const setsStyles = StyleSheet.create({
     container: {
       marginLeft: Spacing.SCALE_8,

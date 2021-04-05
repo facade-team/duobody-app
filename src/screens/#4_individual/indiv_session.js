@@ -125,15 +125,16 @@ export default IndividualSession = () => {
       <ScrollView>
       <Text style={{fontSize: Typography.FONT_SIZE_20}}>-등</Text>
         {
-          sessions.map(data => 
+          sessions.map((data, index) => 
             (data && data.part && (data.part === "등")) ? (
               <View key={data.id}>
                 <View key={data.id} style={{margin:Spacing.SCALE_4}}>
                   <Text key={data.id} style={{fontSize: Typography.FONT_SIZE_16}}>{data.field}</Text>
                   {
-                    data.set.map(data_ => (
+                    data.set.map((data_ , index)=> (
                       <SetsInput 
-                        key={data_.id}
+                        key={index}
+                        index={index}
                         setNumber={data_.setNumber} 
                         dbWeight={data_.weight} 
                         dbRep={data_.rep} 
@@ -144,7 +145,11 @@ export default IndividualSession = () => {
                     ))
                   }
                 </View>
-                <AddSetButton sessionId={data.id}  />
+                <AddSetButton
+                  dimensions={[data.id]}
+                  sessions={sessions}
+                  setSessions={setSessions}
+                />
               </View>
             ) : '' 
           )
