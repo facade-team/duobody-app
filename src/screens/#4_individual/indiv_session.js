@@ -137,10 +137,6 @@ export default IndividualSession = () => {
                       dbRep={data.rep} 
                       setValue={setValue} 
                       setSetValue={setSetValue}
-                      weight={weight}
-                      setWeight={setWeight}
-                      rep={rep}
-                      setRep={setRep}
                     />
                   ))
                 }
