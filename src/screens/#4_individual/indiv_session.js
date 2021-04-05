@@ -32,6 +32,7 @@ export default IndividualSession = () => {
   // new field
   const [fieldValue, setFieldValue] = useState('');
 
+  /*
   // new set
   const [setValue, setSetValue] = useState([]);
 
@@ -48,6 +49,7 @@ export default IndividualSession = () => {
 
     setSets(sets => [...sets, newSet])
   }
+*/
 
   const addSession = (part, fieldName) => {
     const newSession = {
@@ -110,7 +112,7 @@ export default IndividualSession = () => {
   ])
 
   useEffect(() => {
-    console.log(sessions)
+    //console.log(sessions)
   })
 
   return (
@@ -125,24 +127,25 @@ export default IndividualSession = () => {
         {
           sessions.map(data => 
             (data && data.part && (data.part === "등")) ? (
-              <>
-              <View key={data.id} style={{margin:Spacing.SCALE_4}}>
-                <Text key={data.id} style={{fontSize: Typography.FONT_SIZE_16}}>{data.field}</Text>
-                {
-                  data.set.map(data => (
-                    <SetsInput 
-                      key={data.id} 
-                      setNumber={data.setNumber} 
-                      dbWeight={data.weight} 
-                      dbRep={data.rep} 
-                      setValue={setValue} 
-                      setSetValue={setSetValue}
-                    />
-                  ))
-                }
+              <View key={data.id}>
+                <View key={data.id} style={{margin:Spacing.SCALE_4}}>
+                  <Text key={data.id} style={{fontSize: Typography.FONT_SIZE_16}}>{data.field}</Text>
+                  {
+                    data.set.map(data_ => (
+                      <SetsInput 
+                        key={data_.id}
+                        setNumber={data_.setNumber} 
+                        dbWeight={data_.weight} 
+                        dbRep={data_.rep} 
+                        dimensions={[data.id, data_.id]}
+                        sessions={sessions}
+                        setSessions={setSessions}
+                      />
+                    ))
+                  }
+                </View>
+                <AddSetButton sessionId={data.id}  />
               </View>
-              <AddSetButton sessionId={data.id}  />
-              </>
             ) : ''
           )
         }

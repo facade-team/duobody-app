@@ -1,9 +1,11 @@
 import React, { useState } from 'react'
 import { StyleSheet, View, TextInput, Text, TouchableOpacity } from 'react-native';
+import { useEffect } from 'react/cjs/react.development';
+import useInput from '../hooks/useInput';
 import { Spacing, Colors, Typography } from '../styles';
 import DeleteSetButton from './DeleteSetButton';
 
-export default ({setNumber, dbWeight, dbRep  }) => {
+export default ({setNumber, dbWeight, dbRep, dimensions, sessions, setSessions }) => {
   const setsStyles = StyleSheet.create({
     container: {
       marginLeft: Spacing.SCALE_8,
@@ -56,14 +58,20 @@ export default ({setNumber, dbWeight, dbRep  }) => {
   }
 
   const WeightInput = ({weightVal, setWeightVal}) => {
+    const handleWeight = (text) => {
+      setWeightVal(text)
+      const newSessions = [...sessions]
+      newSessions[dimensions[0]].set[dimensions[1]].weight = text
+      setSessions(newSessions)
+    }
+
     return (
       <View style={btnStyles.btnContainer}>
         <View style={setsStyles.textInputBox}>
           <TextInput
             autoCorrect={ false }
             value={weightVal} 
-            onChangeText={(text) => setWeightVal(text)}
-            onFocus={(e) => console.log(e.target)}
+            onChangeText={(text) => handleWeight(text)}
           />
           <Text>kg</Text>
         </View>
@@ -74,13 +82,21 @@ export default ({setNumber, dbWeight, dbRep  }) => {
   }
 
   const RepsInput = ({repsVal, setRepVal}) => {
+    
+    const handleReps = (text) => {
+      setRepVal(text)
+      const newSessions = [...sessions]
+      newSessions[dimensions[0]].set[dimensions[1]].rep = text
+      setSessions(newSessions)
+    }
+
     return (
       <View style={btnStyles.btnContainer}>
         <View style={setsStyles.textInputBox}>
           <TextInput
             autoCorrect={ false }
-            value={repsVal} 
-            onChangeText={(text) => setRepVal(text)} 
+            value={repsVal}
+            onChangeText={(text) => handleReps(text)}
           />
           <Text>회</Text>
         </View>
@@ -92,6 +108,11 @@ export default ({setNumber, dbWeight, dbRep  }) => {
 
   const [weightVal, setWeightVal] = useState(dbWeight)
   const [repVal, setRepVal] = useState(dbRep)
+
+  useEffect(() => {
+    //console.log(sessions)
+    //console.log('------------------------------------------')
+  })
 
   return (
     <View style={setsStyles.container} >
