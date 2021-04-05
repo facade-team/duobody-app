@@ -146,7 +146,7 @@ export default IndividualSession = () => {
                 </View>
                 <AddSetButton sessionId={data.id}  />
               </View>
-            ) : ''
+            ) : '' 
           )
         }
         <WorkoutInput fieldValue={fieldValue} setFieldValue={setFieldValue} addSession={addSession} />
