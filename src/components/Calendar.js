@@ -12,20 +12,27 @@ LocaleConfig.locales['fr'] = {
 };
 LocaleConfig.defaultLocale = 'fr';
 
+// 날짜를 눌렀을 때 이벤트 추가해야 됨
+const currentDate = new Date().toISOString().slice(0, 10)
+console.log(currentDate)
+
 const CalendarView = () => {
+
     return (
       <View style={{ margin: 5, paddingTop: 20, flex: 1, borderWidth:0.5}}>
         <Calendar
-        // Initially visible month. Default = Date()
-        current={'2021-04-03'}
+        //선택날짜 마킹
+
         // Minimum date that can be selected, dates before minDate will be grayed out. Default = undefined
         minDate={'2021-01-01'}
         // Maximum date that can be selected, dates after maxDate will be grayed out. Default = undefined
         maxDate={'2021-12-31'}
         // Handler which gets executed on day press. Default = undefined
         onDayPress={(day) => {console.log('selected day', day)}}
+
         // Handler which gets executed on day long press. Default = undefined
-        onDayLongPress={(day) => {console.log('selected day', day)}}
+        // onDayLongPress={(day) => {console.log('selected day', day)}}
+        
         // Month format in calendar title. Formatting values: http://arshaw.com/xdate/#Formatting
         monthFormat={'yyyy MM'}
         // Handler which gets executed when visible month changes in calendar. Default = undefined

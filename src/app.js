@@ -1,12 +1,12 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import Dash_cal from './screens/#2_dashboard/calendar';
-
+import Indiv_msg from './screens/#4_individual/indiv_msg'
+import Messenger from './screens/#2_dashboard/messenger'
 
 const App = () => {
   return (
     <View style={styles.container}>
-      <Dash_cal/>
+      <Indiv_msg/>
     </View>
   );
 }

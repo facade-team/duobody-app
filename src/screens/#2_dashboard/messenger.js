@@ -1,5 +1,5 @@
 import React from 'react';
-import { SafeAreaView, View, FlatList, StyleSheet, Text, StatusBar } from 'react-native';
+import { SafeAreaView, View, FlatList, StyleSheet, Text, StatusBar, TouchableOpacity, Alert } from 'react-native';
 
 const DATA = [
   {
@@ -27,11 +27,15 @@ const Item = ({ title, submessenger }) => (
 );
 
 const Messenger = () => {
-  const renderItem = ({ item }) => <Item title={item.title} submessenger={item.submessenger}/>;
+  const renderItem = ({ item }) => (
+    <TouchableOpacity onPress={() => Alert.alert("개인간의 채팅화면으로 전환 필요","넘겨야 할 prop: 해당 대화 상대의 이름을 채팅방의 상단에 띄워야 함")}>
+      <Item title={item.title} submessenger={item.submessenger}/>
+    </TouchableOpacity>
+  );
 
   return (
     <SafeAreaView style={styles.container}>
-      <FlatList data={DATA} renderItem={renderItem} keyExtractor={item => item.id} />
+        <FlatList data={DATA} renderItem={renderItem} keyExtractor={item => item.id} />
     </SafeAreaView>
   );
 }
