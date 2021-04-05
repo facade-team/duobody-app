@@ -2,8 +2,9 @@ import React, { useState } from 'react'
 import { useEffect } from 'react';
 import { StyleSheet, Text, View, ScrollView, Animated, TextInput, TouchableOpacity } from 'react-native';
 import { Spacing, Typography, Colors } from '../../styles';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-
+import WorkoutInput from '../../components/WorkoutInput';
+import SetsInput from '../../components/SetsInput';
+import AddSetButton from '../../components/AddSetButton';
 
 const styles = StyleSheet.create({
   container: {
@@ -27,129 +28,15 @@ const styles = StyleSheet.create({
   }
 })
 
-const inputStyles = StyleSheet.create({
-  container: {
-      marginLeft: Spacing.SCALE_4,
-      marginRight: Spacing.SCALE_4,
-  },
-  input: {
-      borderRadius: 10,
-      backgroundColor: Colors.WHITE,
-      paddingLeft: Spacing.SCALE_8,
-      paddingRight: Spacing.SCALE_8,
-      height: Spacing.SCALE_32,
-      alignItems: "center",
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      borderBottomColor: Colors.GRAY,
-      borderBottomWidth: StyleSheet.hairlineWidth,
-  },
-  inputText: {
-      flex: 1,
-  },
-  addBtn: {
-      color: Colors.PRIMARY,
-  }
-});
-
-const InputTemp = ({fieldValue, setFieldValue, addField}) => {
-
-  const addNewFields = () => {
-    addField(fieldValue)
-  }
-
-  return (
-    <View style={inputStyles.container}>
-        <View style={inputStyles.input}> 
-            <TextInput 
-                style={inputStyles.inputText}
-                placeholder='운동을 선택하세요'
-                autoCorrect={ false }
-                value={fieldValue}
-                onChangeText={(text) => setFieldValue(text)}
-            />
-            <TouchableOpacity onPressOut={addNewFields}>
-                <MaterialCommunityIcons style={inputStyles.addBtn} size={30} name='plus-circle' />
-            </TouchableOpacity>
-        </View>
-    </View>
-  )
-}
-
-const Set = ({setNumber, weight, reps}) => {
-  const setsStyles = StyleSheet.create({
-    container: {
-      marginLeft: Spacing.SCALE_8,
-      marginRight: Spacing.SCALE_8,
-      flexDirection: 'row',
-    },
-    setBox: {
-      flex: 1,
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      borderBottomColor: Colors.GRAY,
-      borderBottomWidth: 1,
-      padding: Spacing.SCALE_4,
-      margin: Spacing.SCALE_4,
-    },
-    textInputBox: {
-      borderWidth: 1,
-      flexDirection: 'row',
-      justifyContent: 'center',
-      width: 60,
-      borderRadius: Spacing.SCALE_12,
-      borderColor: Colors.GRAY_MEDIUM,
-      borderWidth: 1,
-    }
-  })
-
-  const WeightInput = ({weightValue}) => {
-    return (
-      <View style={setsStyles.textInputBox}>
-        <TextInput value={weightValue} />
-        <Text>kg</Text>
-      </View>
-    )
-  }
-
-  const RepsInput = ({repsValue}) => {
-    return (
-      <View style={setsStyles.textInputBox}>
-        <TextInput value={repsValue} />
-        <Text>회</Text>
-      </View>
-    )
-  }
-
-  return (
-    <View style={setsStyles.container}>
-      <View style={setsStyles.setBox}>
-        <Text>{setNumber}세트</Text>
-        <WeightInput weightValue={weight} />
-        <RepsInput repsValue={reps} />
-      </View>
-    </View>
-  )
-}
-
 export default IndividualSession = () => {
-  const [newTodo, setNewTodo] = useState('');
-  const [todolist, setTodolist] = useState([])
-
   // new field
   const [fieldValue, setFieldValue] = useState('');
-  const [fields, setFields] = useState([]);
 
-  const addField = (field) => {
-    const newField = {
-      id: 3,
-      field,
-      sets: [],
-    }
-    setFields(oldFields => [...oldFields, newField])
-  }
   // new set
-  const [sets, setSets] = useState([]);
+  const [setValue, setSetValue] = useState([]);
+
+  const [weight, setWeight] = useState('20')
+  const [rep, setRep] = useState('10')
 
   const addSet = (weight, rep) => {
     const newSet = {
@@ -162,65 +49,68 @@ export default IndividualSession = () => {
     setSets(sets => [...sets, newSet])
   }
 
-  // useEffect(console.log(todolist))
-
-  const addTodo = (todo) => {
-    const newTodoOne = {
-      id: Date.now(),
-      text: todo,
-      completed: false,
+  const addSession = (part, fieldName) => {
+    const newSession = {
+      id: sessions.length,
+      part,
+      field: fieldName,
+      set: [
+        {
+          id: 0,
+          setNumber: 1,
+          weight: '20',
+          rep: '10',
+        },
+      ],
     }
 
-    setTodolist(todos => [...todos, newTodoOne])
+    setSessions(oldSessions => [...oldSessions, newSession])
   }
+
 
   const [sessions, setSessions] = useState([
     {
       id: 0,
       part: '등',
-      fields: [
+      field: '렛풀다운',
+      set: [
         {
           id: 0,
-          field: '렛풀다운',
-          sets: [
-            {
-              id: 0,
-              setNumber: 1,
-              weight: '40',
-              rep: '9'
-            },
-            {
-              id: 1,
-              setNumber: 2,
-              weight: '30',
-              rep: '8'
-            },
-          ]
+          setNumber: 1,
+          weight: '40',
+          rep: '9'
         },
         {
           id: 1,
-          field: '데드리프트',
-          sets: [
-            {
-              id: 0,
-              setNumber: 1,
-              weight: '80',
-              rep: '8'
-            },
-            {
-              id: 1,
-              setNumber: 2,
-              weight: '90',
-              rep: '5'
-            },
-          ]
+          setNumber: 2,
+          weight: '30',
+          rep: '8'
         },
       ]
-    }
+    },
+    {
+      id: 1,
+      part: '등',
+      field: '데드리프트',
+      set: [
+        {
+          id: 0,
+          setNumber: 1,
+          weight: '80',
+          rep: '8'
+        },
+        {
+          id: 1,
+          setNumber: 2,
+          weight: '90',
+          rep: '5'
+        },
+      ]
+    },
   ])
 
   useEffect(() => {
-    // console.log(todolist)
+    console.log(sessions)
   })
 
   return (
@@ -231,26 +121,36 @@ export default IndividualSession = () => {
     </View>
     <View style={styles.whiteBox}>
       <ScrollView>
+      <Text style={{fontSize: Typography.FONT_SIZE_20}}>-등</Text>
         {
-          sessions.map(data => (
-            <View key={data.id}>
-              <Text key={data.id} style={{fontSize: Typography.FONT_SIZE_20}}>-{data.part}</Text>
-              {
-                data.fields.map(data => (
-                  <View key={data.id} style={{margin:Spacing.SCALE_4}}>
-                    <Text key={data.id} style={{fontSize: Typography.FONT_SIZE_16}}>{data.field}</Text>
-                    {
-                      data.sets.map(data => (
-                        <Set key={data.id} setNumber={data.setNumber} weight={data.weight} reps={data.rep} />
-                      ))
-                    }
-                  </View>
-                ))
-              }
-            </View>
-          ))
+          sessions.map(data => 
+            (data && data.part && (data.part === "등")) ? (
+              <>
+              <View key={data.id} style={{margin:Spacing.SCALE_4}}>
+                <Text key={data.id} style={{fontSize: Typography.FONT_SIZE_16}}>{data.field}</Text>
+                {
+                  data.set.map(data => (
+                    <SetsInput 
+                      key={data.id} 
+                      setNumber={data.setNumber} 
+                      dbWeight={data.weight} 
+                      dbRep={data.rep} 
+                      setValue={setValue} 
+                      setSetValue={setSetValue}
+                      weight={weight}
+                      setWeight={setWeight}
+                      rep={rep}
+                      setRep={setRep}
+                    />
+                  ))
+                }
+              </View>
+              <AddSetButton sessionId={data.id}  />
+              </>
+            ) : ''
+          )
         }
-        <InputTemp fieldValue={fieldValue} setFieldValue={setFieldValue} addField={addField} />
+        <WorkoutInput fieldValue={fieldValue} setFieldValue={setFieldValue} addSession={addSession} />
       </ScrollView>
     </View>
   </View>
@@ -324,3 +224,5 @@ const [sessions, setSessions] = useState([
   ])
 
   */
+
+  
