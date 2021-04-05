@@ -6,7 +6,7 @@ import Messenger from './screens/#2_dashboard/messenger'
 const App = () => {
   return (
     <View style={styles.container}>
-      <Indiv_msg/>
+      <Messenger/>
     </View>
   );
 }

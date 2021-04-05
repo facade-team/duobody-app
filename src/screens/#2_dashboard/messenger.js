@@ -48,16 +48,17 @@ const styles = StyleSheet.create({
     marginTop: StatusBar.currentHeight || 0,
   },
   item: {
-    backgroundColor: '#f9c2ff',
+    backgroundColor: '#ffffff',
     padding: 20,
     marginVertical: 1,
     marginHorizontal: 16,
   },
   title: {
-    fontSize: 32,
+    fontSize: 20,
+    fontWeight: 'bold'
   },
   submessenger: {
-      fontSize: 20,
+      fontSize: 15,
       
   }
 });
