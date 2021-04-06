@@ -3,21 +3,21 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { Colors, Spacing } from '../../styles';
 import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 
-import login from '../#1_auth/login';
-import signUp from '../#1_auth/signUp';
-import confirmSecret from '../#1_auth/confirmSecret';
-import Messenger from '../#2_dashboard/messenger';
-import indivProfile from './indiv_profile';
-
+import indiv_profile from './indiv_profile';
+import indiv_session from './indiv_session';
+import indiv_calendar from './indiv_calendar';
+import indiv_msg from './indiv_msg';
+import indiv_etc from './indiv_etc';
 
 const Tab = createMaterialBottomTabNavigator();
 
-function Footer_dash() {
+function Footer_indiv() {
     return (    
         <NavigationContainer>
             <Tab.Navigator
-            initialRouteName='Profile'
+            initialRouteName='indiv_profile'
             activeColor = {Colors.BLACK}
             inactiveColor = {Colors.PRIMARY}
             labeled = {true}
@@ -28,8 +28,8 @@ function Footer_dash() {
             }}
         >
             <Tab.Screen
-                name='Profile'
-                component={signUp}
+                name='indiv_profile'
+                component={indiv_profile}
                 options={{
                     tabBarLabel: 'Profile',
                     tabBarIcon: ({ color }) => (
@@ -39,8 +39,8 @@ function Footer_dash() {
             />
 
             <Tab.Screen
-                name='Session'
-                component={login}
+                name='indiv_session'
+                component={indiv_session}
                 options={{
                     tabBarLabel: 'Session',
                     tabBarIcon: ({ color }) => (
@@ -50,8 +50,8 @@ function Footer_dash() {
             />
 
             <Tab.Screen
-                name='Calendar'
-                component={confirmSecret}
+                name='indiv_calendar'
+                component={indiv_calendar}
                 options={{
                     tabBarLabel: 'Calendar',
                     tabBarIcon: ({ color }) => (
@@ -61,8 +61,8 @@ function Footer_dash() {
             />
 
             <Tab.Screen
-                name='Messenger'
-                component={Messenger}
+                name='indiv_msg'
+                component={indiv_msg}
                 options={{
                     tabBarLabel: 'Messenger',
                     tabBarIcon: ({ color }) => (
@@ -72,8 +72,8 @@ function Footer_dash() {
             />
 
             <Tab.Screen
-                name='Etc'
-                component={indivProfile}
+                name='indiv_etc'
+                component={indiv_etc}
                 options={{
                     tabBarLabel: 'Etc',
                     tabBarIcon: ({ color }) => (
@@ -87,4 +87,4 @@ function Footer_dash() {
     );
 }
 
-export default Footer_dash;
+export default Footer_indiv;

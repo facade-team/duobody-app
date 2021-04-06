@@ -1,26 +1,34 @@
 import * as React from 'react';
-import { Colors, Spacing } from '../../styles';
+import { Colors, Spacing } from '../styles';
 import { NavigationContainer } from '@react-navigation/native';
-import { Button, View, Text } from 'react-native';
-import { CreateStackNavigator } from '@react-navigation/stack';
+import { Button, View, Text, TabBarIOS } from 'react-native';
+import { createStackNavigator } from '@react-navigation/stack';
 
 import Dash_dash from '../screens/#2_dashboard/dashboard';
 import Dash_cal from '../screens/#2_dashboard/calendar';
 import Messenger from '../screens/#2_dashboard/messenger';
 
-import indiv_profile from '../screens/#4_individual/indiv_profile';
+import mem_search from '../screens/#3_mem_admin/mem_search';
+import mem_add from '../screens/#3_mem_admin/mem_add';
+import mem_edit from '../screens/#3_mem_admin/mem_edit';
 
-const Stack = CreateStackNavigator({
-    ComponentKey: {
-        headerLayoutPreset: 'center'
-    }
-});
+import indiv_profile from '../screens/#4_individual/indiv_profile';
+import indiv_session from '../screens/#4_individual/indiv_session';
+import indiv_calendar from '../screens/#4_individual/indiv_calendar';
+import indiv_msg from '../screens/#4_individual/indiv_msg';
+import indiv_etc from '../screens/#4_individual/indiv_etc';
+
+import change_add from '../screens/#5_profile/change_add';
+import change_view from '../screens/#5_profile/change_view';
+import Footer_dash from '../screens/#2_dashboard/Footer_dash';
+
+const Stack = createStackNavigator();
 
 function TopLogo() {
     return (
         <Image
             style={{width: 100, height: 50}}
-            source={require('../assets/toplogo.png')}
+            source = {require('../assets/toplogo.png')}
         />
     );
 }
@@ -51,7 +59,14 @@ function Header() {
                 
                 
                 
+
+
             </Stack.Navigator>
+
         </NavigationContainer>
+
+        
     )
 }
+
+export default Header;

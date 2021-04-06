@@ -1,24 +1,17 @@
-import React, { Component} from 'react';
-import {StyleSheet, Text, Image, View, TouchableOpacity } from 'react-native';
-import { Colors, Mixins, Spacing, Typography } from '../../styles'
+import * as React from 'react';
+import { View, Text, Button, Image } from 'react-native';
+import Messenger from './messenger';
 
-class Dash_cal extends Component {
-    render() {
-        return (
-            <View style = {StyleSheet.container}>
-                <View style = {{flex:1,backgroundColor: Colors.WHITE}}>
-                    <Text style = {{fontSize:30}}>달력, 스케쥴 박스</Text>
-                </View>
-            </View>
-        );
-    }
-}
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center', 
-    }
-})
+function dash_cal({ navigation }) {
+    return (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <Button
+          title="This is dash_cal go to ~"
+          onPress={() => navigation.navigate('mem_add')}
+        />
+      </View>
+    );
+  }
 
-export default Dash_cal;
+  export default dash_cal;
