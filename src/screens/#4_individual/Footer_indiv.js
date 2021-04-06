@@ -19,10 +19,10 @@ function Footer_dash() {
             <Tab.Navigator
             initialRouteName='Profile'
             activeColor = {Colors.BLACK}
-            inactiveColor = {Colors.WHITE}
+            inactiveColor = {Colors.PRIMARY}
             labeled = {true}
             barStyle = {{
-                backgroundColor: Colors.PRIMARY,
+                backgroundColor: Colors.WHITE,
                 paddingBottom: Spacing.SCALE_4,
                 paddingTop: Spacing.SCALE_4,
             }}
