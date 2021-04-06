@@ -5,6 +5,7 @@ import { Spacing, Typography, Colors } from '../../styles';
 import WorkoutInput from '../../components/WorkoutInput';
 import SetsInput from '../../components/SetsInput';
 import AddSetButton from '../../components/AddSetButton';
+import DeleteFieldButton from '../../components/DeleteFieldButton';
 
 const styles = StyleSheet.create({
   container: {
@@ -69,6 +70,10 @@ export default IndividualSession = () => {
     setSessions(oldSessions => [...oldSessions, newSession])
   }
 
+  const deleteSession = () => {
+
+  }
+
 
   const [sessions, setSessions] = useState([
     {
@@ -127,18 +132,25 @@ export default IndividualSession = () => {
         {
           sessions.map((data, index) => 
             (data && data.part && (data.part === "등")) ? (
-              <View key={data.id}>
-                <View key={data.id} style={{margin:Spacing.SCALE_4}}>
-                  <Text key={data.id} style={{fontSize: Typography.FONT_SIZE_16}}>{data.field}</Text>
+              <View key={index}>
+                <View key={index} style={{margin:Spacing.SCALE_4}}>
+                  <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                    <Text key={index} style={{fontSize: Typography.FONT_SIZE_16}}>{data.field}</Text>
+                    <DeleteFieldButton
+                      dimensions={[index]}
+                      sessions={sessions}
+                      setSessions={setSessions}
+                    />
+                  </View>
                   {
-                    data.set.map((data_ , index)=> (
-                      <SetsInput 
-                        key={index}
-                        index={index}
+                    data.set.map((data_ , index_)=> (
+                      <SetsInput
+                        key={index_} 
+                        index={index_}
                         setNumber={data_.setNumber} 
                         dbWeight={data_.weight} 
                         dbRep={data_.rep} 
-                        dimensions={[data.id, data_.id]}
+                        dimensions={[index, index_]}
                         sessions={sessions}
                         setSessions={setSessions}
                       />

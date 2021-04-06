@@ -9,27 +9,25 @@ const styles = StyleSheet.create({
       paddingLeft: Spacing.SCALE_8,
       paddingRight: Spacing.SCALE_8,
   },
-  minusBtn: {
-      color: Colors.PRIMARY,
+  deleteBtn: {
+      color: Colors.WARNING,
   }
 });
 
-export default ({dimensions, sessions, setSessions}) => {
+export default ({ dimensions, sessions, setSessions}) => {
 
   const handleDeleteSet = () => {
     const newSessions = [...sessions]
-    const popedSet = newSessions[dimensions[0]].set.splice(dimensions[1], 1)
-    console.log(newSessions[dimensions[0]].set.length)
-    if (newSessions[dimensions[0]].set.length === 0) {
-      const popedSession = newSessions.splice(dimensions[0], 1)
-    }
+    const popedSession = newSessions.splice(dimensions[0], 1)
     setSessions(newSessions)
+    console.log(newSessions)
+    //console.log(newSessions.splice(dimensions[0], 1))
   }
 
   return (
     <View style={styles.container}>
       <TouchableOpacity onPressOut={handleDeleteSet}>
-          <MaterialCommunityIcons style={styles.minusBtn} size={24} name='minus' />
+          <MaterialCommunityIcons style={styles.deleteBtn} size={24} name='trash-can' />
       </TouchableOpacity>
     </View>
   )

@@ -1,6 +1,5 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { StyleSheet, View, TextInput, Text, TouchableOpacity } from 'react-native';
-import { useEffect } from 'react/cjs/react.development';
 import useInput from '../hooks/useInput';
 import { Spacing, Colors, Typography } from '../styles';
 import DeleteSetButton from './DeleteSetButton';
@@ -112,15 +111,17 @@ export default ({index, setNumber, dbWeight, dbRep, dimensions, sessions, setSes
   useEffect(() => {
     //console.log(sessions)
     //console.log('------------------------------------------')
+    //console.log(dimensions)
+    //console.log('=========================================')
   })
 
   return (
     <View style={setsStyles.container} >
       <View style={setsStyles.setBox}>
-        <Text>{setNumber}세트</Text>
+        <Text>{index+1}세트</Text>
         <WeightInput weightVal={weightVal} setWeightVal={setWeightVal} />
         <RepsInput repsVal={repVal} setRepVal={setRepVal} />
-        <DeleteSetButton />
+        <DeleteSetButton dimensions={dimensions} sessions={sessions} setSessions={setSessions} />
       </View>
     </View>
   )
