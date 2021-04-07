@@ -1,11 +1,14 @@
+import { NavigationContainer } from '@react-navigation/native';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import HomeScreen from './screens/#1_auth/auth';
+import IndividualSession from './src/screens/#4_individual/indiv_session';
 
-export default function App() {
+
+
+const App = () => {
   return (
     <View style={styles.container}>
-      <HomeScreen></HomeScreen>
+      <IndividualSession />
     </View>
   );
 }
@@ -15,3 +18,5 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 });
+
+export default App
