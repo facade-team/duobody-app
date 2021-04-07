@@ -135,7 +135,7 @@ export default IndividualSession = () => {
               <View key={index}>
                 <View key={index} style={{margin:Spacing.SCALE_4}}>
                   <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                    <Text key={index} style={{fontSize: Typography.FONT_SIZE_16}}>{`${index}: ${data.field}`}</Text>
+                    <Text key={index} style={{fontSize: Typography.FONT_SIZE_16}}>{data.field}</Text>
                     <DeleteFieldButton
                       dimensions={[index]}
                       sessions={sessions}
