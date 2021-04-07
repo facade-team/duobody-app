@@ -1,16 +1,60 @@
-import * as React from 'react';
-import { View, Text, Button, Image } from 'react-native';
+import React, {useState, useCallback, useEffect} from 'react';
+import { Bubble, GiftedChat } from 'react-native-gifted-chat'
+import {StyleSheet} from 'react-native';
 
+const ChatScreen = () => {
+    const [messages, setMessages] = useState([]);
 
-function indiv_msg({ navigation }) {
-    return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <Button
-          title="This is indiv_msg go to ~"
-          onPress={() => navigation.navigate('indiv_etc')}
+    useEffect(() => {
+        setMessages([
+        {
+            _id: 1,
+            text: '화면 상단에 넘어온 prop으로 대화상대 띄워야됨',
+            createdAt: new Date(),
+            user: {
+            _id: 2,
+            name: 'React Native',
+            avatar: 'https://placeimg.com/140/140/any',
+            },
+        },
+        ])
+    }, [])
+
+    const onSend = useCallback((messages = []) => {
+        setMessages(previousMessages => GiftedChat.append(previousMessages, messages))
+    }, [])
+
+    const renderBubble = (props) =>{
+        return(
+        <Bubble
+            {...props}
+            wrapperStyle={{
+                right: {
+                    backgroundColor: '#A8D374'
+                },
+                left: {
+                    backgroundColor: '#54A445'
+                }
+            }}
+            textStyle={{
+                left: {
+                    color: 'white'
+                }
+            }}
+        />);
+    }
+
+    return(
+        <GiftedChat
+        messages={messages}
+        onSend={messages => onSend(messages)}
+        user={{
+            _id: 1,
+        }}
+        renderBubble={renderBubble}
+        alwaysShowSend
         />
-      </View>
-    );
-  }
+    )
+}
 
-  export default indiv_msg;
+export default ChatScreen;
