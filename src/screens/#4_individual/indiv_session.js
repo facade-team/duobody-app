@@ -33,25 +33,11 @@ export default IndividualSession = () => {
   // new field
   const [fieldValue, setFieldValue] = useState('');
 
-  /*
-  // new set
-  const [setValue, setSetValue] = useState([]);
-
-  const [weight, setWeight] = useState('20')
-  const [rep, setRep] = useState('10')
-
-  const addSet = (weight, rep) => {
-    const newSet = {
-      id: 1,
-      setNumber: 2,
-      weight,
-      rep,
-    }
-
-    setSets(sets => [...sets, newSet])
-  }
-*/
-
+  // test code
+  const [globalWeightValue, setGlobalWeightValue] = useState('');
+  const [globalRepValue, setGlobalRepValue] = useState('');
+  
+  
   const addSession = (part, fieldName) => {
     const newSession = {
       id: sessions.length,
@@ -69,11 +55,6 @@ export default IndividualSession = () => {
 
     setSessions(oldSessions => [...oldSessions, newSession])
   }
-
-  const deleteSession = () => {
-
-  }
-
 
   const [sessions, setSessions] = useState([
     {
@@ -116,10 +97,6 @@ export default IndividualSession = () => {
     },
   ])
 
-  useEffect(() => {
-    //console.log(sessions)
-  })
-
   return (
   <View style={styles.container}>
     <View style={styles.titleContainer}>
@@ -153,6 +130,10 @@ export default IndividualSession = () => {
                         dimensions={[index, index_]}
                         sessions={sessions}
                         setSessions={setSessions}
+                        globalWeightValue={globalWeightValue}
+                        setGlobalWeightValue={setGlobalWeightValue}
+                        globalRepValue={globalRepValue}
+                        setGlobalRepValue={setGlobalRepValue}
                       />
                     ))
                   }
@@ -163,82 +144,12 @@ export default IndividualSession = () => {
                   setSessions={setSessions}
                 />
               </View>
-            ) : '' 
+            ) : ''
           )
         }
         <WorkoutInput fieldValue={fieldValue} setFieldValue={setFieldValue} addSession={addSession} />
       </ScrollView>
     </View>
   </View>
-)}
-
-
-/*
-
-{
-          sessions.map(data => (
-            <View>
-              <Text>{data.part}</Text>
-              {
-                data.fields.map(d => (
-                  <View>
-                    <Text>{d.field}</Text>
-                  </View>
-                ))
-              }
-            </View>
-          ))
-        }
-
-*/
-
-/*
-
-const [sessions, setSessions] = useState([
-    {
-      id: 0,
-      part: '등',
-      fields: [
-        {
-          id: 0,
-          field: '렛풀다운',
-          sets: [
-            {
-              id: 0,
-              setNumber: 1,
-              weight: '40',
-              rep: '9'
-            },
-            {
-              id: 1,
-              setNumber: 2,
-              weight: '30',
-              rep: '8'
-            },
-          ]
-        },
-        {
-          id: 1,
-          field: '데드리프트',
-          sets: [
-            {
-              id: 0,
-              setNumber: 1,
-              weight: '80',
-              rep: '8'
-            },
-            {
-              id: 1,
-              setNumber: 2,
-              weight: '90',
-              rep: '5'
-            },
-          ]
-        },
-      ]
-    }
-  ])
-
-  */
-
-  
+  )
+}

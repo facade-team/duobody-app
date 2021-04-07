@@ -4,7 +4,19 @@ import useInput from '../hooks/useInput';
 import { Spacing, Colors, Typography } from '../styles';
 import DeleteSetButton from './DeleteSetButton';
 
-export default ({index, setNumber, dbWeight, dbRep, dimensions, sessions, setSessions }) => {
+export default ({
+  index, 
+  setNumber, 
+  dbWeight, 
+  dbRep, 
+  dimensions, 
+  sessions, 
+  setSessions,
+  globalWeightValue,
+  setGlobalWeightValue,
+  globalRepValue,
+  setGlobalRepValue,
+}) => {
   const setsStyles = StyleSheet.create({
     container: {
       marginLeft: Spacing.SCALE_8,
@@ -46,10 +58,36 @@ export default ({index, setNumber, dbWeight, dbRep, dimensions, sessions, setSes
     }
   })
 
-  const RoundButton = ({number}) => {
+  const RoundButton = ({number, type}) => {
+    const handleAddOrMinus = () => {
+      if (type === 'rep'){
+        const num = parseInt(number)
+        const repValNum = parseInt(repVal)
+        if (+num + +repVal > 0) {
+          const sumRepVal = String(num+repValNum)
+          setRepVal(sumRepVal)
+          const newSessions = [...sessions]
+          newSessions[dimensions[0]].set[dimensions[1]].rep = sumRepVal
+          setSessions(newSessions)
+        }
+
+      }
+      if (type === 'weight') {
+        const num = parseInt(number)
+        const weightValNum = parseInt(weightVal)
+        if (+num + +weightValNum >= 0) {
+          const sumWeightVal = String(num+weightValNum)
+          setWeightVal(sumWeightVal)
+          const newSessions = [...sessions]
+          newSessions[dimensions[0]].set[dimensions[1]].weight = sumWeightVal
+          setSessions(newSessions)
+        }
+      } 
+    }
+
     return (
       <View style={btnStyles.roundBtn}>
-        <TouchableOpacity>
+        <TouchableOpacity onPressOut={handleAddOrMinus}>
           <Text style={{fontSize: Typography.FONT_SIZE_12,}}>{number}</Text>
         </TouchableOpacity>
       </View>
@@ -71,11 +109,12 @@ export default ({index, setNumber, dbWeight, dbRep, dimensions, sessions, setSes
             autoCorrect={ false }
             value={weightVal} 
             onChangeText={(text) => handleWeight(text)}
+            keyboardType={'number-pad'}
           />
           <Text>kg</Text>
         </View>
-        <RoundButton number={'+5'} />
-        <RoundButton number={'-5'} />
+        <RoundButton number={'+5'} type={'weight'} />
+        <RoundButton number={'-5'} type={'weight'} />
       </View>
     )
   }
@@ -96,11 +135,12 @@ export default ({index, setNumber, dbWeight, dbRep, dimensions, sessions, setSes
             autoCorrect={ false }
             value={repsVal}
             onChangeText={(text) => handleReps(text)}
+            keyboardType={'number-pad'}
           />
           <Text>회</Text>
         </View>
-        <RoundButton number={'+1'} />
-        <RoundButton number={'-1'} />
+        <RoundButton number={'+1'} type={'rep'} />
+        <RoundButton number={'-1'} type={'rep'} />
       </View>
     )
   }
@@ -109,10 +149,8 @@ export default ({index, setNumber, dbWeight, dbRep, dimensions, sessions, setSes
   const [repVal, setRepVal] = useState(dbRep)
 
   useEffect(() => {
-    //console.log(sessions)
-    //console.log('------------------------------------------')
-    //console.log(dimensions)
-    //console.log('=========================================')
+    setWeightVal(dbWeight)
+    setRepVal(dbRep)
   })
 
   return (

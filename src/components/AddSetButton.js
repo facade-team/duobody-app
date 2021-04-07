@@ -32,7 +32,8 @@ const styles = StyleSheet.create({
 export default ({dimensions, sessions, setSessions}) => {
 
   const addNewSet = () => {
-    console.log(dimensions)
+    // console.log(dimensions)
+    //console.log('sessions: ' + JSON.stringify(sessions))
     const newSessions = [...sessions]
     const setsNum = newSessions[dimensions[0]].set.length - 1
     const prevWeight = newSessions[dimensions[0]].set[setsNum].weight
@@ -41,9 +42,9 @@ export default ({dimensions, sessions, setSessions}) => {
 
     const newSessionOne = {
       id: setsNum + 1,
-      rep: prevRep,
-      setNumber: prevSetNumber + 1,
+      setNumber: setsNum + 1,
       weight: prevWeight,
+      rep: prevRep,
     }
 
     newSessions[dimensions[0]].set.push(newSessionOne)
