@@ -9,7 +9,9 @@ import Header from './src/components/Header';
 const App = () => {
   return (
     <View style={styles.container}>
-          <Footer_indiv/>
+
+          <Header/>
+          
     </View>
   );
 }

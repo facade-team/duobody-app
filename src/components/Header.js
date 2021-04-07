@@ -40,6 +40,7 @@ function Header() {
             {/* 로고만 존재 */}
                 <Stack.Screen name = "dash_dash" component = {Dash_dash} />
 
+
             {/* 로고, 뒤로가기 버튼, 페이지 이름 */}
                 <Stack.Screen name = "dash_cal" component = {Dash_cal} />
                 <Stack.Screen name = "dash_msg" component = {Messenger} />

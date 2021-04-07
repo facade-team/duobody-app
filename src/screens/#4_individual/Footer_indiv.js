@@ -81,7 +81,7 @@ function Footer_indiv() {
                     ),
                 }}
             />
-
+            
         </Tab.Navigator>
         </NavigationContainer>
     );

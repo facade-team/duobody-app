@@ -7,7 +7,7 @@ function mem_search({ navigation }) {
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
         <Button
           title="This is mem_search go to ~"
-          onPress={() => navigation.navigate('Profile')}
+          onPress={() => navigation.navigate('indiv_etc')}
         />
       </View>
     );
