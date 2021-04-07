@@ -2,11 +2,14 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import Indiv_msg from './screens/#4_individual/indiv_msg'
 import Messenger from './screens/#2_dashboard/messenger'
+import Calendar from './screens/#2_dashboard/calendar'
+
+
 
 const App = () => {
   return (
     <View style={styles.container}>
-      <Messenger/>
+      <Calendar/>
     </View>
   );
 }
