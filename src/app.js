@@ -8,7 +8,7 @@ import Mem_search from './screens/#3_mem_admin/mem_search';
 const App = () => {
   return (
     <View style={styles.container}>
-      <Mem_search />
+      <Dashboard />
     </View>
   );
 }

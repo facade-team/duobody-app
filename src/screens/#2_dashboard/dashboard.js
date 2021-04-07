@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
     container:{
         flex:1,
         marginHorizontal: 5,
-        backgroundColor: '#2BAE56',
+        backgroundColor: Colors.PRIMARY,
         padding:10
       },
       header: {
@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
         paddingTop:Dimensions.get('screen').height * 0.01,
         paddingLeft:5,
         borderWidth:1,
-        borderRadius: 5,
+        borderRadius: 8,
         borderColor : '#2BAE56',
         fontWeight: 'bold',
         
@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
         backgroundColor: WHITE,
         alignItems: "center",
         justifyContent: "center",
-        borderRadius: 5,
+        borderRadius: 8,
         
       },
       down: {
@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
         backgroundColor: WHITE,
         alignItems: "center",
         justifyContent: "center",
-        borderRadius: 5,
+        borderRadius: 8,
       },
       
       memlist: {
@@ -167,7 +167,7 @@ const styles = StyleSheet.create({
         paddingTop:10,
         paddingLeft:100,
         borderWidth:1,
-        borderRadius: 5,
+        borderRadius: 8,
         borderColor : '#2BAE56',
         fontWeight: 'bold',
         fontSize: 20,
