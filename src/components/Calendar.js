@@ -20,17 +20,17 @@ const currentDate = new Date().toISOString().slice(0, 10)
 
 const CalendarView = () => {
     let curr = console.log(String(currentDate))
-    const [markedDatesState, setMarkedDatesState] = useState(
+    const [markedDates, setMarkedDates] = useState(
       {
         '2021-04-16': {selected: true, selectedColor: Colors.PRIMARY},
       },
     )
-  
+
     return (
       <View style={{ margin: 5, paddingTop: 20, flex: 1, borderWidth:0.5}}>
         <Calendar
         //선택날짜 마킹
-        markedDates={markedDatesState}
+        markedDates={markedDates}
 
         // Minimum date that can be selected, dates before minDate will be grayed out. Default = undefined
         minDate={'2021-01-01'}
@@ -47,13 +47,9 @@ const CalendarView = () => {
 
             console.log('selected : ' + selectedDate)
             //const prevMarkedDatesState = [...markedDatesState]
-            const newMarked = {
-              selectedDate: {selected: true, selectedColor: Colors.PRIMARY},
-            }
-            
-            console.log(JSON.stringify(newMarked))
-            setMarkedDatesState(newMarked)
-            console.log(JSON.stringify(markedDatesState))
+            let newMarked = {}
+            newMarked[selectedDate] = {selected: true, selectedColor: Colors.PRIMARY},
+            setMarkedDates(newMarked)
 
             //console.log('marked State: ' + markedDatesState)
 
