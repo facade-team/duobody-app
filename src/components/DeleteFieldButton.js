@@ -10,7 +10,7 @@ const styles = StyleSheet.create({
       paddingRight: Spacing.SCALE_8,
   },
   deleteBtn: {
-      color: Colors.WARNING,
+      color: Colors.GRAY_DARK,
   }
 });
 
