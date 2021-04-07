@@ -1,15 +1,15 @@
+import { NavigationContainer } from '@react-navigation/native';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import Indiv_msg from './screens/#4_individual/indiv_msg'
-import Messenger from './screens/#2_dashboard/messenger'
-import Calendar from './screens/#2_dashboard/calendar'
+import Footer_dash from './components/Footer_dash';
+import IndividualSession from './screens/#4_individual/indiv_session';
 
 
 
 const App = () => {
   return (
     <View style={styles.container}>
-      <Calendar/>
+      <IndividualSession />
     </View>
   );
 }
