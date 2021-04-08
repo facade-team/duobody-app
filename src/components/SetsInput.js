@@ -12,10 +12,6 @@ export default ({
   dimensions, 
   sessions, 
   setSessions,
-  globalWeightValue,
-  setGlobalWeightValue,
-  globalRepValue,
-  setGlobalRepValue,
 }) => {
   const setsStyles = StyleSheet.create({
     container: {

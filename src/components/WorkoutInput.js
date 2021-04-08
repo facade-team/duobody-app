@@ -1,13 +1,15 @@
 import React from 'react'
-import { StyleSheet, View, TextInput, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { Spacing, Colors } from '../styles';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import partAndField from '../utils/partAndField'
 
 
 const inputStyles = StyleSheet.create({
   container: {
       marginLeft: Spacing.SCALE_4,
       marginRight: Spacing.SCALE_4,
+      marginBottom: Spacing.SCALE_20,
   },
   input: {
       borderRadius: 10,
@@ -29,10 +31,15 @@ const inputStyles = StyleSheet.create({
   }
 });
 
-export default ({fieldValue, setFieldValue, addSession}) => {
+export default ({fieldValue, setFieldValue, addSession, index}) => {
 
   const addNewFields = () => {
-    addSession('등', fieldValue)
+    if (fieldValue !== '') {
+      addSession(partAndField[index].part, fieldValue)
+    }
+    else {
+      Alert.alert('올바른 값을 입력하세요')
+    }
   }
 
   return (

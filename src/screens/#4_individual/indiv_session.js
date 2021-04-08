@@ -6,6 +6,7 @@ import WorkoutInput from '../../components/WorkoutInput';
 import SetsInput from '../../components/SetsInput';
 import AddSetButton from '../../components/AddSetButton';
 import DeleteFieldButton from '../../components/DeleteFieldButton';
+import partAndField from '../../utils/partAndField';
 
 const styles = StyleSheet.create({
   container: {
@@ -33,10 +34,8 @@ export default IndividualSession = () => {
   // new field
   const [fieldValue, setFieldValue] = useState('');
 
-  // test code
-  const [globalWeightValue, setGlobalWeightValue] = useState('');
-  const [globalRepValue, setGlobalRepValue] = useState('');
-  
+  // toggle
+  const [partToggle, setPartToggle] = useState([false, false, false, false, false, false, false])
   
   const addSession = (part, fieldName) => {
     const newSession = {
@@ -97,6 +96,38 @@ export default IndividualSession = () => {
     },
   ])
 
+  const PartTitle = ({data__, index__}) => {
+
+    const handlePartToggle = () => {
+      let newPartToggle = [...partToggle]
+      if (newPartToggle[index__]) {
+        newPartToggle[index__] = false
+      }
+      else {
+        newPartToggle = newPartToggle.map((val, idx) => (index__ === idx) ? true : false)
+      }
+      setPartToggle(newPartToggle)
+    }
+
+    const styles = StyleSheet.create({
+      container: {
+        marginBottom: Spacing.SCALE_12,
+      },
+      textStyle: {
+        fontSize: Typography.FONT_SIZE_20,
+        color: !partToggle[index__] ? Colors.BLACK : Colors.ALERT,
+      }
+    })
+
+    return (
+      <View style={styles.container}>
+        <TouchableOpacity onPressOut={handlePartToggle}>
+          <Text key={index__} style={styles.textStyle} >-{data__.part}</Text>
+        </TouchableOpacity>
+      </View>
+    )
+  }
+
   return (
   <View style={styles.container}>
     <View style={styles.titleContainer}>
@@ -105,49 +136,64 @@ export default IndividualSession = () => {
     </View>
     <View style={styles.whiteBox}>
       <ScrollView>
-      <Text style={{fontSize: Typography.FONT_SIZE_20}}>-등</Text>
+        <View>
         {
-          sessions.map((data, index) => 
-            (data && data.part && (data.part === "등")) ? (
-              <View key={index}>
-                <View key={index} style={{margin:Spacing.SCALE_4}}>
-                  <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                    <Text key={index} style={{fontSize: Typography.FONT_SIZE_16}}>{data.field}</Text>
-                    <DeleteFieldButton
-                      dimensions={[index]}
-                      sessions={sessions}
-                      setSessions={setSessions}
-                    />
-                  </View>
-                  {
-                    data.set.map((data_ , index_)=> (
-                      <SetsInput
-                        key={index_} 
-                        index={index_}
-                        setNumber={data_.setNumber} 
-                        dbWeight={data_.weight} 
-                        dbRep={data_.rep} 
-                        dimensions={[index, index_]}
-                        sessions={sessions}
-                        setSessions={setSessions}
-                        globalWeightValue={globalWeightValue}
-                        setGlobalWeightValue={setGlobalWeightValue}
-                        globalRepValue={globalRepValue}
-                        setGlobalRepValue={setGlobalRepValue}
-                      />
-                    ))
-                  }
-                </View>
-                <AddSetButton
-                  dimensions={[index]}
-                  sessions={sessions}
-                  setSessions={setSessions}
-                />
-              </View>
-            ) : ''
-          )
+          partAndField.map((data__, index__) => (
+            <View key={index__}>
+              <PartTitle data__={data__} index__={index__} />
+              {
+                sessions.map((data, index) => 
+                  (data && data.part && data__.part === data.part && partToggle[index__]) && (
+                    <View key={index}>
+                      <View key={index}>
+                        <View key={index} style={{margin:Spacing.SCALE_4}}>
+                          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                            <Text key={index} style={{fontSize: Typography.FONT_SIZE_16}}>{data.field}</Text>
+                            <DeleteFieldButton
+                              dimensions={[index]}
+                              sessions={sessions}
+                              setSessions={setSessions}
+                            />
+                          </View>
+                          {
+                            data.set.map((data_ , index_)=> (
+                              <SetsInput
+                                key={index_} 
+                                index={index_}
+                                setNumber={data_.setNumber} 
+                                dbWeight={data_.weight} 
+                                dbRep={data_.rep} 
+                                dimensions={[index, index_]}
+                                sessions={sessions}
+                                setSessions={setSessions}
+                              />
+                            ))
+                          }
+                        </View>
+                        <AddSetButton
+                          dimensions={[index]}
+                          sessions={sessions}
+                          setSessions={setSessions}
+                        />
+                      </View>
+                    </View>
+                  )
+                )
+              }
+              {
+                (partToggle[index__]) && (
+                  <WorkoutInput
+                    fieldValue={fieldValue}
+                    setFieldValue={setFieldValue}
+                    addSession={addSession}
+                    index={index__}
+                  />
+                ) 
+              }
+            </View>
+          ))
         }
-        <WorkoutInput fieldValue={fieldValue} setFieldValue={setFieldValue} addSession={addSession} />
+        </View>
       </ScrollView>
     </View>
   </View>
