@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { StyleSheet, View, TextInput, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, TextInput, Text, TouchableOpacity, Alert } from 'react-native';
 import useInput from '../hooks/useInput';
 import { Spacing, Colors, Typography } from '../styles';
 import DeleteSetButton from './DeleteSetButton';
@@ -96,10 +96,15 @@ export default ({
 
   const WeightInput = ({weightVal, setWeightVal}) => {
     const handleWeight = (text) => {
-      setWeightVal(text)
-      const newSessions = [...sessions]
-      newSessions[dimensions[0]].set[dimensions[1]].weight = text
-      setSessions(newSessions)
+      if (text >= 0) {
+        setWeightVal(text)
+        const newSessions = [...sessions]
+        newSessions[dimensions[0]].set[dimensions[1]].weight = text
+        setSessions(newSessions)
+      }
+      else {
+        Alert.alert('올바른 숫자를 입력해주세요')
+      }
     }
 
     return (
@@ -122,10 +127,15 @@ export default ({
   const RepsInput = ({repsVal, setRepVal}) => {
     
     const handleReps = (text) => {
-      setRepVal(text)
-      const newSessions = [...sessions]
-      newSessions[dimensions[0]].set[dimensions[1]].rep = text
-      setSessions(newSessions)
+      if (text > 0) {
+        setRepVal(text)
+        const newSessions = [...sessions]
+        newSessions[dimensions[0]].set[dimensions[1]].rep = text
+        setSessions(newSessions)
+      }
+      else {
+        Alert.alert('올바른 숫자를 입력해주세요')
+      }
     }
 
     return (
