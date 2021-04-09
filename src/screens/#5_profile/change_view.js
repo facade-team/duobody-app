@@ -1,7 +1,16 @@
-import * as React from 'react';
-import { View, Text, Button, Image, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, Button, Image, StyleSheet, Dimensions } from 'react-native';
 import { Spacing, Typography, Colors } from '../../styles';
-import { ECharts } from "react-native-echarts-wrapper";
+import { Circle, G, Rect, Svg, Text as TextSVG } from 'react-native-svg';
+
+import {
+  LineChart,
+  BarChart,
+  PieChart,
+  ProgressChart,
+  ContributionGraph,
+  StackedBarChart
+} from "react-native-chart-kit"
 
 const styles = StyleSheet.create({
   mainContainer: {
@@ -37,10 +46,17 @@ const styles = StyleSheet.create({
   }
 })
 
-function Change_view({ navigation }) {
+function Change_view({ navigation, valueFormatter, ...props }) {
 
-  // ---------------------------- chart test start ----------------------------
+  // ---------------------------- 'react-native-chart-kit' test start ----------------------------------
 
+
+
+  // ---------------------------- 'react-native-chart-kit' test end ------------------------------------
+
+
+  // ---------------------------- 'react-native-echarts-wrapper' test start ----------------------------
+/*
   const option = {
     xAxis: {
       type: "category",
@@ -52,10 +68,6 @@ function Change_view({ navigation }) {
     series: [
       {
         data: [820, 932, 901, 934, 1290, 1330, 1320],
-        type: "line"
-      },
-      {
-        data: [320, 432, 401, 334, 290, 330, 520],
         type: "line"
       }
     ]
@@ -89,8 +101,120 @@ function Change_view({ navigation }) {
   const onButtonClearPressed = () => {
     this.chart.clear();
   };
+*/
+  // ---------------------------- 'react-native-echarts-wrapper' test end ------------------------------
 
-  // ---------------------------- chart test end ------------------------------
+  const data = {
+    labels: ["4/1", "4/2", "4/3", "4/4", "4/5", "4/6"],
+    datasets: [
+      {
+        data: [
+          30.5,
+          32,
+          31.6,
+          32.4,
+          33.5,
+          34
+        ]
+      }
+    ]
+  }
+
+  const renderDotContentOnGraph = (e) => {
+    const { x, y, index } = e;
+  }
+
+  const [tempstate, setTempstate] = useState(null);
+
+  const screenWidth = Dimensions.get('window').width;
+
+  const Tooltip = ({ x, y, textX, textY, stroke, pointStroke, position }) => {
+      let tipW = 136,
+          tipH = 36,
+          tipX = 5,
+          tipY = -9,
+          tipTxtX = 12,
+          tipTxtY = 6;
+      const posY = y;
+      const posX = x;
+
+      if (posX > screenWidth - tipW) {
+          tipX = -(tipX + tipW);
+          tipTxtX = tipTxtX - tipW - 6;
+      }
+
+      const boxPosX = position === 'left' ? posX - tipW - 10 : posX;
+
+      return (
+          <G>
+              <Circle
+                  cx={posX}
+                  cy={posY}
+                  r={4}
+                  stroke={pointStroke}
+                  strokeWidth={2}
+                  fill={'blue'}
+              />
+              <G x={boxPosX < 40 ? 40 : boxPosX} y={posY}>
+                  <Rect
+                      x={tipX + 1}
+                      y={tipY - 1}
+                      width={tipW - 2}
+                      height={tipH - 2}
+                      fill={'rgba(255, 255, 255, 0.9)'}
+                      rx={2}
+                      ry={2}
+                  />
+                  <Rect
+                      x={tipX}
+                      y={tipY}
+                      width={tipW}
+                      height={tipH}
+                      rx={2}
+                      ry={2}
+                      fill={'transparent'}
+                      stroke={stroke}
+                  />
+                  <TextSVG x={tipTxtX} y={tipTxtY} fontSize="10" textAnchor="start">
+                      {textX}
+                  </TextSVG>
+
+                  <TextSVG
+                      x={tipTxtX}
+                      y={tipTxtY + 14}
+                      fontSize="12"
+                      textAnchor="start">
+                      {textY}
+                  </TextSVG>
+              </G>
+          </G>
+      );
+  };
+
+  const tooltipDecorators = (state, data, valueFormatter) => () => {
+      if (state === null) {
+          return null;
+      }
+
+      const { index, value, x, y } = state;
+      const textX = data.labels[index];
+      console.log(data.labels);
+      const position = data.labels.length === index + 1 ? 'left' : 'right';
+
+      return (
+          <Tooltip
+              textX={String(textX)}
+              textY={valueFormatter(value)}
+              x={x}
+              y={y}
+              stroke={'#00ccff'}
+              pointStroke={'#00ccff'}
+              position={position}
+          />
+      );
+  };
+
+
 
     return (
       <View style={styles.mainContainer}>
@@ -111,18 +235,41 @@ function Change_view({ navigation }) {
         <View style={styles.subTitleContainer}>
           <Text style={styles.subTitle}>Graph</Text>
         </View>
-        <View style={styles.graphContainer}>``
+        <View style={styles.graphContainer}>
           <Text>This is graph</Text>
-          <Button title='Clear' onPress={onButtonClearPressed} />
-          <ECharts
-            ref={onRef}
-            option={option}
-            additionalCode={additionalCode}
-            onData={onData}
-            onLoadEnd={() => {
-              this.chart.setBackgroundColor(Colors.GRAY_LIGHT);
-            }}
-          />
+          <View>
+            <Text>Bezier Line Chart</Text>
+            <LineChart
+              data={data}
+              width={Dimensions.get("window").width*0.8} // from react-native
+              height={220}
+              yAxisLabel=""
+              yAxisSuffix="kg"
+              yAxisInterval={1} // optional, defaults to 1
+              chartConfig={{
+                backgroundColor: Colors.WHITE,
+                backgroundGradientFrom: Colors.WHITE,
+                backgroundGradientTo: Colors.WHITE,
+                decimalPlaces: 2, // optional, defaults to 2dp
+                color: (opacity = 0) => `rgba(255, 0, 0, ${opacity})`,
+                labelColor: (opacity = 0) => `rgba(0, 0, 0, ${opacity})`,
+                style: {
+                  borderRadius: 16
+                },
+                propsForDots: {
+                  r: "6",
+                  strokeWidth: "2",
+                  stroke: "#ffa726"
+                }
+              }}
+              style={{
+                marginVertical: 8,
+                borderRadius: 16
+              }}
+              decorator={tooltipDecorators(tempstate, props.data, valueFormatter)}
+              onDataPointClick={setTempstate}
+            />
+          </View>
         </View>
       </View>
     );
