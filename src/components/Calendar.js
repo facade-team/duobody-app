@@ -86,6 +86,6 @@ const CalendarView = () => {
         />
       </View>
     )
- }
+}
 
- export default CalendarView
+export default CalendarView
