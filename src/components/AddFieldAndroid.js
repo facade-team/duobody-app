@@ -1,15 +1,17 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { StyleSheet, View, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { Spacing, Colors } from '../styles';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import partAndField from '../utils/partAndField'
-
+import { Picker } from '@react-native-picker/picker';
 
 const inputStyles = StyleSheet.create({
   container: {
       marginLeft: Spacing.SCALE_4,
       marginRight: Spacing.SCALE_4,
       marginBottom: Spacing.SCALE_20,
+      flexDirection: 'row',
+      alignItems: 'center',
   },
   input: {
       borderRadius: 10,
@@ -31,31 +33,43 @@ const inputStyles = StyleSheet.create({
   }
 });
 
-export default ({fieldValue, setFieldValue, addSession, index}) => {
-
+export default ({addSession, index}) => {
+  const [selectedPart, setSelectedPart] = useState(partAndField[index].fields[0].field);
   const addNewFields = () => {
-    if (fieldValue !== '') {
-      addSession(partAndField[index].part, fieldValue)
+    if (selectedPart !== '') {
+      addSession(partAndField[index].part, selectedPart)
     }
     else {
-      Alert.alert('올바른 값을 입력하세요')
+      Alert.alert('운동을 선택한 후 추가해주세요')
     }
   }
 
   return (
     <View style={inputStyles.container}>
-        <View style={inputStyles.input}> 
-            <TextInput 
+            <Picker
+              selectedValue={selectedPart}
+              onValueChange={(itemValue, itmeIndex) => setSelectedPart(itemValue)}
+              style={inputStyles.inputText}
+            >
+              {
+                partAndField[index].fields.map((data) =>
+                  <Picker.Item value={data.field} label={data.field} />
+                )
+              }
+            </Picker>
+            <TouchableOpacity onPressOut={addNewFields}>
+                <MaterialCommunityIcons style={inputStyles.addBtn} size={30} name='plus-circle' />
+            </TouchableOpacity>
+    </View>
+  )
+}
+
+/*
+<TextInput 
                 style={inputStyles.inputText}
                 placeholder='운동을 선택하세요'
                 autoCorrect={ false }
                 value={fieldValue}
                 onChangeText={(text) => setFieldValue(text)}
             />
-            <TouchableOpacity onPressOut={addNewFields}>
-                <MaterialCommunityIcons style={inputStyles.addBtn} size={30} name='plus-circle' />
-            </TouchableOpacity>
-        </View>
-    </View>
-  )
-}
+*/

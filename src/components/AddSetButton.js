@@ -54,9 +54,9 @@ export default ({dimensions, sessions, setSessions}) => {
   return (
     <View style={styles.container}>
         <View style={styles.input}> 
-            <Text style={styles.textStyle}>세트 추가하기</Text>
-            <TouchableOpacity onPressOut={addNewSet}>
-                <MaterialCommunityIcons style={styles.addBtn} size={24} name='plus' />
+            <TouchableOpacity onPressOut={addNewSet} style={{flexDirection: 'row', alignItems: 'center'}}>
+              <Text style={styles.textStyle}>세트 추가하기</Text>
+              <MaterialCommunityIcons style={styles.addBtn} size={24} name='plus' />
             </TouchableOpacity>
         </View>
     </View>

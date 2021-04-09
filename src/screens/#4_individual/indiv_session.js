@@ -1,12 +1,12 @@
-import React, { useState } from 'react'
-import { useEffect } from 'react';
-import { StyleSheet, Text, View, ScrollView, Animated, TextInput, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState } from 'react'
+import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Platform } from 'react-native';
 import { Spacing, Typography, Colors } from '../../styles';
-import WorkoutInput from '../../components/WorkoutInput';
 import SetsInput from '../../components/SetsInput';
 import AddSetButton from '../../components/AddSetButton';
 import DeleteFieldButton from '../../components/DeleteFieldButton';
 import partAndField from '../../utils/partAndField';
+import AddFieldIOS from '../../components/AddFieldIOS';
+import AddFieldAndroid from '../../components/AddFieldAndroid';
 
 const styles = StyleSheet.create({
   container: {
@@ -31,9 +31,6 @@ const styles = StyleSheet.create({
 })
 
 export default IndividualSession = () => {
-  // new field
-  const [fieldValue, setFieldValue] = useState('');
-
   // toggle
   const [partToggle, setPartToggle] = useState([false, false, false, false, false, false, false])
   
@@ -95,6 +92,8 @@ export default IndividualSession = () => {
       ]
     },
   ])
+
+ 
 
   const PartTitle = ({data__, index__}) => {
 
@@ -181,14 +180,18 @@ export default IndividualSession = () => {
                 )
               }
               {
-                (partToggle[index__]) && (
-                  <WorkoutInput
-                    fieldValue={fieldValue}
-                    setFieldValue={setFieldValue}
+                (partToggle[index__]) && (Platform.OS === 'ios') &&
+                  <AddFieldIOS
                     addSession={addSession}
                     index={index__}
                   />
-                ) 
+              }
+              {
+                (partToggle[index__]) && (Platform.OS !== 'ios') &&
+                  <AddFieldAndroid
+                    addSession={addSession}
+                    index={index__}
+                  /> 
               }
             </View>
           ))
