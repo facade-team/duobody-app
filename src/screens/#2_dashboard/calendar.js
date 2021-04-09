@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, SafeAreaView, Text, View, FlatList } from 'react-native';
+import {StyleSheet, SafeAreaView, Text, View, FlatList, TouchableOpacity, Alert } from 'react-native';
 import Calendar from '../../components/Calendar';
 import CircleButton from '../../components/CircleButton'
 
@@ -36,7 +36,11 @@ const Dash_cal = () => {
         <SafeAreaView style={styles.wrap}>
             <Calendar/>
             <View style={styles.bottomcontainer}>
-                <View style={styles.button} ><CircleButton content={'+'} /></View>
+                <TouchableOpacity
+                onPress={() => Alert.alert("개인간의 채팅화면으로 전환 필요","넘겨야 할 prop: 해당 대화 상대의 이름을 채팅방의 상단에 띄워야 함")}
+                style={styles.button}>
+                    <CircleButton content={'+'} />
+                </TouchableOpacity>
                 <View style={styles.container}>
                     <FlatList data={DATA} renderItem={renderItem} keyExtractor={item => item.id} />
                 </View>
@@ -90,4 +94,4 @@ const styles = StyleSheet.create({
     }
 })
 
-  export default dash_cal;
+  export default Dash_cal;
