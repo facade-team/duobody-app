@@ -1,7 +1,12 @@
-import React from 'react';
-import {StyleSheet, SafeAreaView, Text, View, FlatList, TouchableOpacity, Alert } from 'react-native';
+import  * as React from 'react';
+import {useState} from 'react';
+import {StyleSheet, SafeAreaView, Button, Text, View, FlatList, TouchableOpacity } from 'react-native';
 import Calendar from '../../components/Calendar';
 import CircleButton from '../../components/CircleButton'
+import Animated from 'react-native-reanimated';
+import BottomSheet from 'reanimated-bottom-sheet';
+import {FontAwesome} from '@expo/vector-icons'
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 const DATA = [
     {
@@ -30,15 +35,118 @@ const DATA = [
 
 
 const Dash_cal = () => {
+    
+    const [start, setStart] = useState(new Date());
+    const [end, setEnd] = useState(new Date());
+
+    const startTime = (event, selectedDate) => {
+        const currentDate = selectedDate || start;
+        setStart(currentDate);
+    };
+    const endTime = (event, selectedDate) => {
+        const currentDate = selectedDate || end;
+        setEnd(currentDate);
+    };
+
     const renderItem = ({ item }) => <Item custommer={item.custommer} worktime={item.worktime}/>;
     
+    const renderContent = () => (
+        <View style={styles.bottomsheetcontainer}>
+          <View style={styles.textRow}>
+            <TouchableOpacity onPress={()=> sheetRef.current.snapTo(1)}>
+              <FontAwesome name="times" size={25} color="black"/>
+            </TouchableOpacity>
+            <FontAwesome name="check" size={25} color="black"/>
+          </View>
+          <View style={styles.textContainer}>
+            <Text style={styles.texttitle}> 일정 추가하기 </Text>
+          </View>
+          <View style={styles.textContainer}>
+            <Text style={styles.textContent}> 4월 9일 금</Text>
+          </View>
+    
+          <View style={styles.horizontalLine}/>
+    
+          <View style={{paddingBottom:40, paddingTop:10}}>
+            <View style={styles.textContainer}>
+              <Text style={styles.textSubtitle}> 회원 선택 </Text>
+            </View>
+            <View style={styles.textContainer}>
+              <TouchableOpacity onPress={()=> CustomerPicker.current.snapTo(0)}>
+                <Text style={styles.textContent}>김현재 고객님</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+    
+          <View style={styles.textContainer}>
+            <Text style={styles.textSubtitle}> 시간 선택 </Text>
+          </View>
+          <View style={styles.textContainer}>
+            <TouchableOpacity onPress={()=> TimeRef.current.snapTo(0)}>
+              <Text style={styles.textContent}>00:00 - 00:00</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      );
+    
+    const renderCustomer = () => (
+    <View style={styles.custommerPickercontainer}>
+        <View style={{paddingBottom:40, paddingTop:10}}>
+        <View style={styles.textContainer}>
+            <Text style={styles.textSubtitle}> 회원 선택 </Text>
+        </View>
+        </View>
+        <View style={styles.confirm}>
+            <Button style={styles.textContent} onPress={()=> CustomerPicker.current.snapTo(1)} title="취소"/>
+            <Button style={styles.textContent} onPress={()=> CustomerPicker.current.snapTo(1)} title="확인"/>
+        </View>
+    </View>
+    );
+
+    const renderTime = () => (
+    <View style={styles.custommerPickercontainer}>
+        <View style={{paddingBottom:40, paddingTop:10}}>
+        <View style={styles.textContainer}>
+            <Text style={styles.textSubtitle}> 시간 선택 </Text>
+        </View>
+        </View>
+        <View>
+            <DateTimePicker
+                testID="dateTimePicker"
+                value={start}
+                mode='time'
+                is24Hour={true}
+                display="default"
+                onChange={startTime}
+            />
+            <DateTimePicker
+                testID="dateTimePicker"
+                value={end}
+                mode='time'
+                is24Hour={true}
+                display="default"
+                onChange={endTime}
+            />
+        </View>
+        <View style={styles.confirm}>
+            <Button style={styles.textContent} onPress={()=> TimeRef.current.snapTo(1)} title="취소"/>
+            <Button style={styles.textContent} onPress={()=> TimeRef.current.snapTo(1)} title="확인"/>
+        </View>
+    </View>
+    );
+
+    const sheetRef = React.useRef(null);
+    const CustomerPicker = React.useRef(null);
+    const TimeRef = React.useRef(null);
+
     return (
+        <>
         <SafeAreaView style={styles.wrap}>
             <Calendar/>
             <View style={styles.bottomcontainer}>
                 <TouchableOpacity
-                onPress={() => Alert.alert("개인간의 채팅화면으로 전환 필요","넘겨야 할 prop: 해당 대화 상대의 이름을 채팅방의 상단에 띄워야 함")}
-                style={styles.button}>
+                    onPress={() => sheetRef.current.snapTo(0)}
+                    style={styles.button}>
                     <CircleButton content={'+'} />
                 </TouchableOpacity>
                 <View style={styles.container}>
@@ -46,6 +154,26 @@ const Dash_cal = () => {
                 </View>
             </View>
         </SafeAreaView>
+
+        <BottomSheet
+        ref={sheetRef}
+        snapPoints={[500, 0, 0]}
+        borderRadius={20}
+        renderContent={renderContent}
+        />
+        <BottomSheet
+            ref={CustomerPicker}
+            snapPoints={[400, 0, 0]}
+            borderRadius={20}
+            renderContent={renderCustomer}
+        />
+        <BottomSheet
+            ref={TimeRef}
+            snapPoints={[400, 0, 0]}
+            borderRadius={20}
+            renderContent={renderTime}
+        />
+        </>
     )
 }
 
@@ -91,7 +219,49 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: 'bold',
         marginBottom: 20
-    }
+    },
+    bottomsheetcontainer: {
+        backgroundColor: 'white',
+        padding: 20,
+        height: 500, 
+      },
+      custommerPickercontainer:{
+        backgroundColor: '#E3E3E3',
+        padding: 20,
+        height: 400
+      },
+      textRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between'
+      },
+      texttitle: {
+        fontWeight: 'bold',
+        fontSize: 25
+      },
+      textContent: {
+        fontSize: 16,
+        paddingLeft: 3,
+      },
+      textSubtitle: {
+        fontSize: 16,
+        paddingLeft: 3,
+        fontWeight: 'bold'
+      },
+      textContainer: {
+        //position: 'absolute',
+        paddingTop: 16
+      },
+      horizontalLine: {
+        paddingTop: 13,
+        borderBottomColor: '#E3E3E3',
+        borderBottomWidth: 1,
+      },
+      confirm: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignSelf: 'flex-end',
+        width: 150,
+      }
 })
 
   export default Dash_cal;

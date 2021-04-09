@@ -1,14 +1,12 @@
-import { NavigationContainer } from '@react-navigation/native';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import IndividualSession from './src/screens/#4_individual/indiv_session';
-
-
+import Dash_cal from './src/screens/#2_dashboard/calendar'
 
 const App = () => {
   return (
     <View style={styles.container}>
-      <IndividualSession />
+      <Dash_cal />
     </View>
   );
 }
