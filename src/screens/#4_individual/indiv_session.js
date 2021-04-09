@@ -93,8 +93,6 @@ export default IndividualSession = () => {
     },
   ])
 
- 
-
   const PartTitle = ({data__, index__}) => {
 
     const handlePartToggle = () => {
