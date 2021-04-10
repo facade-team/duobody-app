@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, Button, Image, StyleSheet, Dimensions } from 'react-native';
+import { View, Text, Button, Image, StyleSheet, Dimensions, ScrollView, SafeAreaView } from 'react-native';
 import { Spacing, Typography, Colors } from '../../styles';
 import { Circle, G, Rect, Svg, Text as TextSVG } from 'react-native-svg';
 
@@ -103,8 +103,8 @@ function Change_view({ navigation, valueFormatter, ...props }) {
 */
   // ---------------------------- 'react-native-echarts-wrapper' test end ------------------------------
 
-  const data = {
-    labels: ["4/1", "4/2", "4/3", "4/4", "4/5", "4/6"],
+  const data1 = {
+    labels: ["4/1", "4/2", "4/3", "4/4", "4/5", "4/6", "4/7", "4/8", "4/9", "4/10", "4/11", "4/12"],
     datasets: [
       {
         data: [
@@ -113,7 +113,35 @@ function Change_view({ navigation, valueFormatter, ...props }) {
           31.6,
           32.4,
           33.5,
-          34
+          34,
+          30.5,
+          32,
+          31.6,
+          32.4,
+          33.5,
+          34,
+        ]
+      }
+    ]
+  }
+
+  const data2 = {
+    labels: ["4/1", "4/2", "4/3", "4/4", "4/5", "4/6", "4/7", "4/8", "4/9", "4/10", "4/11", "4/12"],
+    datasets: [
+      {
+        data: [
+          35.5,
+          31,
+          32.6,
+          37.4,
+          43.5,
+          44,
+          40.5,
+          37,
+          37.6,
+          39.4,
+          35.5,
+          41,
         ]
       }
     ]
@@ -174,61 +202,115 @@ function Change_view({ navigation, valueFormatter, ...props }) {
 
   const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0, visible: false, value: 0 })
 
+  
     return (
       <View style={styles.mainContainer}>
-        <Text style={styles.title}>김승우 고객님 변화보기</Text>
-        <View style={styles.subTitleContainer}>
-          <Text style={styles.subTitle}>Exbody</Text>
-        </View>
-        <View style={styles.exbodyContainer}>
-          <Image
-            style={{height: 100, width: 100, borderColor: Colors.GRAY_DARK, borderWidth: 1,}}
-            source={require('../../assets/exbody_temp0.jpeg')}
-          />
-          <Image
-            style={{height: 100, width: 100, borderColor: Colors.GRAY_DARK, borderWidth: 1,}}
-            source={require('../../assets/exbody_temp1.jpeg')}
-          />
-        </View>
-        <View style={styles.subTitleContainer}>
-          <Text style={styles.subTitle}>Graph</Text>
-        </View>
-        <View style={styles.graphContainer}>
-          <Text>This is graph</Text>
-          <View>
-            <Text>Bezier Line Chart</Text>
-            <LineChart
-              data={data}
-              width={Dimensions.get("window").width} // from react-native
-              height={220}
-              yAxisLabel=""
-              yAxisSuffix="kg"
-              yAxisInterval={1} // optional, defaults to 1
-              chartConfig={{
-                backgroundColor: Colors.WHITE,
-                backgroundGradientFrom: Colors.WHITE,
-                backgroundGradientTo: Colors.WHITE,
-                decimalPlaces: 2, // optional, defaults to 2dp
-                color: (opacity = 0) => `rgba(255, 0, 0, ${opacity})`,
-                labelColor: (opacity = 0) => `rgba(0, 0, 0, ${opacity})`,
-                style: {
-                  borderRadius: 16
-                },
-                propsForDots: {
-                  r: "3",
-                  strokeWidth: "2",
-                  stroke: "#ffa726"
-                }
-              }}
-              style={{
-                marginVertical: 8,
-                borderRadius: 16
-              }}
-              decorator={tempDecorator}
-              onDataPointClick={onDataPointClickHandler}
+        <ScrollView>
+          <Text style={styles.title}>김승우 고객님 변화보기</Text>
+          <View style={styles.subTitleContainer}>
+            <Text style={styles.subTitle}>Exbody</Text>
+          </View>
+          <View style={styles.exbodyContainer}>
+            <Image
+              style={{height: 100, width: 100, borderColor: Colors.GRAY_DARK, borderWidth: 1,}}
+              source={require('../../assets/exbody_temp0.jpeg')}
+            />
+            <Image
+              style={{height: 100, width: 100, borderColor: Colors.GRAY_DARK, borderWidth: 1,}}
+              source={require('../../assets/exbody_temp1.jpeg')}
             />
           </View>
-        </View>
+          <View style={styles.subTitleContainer}>
+            <Text style={styles.subTitle}>Graph</Text>
+          </View>
+          <View style={styles.graphContainer}>
+            <Text>This is graph</Text>
+            <View>
+              <Text>Bezier Line Chart</Text>
+              <ScrollView
+                horizontal={true}
+                contentOffset={{x: 0, y: 0}}
+                showsHorizontalScrollIndicator
+                height={600}
+              >
+                <View>
+                  <LineChart
+                    data={data1}
+                    width={Dimensions.get("window").width*2} // from react-native
+                    height={160}
+                    yAxisLabel=""
+                    yAxisSuffix="kg"
+                    yAxisInterval={1} // optional, defaults to 1
+                    chartConfig={{
+                      backgroundColor: Colors.WHITE,
+                      backgroundGradientFrom: Colors.WHITE,
+                      backgroundGradientTo: Colors.WHITE,
+                      fillShadowGradient: Colors.WHITE,
+                      decimalPlaces: 1, // optional, defaults to 2dp
+                      color: (opacity = 1) => `rgba(179, 69, 230, ${opacity})`,
+                      labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                      style: {
+                        borderRadius: 4
+                      },
+                      propsForDots: {
+                        r: "4",
+                        strokeWidth: "1",
+                        stroke: `rgba(222, 150, 255, 1)`
+                      }
+                    }}
+                    style={{
+                      marginVertical: -5,
+                      borderRadius: 4
+                    }}
+                    decorator={tempDecorator}
+                    onDataPointClick={onDataPointClickHandler}
+                    withVerticalLabels={false}
+                    withHorizontalLabels={false}
+                    withVerticalLines={false}
+                    withHorizontalLines={false}
+                    withOuterLines={false}
+                  />
+                  <LineChart
+                    data={data2}
+                    width={Dimensions.get("window").width*2} // from react-native
+                    height={160}
+                    yAxisLabel=""
+                    yAxisSuffix="kg"
+                    yAxisInterval={1} // optional, defaults to 1
+                    chartConfig={{
+                      backgroundColor: Colors.WHITE,
+                      backgroundGradientFrom: Colors.WHITE,
+                      backgroundGradientTo: Colors.WHITE,
+                      fillShadowGradient: Colors.WHITE,
+                      decimalPlaces: 1, // optional, defaults to 2dp
+                      color: (opacity = 1) => `rgba(55, 33, 196, ${opacity})`,
+                      labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                      style: {
+                        borderRadius: 4
+                      },
+                      propsForDots: {
+                        r: "4",
+                        strokeWidth: "1",
+                        stroke: `rgba(87, 62, 247, 1)`
+                      }
+                    }}
+                    style={{
+                      marginVertical: -5,
+                      borderRadius: 4
+                    }}
+                    decorator={tempDecorator}
+                    onDataPointClick={onDataPointClickHandler}
+                    withVerticalLabels={false}
+                    withHorizontalLabels={false}
+                    withVerticalLines={false}
+                    withHorizontalLines={false}
+                    withOuterLines={false}
+                  />
+                </View>
+              </ScrollView>
+            </View>
+          </View>
+        </ScrollView>
       </View>
     );
   }
