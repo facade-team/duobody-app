@@ -1,14 +1,14 @@
+import { NavigationContainer } from '@react-navigation/native';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import HomeScreen from './screens/#1_auth/signUp';
-import Footer_dash from './screens/#2_dashboard/Footer_dash';
-import { NavigationContainer } from '@react-navigation/native';
+import IndividualSession from './src/screens/#4_individual/indiv_session';
+
 
 
 const App = () => {
   return (
     <View style={styles.container}>
-          <Footer_dash/>
+      <IndividualSession />
     </View>
   );
 }
