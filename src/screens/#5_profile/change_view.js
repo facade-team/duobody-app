@@ -41,7 +41,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-evenly',
   },
   graphContainer: {
-    flex: 1,
     width: '100%',
   }
 })
@@ -128,93 +127,52 @@ function Change_view({ navigation, valueFormatter, ...props }) {
 
   const screenWidth = Dimensions.get('window').width;
 
-  const Tooltip = ({ x, y, textX, textY, stroke, pointStroke, position }) => {
-      let tipW = 136,
-          tipH = 36,
-          tipX = 5,
-          tipY = -9,
-          tipTxtX = 12,
-          tipTxtY = 6;
-      const posY = y;
-      const posX = x;
+  const tempDecorator = () => {
+    return (tooltipPos.visible) ? (
+      <View>
+        <Svg>
+            <Rect
+              x={tooltipPos.x - 15} 
+              y={tooltipPos.y + 10} 
+              width="40" 
+              height="30" 
+              fill="black" 
+            />
+            <TextSVG
+              x={tooltipPos.x + 5}
+              y={tooltipPos.y + 30}
+              fill="white"
+              fontSize="16"
+              fontWeight="bold"
+              textAnchor="middle"
+            >
+              {tooltipPos.value}
+            </TextSVG>
+        </Svg>
+      </View>
+    ) : null
+  }
 
-      if (posX > screenWidth - tipW) {
-          tipX = -(tipX + tipW);
-          tipTxtX = tipTxtX - tipW - 6;
+  const onDataPointClickHandler = (data) => {
+    let isSamePoint = (tooltipPos.x === data.x && tooltipPos.y === data.y)
+    isSamePoint ? setTooltipPos((previousState) => {
+      return {
+        ...previousState,
+        value: data.value,
+        visible: !previousState.visible
       }
-
-      const boxPosX = position === 'left' ? posX - tipW - 10 : posX;
-
-      return (
-          <G>
-              <Circle
-                  cx={posX}
-                  cy={posY}
-                  r={4}
-                  stroke={pointStroke}
-                  strokeWidth={2}
-                  fill={'blue'}
-              />
-              <G x={boxPosX < 40 ? 40 : boxPosX} y={posY}>
-                  <Rect
-                      x={tipX + 1}
-                      y={tipY - 1}
-                      width={tipW - 2}
-                      height={tipH - 2}
-                      fill={'rgba(255, 255, 255, 0.9)'}
-                      rx={2}
-                      ry={2}
-                  />
-                  <Rect
-                      x={tipX}
-                      y={tipY}
-                      width={tipW}
-                      height={tipH}
-                      rx={2}
-                      ry={2}
-                      fill={'transparent'}
-                      stroke={stroke}
-                  />
-                  <TextSVG x={tipTxtX} y={tipTxtY} fontSize="10" textAnchor="start">
-                      {textX}
-                  </TextSVG>
-
-                  <TextSVG
-                      x={tipTxtX}
-                      y={tipTxtY + 14}
-                      fontSize="12"
-                      textAnchor="start">
-                      {textY}
-                  </TextSVG>
-              </G>
-          </G>
-      );
-  };
-
-  const tooltipDecorators = (state, data, valueFormatter) => () => {
-      if (state === null) {
-          return null;
+    }) :
+    setTooltipPos(
+      {
+        x : data.x,
+        value : data.value,
+        y : data.y,
+        visible : true
       }
+    )
+  }
 
-      const { index, value, x, y } = state;
-      const textX = data.labels[index];
-      console.log(data.labels);
-      const position = data.labels.length === index + 1 ? 'left' : 'right';
-
-      return (
-          <Tooltip
-              textX={String(textX)}
-              textY={valueFormatter(value)}
-              x={x}
-              y={y}
-              stroke={'#00ccff'}
-              pointStroke={'#00ccff'}
-              position={position}
-          />
-      );
-  };
-
-
+  const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0, visible: false, value: 0 })
 
     return (
       <View style={styles.mainContainer}>
@@ -241,7 +199,7 @@ function Change_view({ navigation, valueFormatter, ...props }) {
             <Text>Bezier Line Chart</Text>
             <LineChart
               data={data}
-              width={Dimensions.get("window").width*0.8} // from react-native
+              width={Dimensions.get("window").width} // from react-native
               height={220}
               yAxisLabel=""
               yAxisSuffix="kg"
@@ -257,7 +215,7 @@ function Change_view({ navigation, valueFormatter, ...props }) {
                   borderRadius: 16
                 },
                 propsForDots: {
-                  r: "6",
+                  r: "3",
                   strokeWidth: "2",
                   stroke: "#ffa726"
                 }
@@ -266,8 +224,8 @@ function Change_view({ navigation, valueFormatter, ...props }) {
                 marginVertical: 8,
                 borderRadius: 16
               }}
-              decorator={tooltipDecorators(tempstate, props.data, valueFormatter)}
-              onDataPointClick={setTempstate}
+              decorator={tempDecorator}
+              onDataPointClick={onDataPointClickHandler}
             />
           </View>
         </View>
