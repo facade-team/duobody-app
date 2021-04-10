@@ -89,16 +89,12 @@ class Dash_dash extends Component {
 const styles = StyleSheet.create({
     container:{
         flex:1,
-        marginHorizontal: 5,
+        marginHorizontal: 0,
         backgroundColor: Colors.PRIMARY,
-        padding:10
-      },
-      header: {
-        flex:1,
+        padding: 10,
       },
       main: {
         flex: 10,
-       
         alignItems: "center",
         justifyContent: "center",
       },
@@ -139,7 +135,7 @@ const styles = StyleSheet.create({
       },
       upper: {
         flex: 1,
-        width:'90%',
+        width:'95%',
         margin:4,
         padding:4,
         backgroundColor: WHITE,
@@ -150,7 +146,7 @@ const styles = StyleSheet.create({
       },
       down: {
         flex: 1,
-        width:'90%',
+        width:'95%',
         margin:4,
         padding:4,
         backgroundColor: WHITE,
@@ -177,4 +173,4 @@ const styles = StyleSheet.create({
       
 })
 
-  export default dash_dash;
+  export default Dash_dash;

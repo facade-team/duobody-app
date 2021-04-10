@@ -1,17 +1,16 @@
 import { NavigationContainer } from '@react-navigation/native';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-<<<<<<< HEAD
-import { Header } from './src/components/Header';
-=======
+import Header from './src/components/Header';
 import Dash_cal from './src/screens/#2_dashboard/calendar';
->>>>>>> 931fda4863820e138e110f7e189b97d4620f7476
+import Footer_dash from './src/screens/#2_dashboard/Footer_dash';
 import IndividualSession from './src/screens/#4_individual/indiv_session';
+import Footer_indiv from './src/screens/#4_individual/Footer_indiv';
 
 const App = () => {
   return (
     <View style={styles.container}>
-      <Header />
+      <Footer_indiv />
     </View>
   );
 }

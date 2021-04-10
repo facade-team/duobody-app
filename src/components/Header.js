@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Colors, Spacing } from '../styles';
+import { Image } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { Button, View, Text, TabBarIOS } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -27,8 +28,9 @@ const Stack = createStackNavigator();
 function TopLogo() {
     return (
         <Image
-            style={{width: 100, height: 50}}
-            source = {require('../assets/toplogo.png')}
+            style={{width: Spacing.SCALE_150,
+                    height: 50}}
+            source = {require('../assets/toplogo_white.png')}
         />
     );
 }
@@ -36,9 +38,22 @@ function TopLogo() {
 function Header() {
     return (
         <NavigationContainer>
-            <Stack.Navigator>
+            <Stack.Navigator screenOptions={{
+                headerStyle: {
+                    backgroundColor: Colors.PRIMARY,
+                    
+                }
+                
+                
+            }}>
             {/* 로고만 존재 */}
-                <Stack.Screen name = "dash_dash" component = {Dash_dash} />
+                <Stack.Screen 
+                    name = "dash_dash" 
+                    component = {Dash_dash}
+                    options={{
+                        headerTitle: props => <TopLogo {...props} />
+                    }}
+                    />
 
 
             {/* 로고, 뒤로가기 버튼, 페이지 이름 */}
