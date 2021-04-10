@@ -1,49 +1,87 @@
-import React, { Component} from 'react';
+import React, { Component, useState} from 'react';
 import {FlatList, StyleSheet, Text, Image, View, TouchableOpacity, Dimensions, TextInput } from 'react-native';
 import { Colors, Mixins, Spacing, Typography } from '../../styles';
+import {Icon, Input, Item, Button} from 'native-base';
 
 import { WHITE } from '../../styles/colors';
 
-class Search extends Component {
+export default () => {
+  const [memList, setMemList] = useState([
+    {id : 1, name: '김현재'},
+    {id : 2,name: '김승우'},
+    {id : 3,name: '최현수'},
+    {id : 4,name: '오상훈'},
+    {id : 5,name: '최이현'},
+    {id : 6,name: '아이유'},
+    {id : 7,name: '이지은'},
+    {id : 8,name: '김ㅇㅇ'},
+    {id : 9,name: '이ㅇㅇ'},
+    {id : 10,name: '박ㅇㅇ'},
+    {id : 11,name: '최ㅇㅇ'},
+    {id : 12,name: '황ㅇㅇ'},
+    {id : 13,name: '지ㅇㅇ'},
+    {id : 14,name: '주ㅇㅇ'},
+    {id : 15,name: '구ㅇㅇ'},
+    {id : 16,name: '신ㅇㅇ'},
+    {id : 17,name: '수ㅇㅇ'},
+  ])
 
-    render() {
-        return (
-        <View style={styles.container}>
-          <View style={styles.bar}>
-            <TextInput style ={styles.inputbar}
-            placeholder={'search'}
-            onChangeText={text => onChangeText(text)}></TextInput>
-            
-          </View>
+  const addMember = (name) => {
+    const newMember = {
+      id: memList.length,
+      name : name,
+    }
 
-          <View style={styles.list}>
-            <FlatList
-              data={[
-                {key: '김현재 고객님'},
-                {key: '김승우 고객님'},
-                {key: '최현수 고객님'},
-                {key: '오상훈 고객님'},
-                {key: '최이현 고객님'},
-                {key: '김ㅇㅇ 고객님'},
-                {key: '이ㅇㅇ 고객님'},
-                {key: '박ㅇㅇ 고객님'},
-                {key: '최ㅇㅇ 고객님'},
-                {key: '황ㅇㅇ 고객님'},
-                {key: '지ㅇㅇ 고객님'},
-                {key: '주ㅇㅇ 고객님'},
-                {key: '구ㅇㅇ 고객님'},
-                {key: '신ㅇㅇ 고객님'},
-                {key: '수ㅇㅇ 고객님'},
-              ]}
-              renderItem={({item}) => <Text style={styles.memlist}>{item.key}</Text>}
-            />
-          </View>
-        
+    setMemList(oldMemlist => [...oldMemlist, newMember])
+  }
+
+  const deleteMember = () => {
+
+  }
+
+  const [searchValue, setsearchValue] = useState('')
+
+  const updateSearch = (search) => {
+    setsearchValue({search});
+  }
+/*
+  const memSearch = (value) => {
+    memList.map
+  }
+  */
+  return (
+    <View style={styles.container}>
+      <View style={styles.bar}>
+        <Item rounded style={{width: Dimensions.get('screen').width * 0.85,height: Dimensions.get('screen').height * 0.06,}}>
+          <Icon active name = "search" style={{color:'black', padding:10}}></Icon>
+          <Input placeholder='Search' onChangeText={updateSearch}></Input>
+        </Item>
+          
+      </View>
+      <View style={{flexDirection: 'row', flex:8}}>
+        <View style={{alignItems: "center",flex:1}}>
+        <Button transparent>
+        <Icon name = "create-outline" style={{fontSize:30,color:'black', padding:10}}></Icon>
+        </Button>
+        </View>
+        <View style={styles.list}>
+          <FlatList
+            data={memList}
+            renderItem={({item}) => <Button style={styles.memlist}><Text style={{fontWeight: 'bold',fontSize: 20,}}>{item.name} 고객님</Text></Button>}
+          />
+        </View>
+        <View style={{alignItems: "center",flex:1}}>
+        <Button transparent >
+        <Icon name = "trash-outline" style={{fontSize:30,color:'black', padding:10}}></Icon>
+        </Button>
+        </View>
       </View>
       
     
-  );
-    }
+  </View>
+  
+
+);
 }
 
 const styles = StyleSheet.create({
@@ -59,8 +97,8 @@ const styles = StyleSheet.create({
       
       
       list: {
-          flex:9,
-        width: "90%",
+          flex:3,
+        width: "100%",
         alignItems: "center",
         justifyContent: "center",
         
@@ -68,16 +106,15 @@ const styles = StyleSheet.create({
       
       memlist: {
         flex:1,
-        width: Dimensions.get('screen').width * 0.70,
+        width: Dimensions.get('screen').width * 0.53,
         margin:3,
         backgroundColor: WHITE,
-        paddingTop:10,
-        paddingLeft:Dimensions.get('screen').width * 0.23,
+        alignItems: "center",
+        justifyContent: "center",
         borderWidth:1,
-        borderRadius: 15,
+        borderRadius: 8,
         borderColor : '#2BAE56',
-        fontWeight: 'bold',
-        fontSize: 20,
+        
         height: Dimensions.get('screen').height * 0.06,
         
       },
@@ -85,7 +122,7 @@ const styles = StyleSheet.create({
         flex:1
       },
       inputbar:{
-          width: Dimensions.get('screen').width * 0.85,
+          
           borderWidth:1,
         borderRadius: 25,
         height: Dimensions.get('screen').height * 0.05,
@@ -93,5 +130,3 @@ const styles = StyleSheet.create({
       }
       
 })
-
-export default Search;

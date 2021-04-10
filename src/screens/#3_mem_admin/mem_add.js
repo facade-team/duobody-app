@@ -24,15 +24,17 @@ export default () => {
   const [Address, setAddress] = useState('')
   const [Age, setAge] = useState('')
   const [Height, setHeight] = useState('')
+  
+  console.log(Name)
   return (
   <Container>
     
     <AddContainer>
       <UnderLinedTextInput placeholder={'이름'}  value={Name} onChangeText={setName} />
       <UnderLinedTextInput placeholder={'H.P'}  value={Hp} onChangeText={setHp} />
-      <UnderLinedTextInput placeholder={'주소'} value={Address} onChangeText={setAddress} secureTextEntry={true} />
-      <UnderLinedTextInput placeholder={'나이'} value={Age} onChangeText={setAge} secureTextEntry={true} />
-      <UnderLinedTextInput placeholder={'키'} value={Height} onChangeText={setHeight} secureTextEntry={true} />
+      <UnderLinedTextInput placeholder={'주소'} value={Address} onChangeText={setAddress}/>
+      <UnderLinedTextInput placeholder={'나이'} value={Age} onChangeText={setAge}/>
+      <UnderLinedTextInput placeholder={'키'} value={Height} onChangeText={setHeight}/>
       <GreenButton content={'완료하기'} />
     </AddContainer>
   </Container>
