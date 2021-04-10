@@ -7,6 +7,7 @@ import Animated from 'react-native-reanimated';
 import BottomSheet from 'reanimated-bottom-sheet';
 import {FontAwesome} from '@expo/vector-icons'
 import DateTimePicker from '@react-native-community/datetimepicker';
+import TraineeList from '../../components/TraineeList';
 
 const DATA = [
     {
@@ -26,16 +27,62 @@ const DATA = [
     }
   ];
 
-  const Item = ({ custommer, worktime }) => (
-    <View style={styles.content}>
-      <Text style={styles.fontCustommer}>{custommer}</Text>
-      <Text style={styles.fontWorktime}>{worktime}</Text>
-    </View>
-  );
-
+const Item = ({ custommer, worktime }) => (
+<View style={styles.content}>
+    <Text style={styles.fontCustommer}>{custommer}</Text>
+    <Text style={styles.fontWorktime}>{worktime}</Text>
+</View>
+);
 
 const Dash_cal = () => {
-    
+
+    const [result, setResult] = useState(
+        {
+            resultStart: "시작시간",
+            resultEnd: "종료시간"
+        } 
+    )
+
+    const setTimeData = (flag) => {
+        let temp = new Date()
+
+        if (flag === 1) {
+            temp = start
+        }else {
+            temp = end
+        }
+
+        const hours = (temp.getHours()<10?'0':'') + temp.getHours()
+        const minutes = (temp.getMinutes()<10?'0':'') + temp.getMinutes()
+
+
+        let res = {}
+        res = hours + ' : ' + minutes
+        console.log("res : " + res)
+        
+        console.log("before setResult : " + result.resultStart + result.resultEnd)
+        
+        setResult((state) => {
+            if (flag === 1){
+                return {
+                    resultStart: res,
+                    resultEnd: state.resultEnd
+                }
+            }
+            if( flag === 0){
+                return {
+                    resultStart: state.resultStart,
+                    resultEnd: res
+                }
+            }
+        });
+
+        console.log("after setResult : " + result.resultStart + result.resultEnd)
+
+        res = {}
+
+    }
+
     const [start, setStart] = useState(new Date());
     const [end, setEnd] = useState(new Date());
 
@@ -43,6 +90,8 @@ const Dash_cal = () => {
         const currentDate = selectedDate || start;
         setStart(currentDate);
     };
+
+
     const endTime = (event, selectedDate) => {
         const currentDate = selectedDate || end;
         setEnd(currentDate);
@@ -62,7 +111,7 @@ const Dash_cal = () => {
             <Text style={styles.texttitle}> 일정 추가하기 </Text>
           </View>
           <View style={styles.textContainer}>
-            <Text style={styles.textContent}> 4월 9일 금</Text>
+            <Text style={styles.textContent}> 4월 10일 토</Text>
           </View>
     
           <View style={styles.horizontalLine}/>
@@ -82,32 +131,46 @@ const Dash_cal = () => {
             <Text style={styles.textSubtitle}> 시간 선택 </Text>
           </View>
           <View style={styles.textContainer}>
-            <TouchableOpacity onPress={()=> TimeRef.current.snapTo(0)}>
-              <Text style={styles.textContent}>00:00 - 00:00</Text>
-            </TouchableOpacity>
+            <View style={styles.textRow}>
+                <TouchableOpacity onPress={()=> StartTimeRef.current.snapTo(0)}>
+                    <Text style={styles.textContent}>{result.resultStart}</Text>  
+                </TouchableOpacity>
+                <Text> - </Text>
+                <TouchableOpacity onPress={()=> EndTimeRef.current.snapTo(0)}>
+                <Text style={styles.textContent}>{result.resultEnd}</Text>
+                </TouchableOpacity>
+                <View/><View/><View/><View/><View/><View/><View/><View/><View/><View/>
+            </View>
           </View>
         </View>
-      );
-    
+    );
+
     const renderCustomer = () => (
     <View style={styles.custommerPickercontainer}>
         <View style={{paddingBottom:40, paddingTop:10}}>
-        <View style={styles.textContainer}>
-            <Text style={styles.textSubtitle}> 회원 선택 </Text>
+            <View style={styles.textContainer}>
+                <Text style={styles.textSubtitle}> 회원 선택 </Text>
+            </View>
         </View>
-        </View>
+
+        <TraineeList/>
+
         <View style={styles.confirm}>
             <Button style={styles.textContent} onPress={()=> CustomerPicker.current.snapTo(1)} title="취소"/>
-            <Button style={styles.textContent} onPress={()=> CustomerPicker.current.snapTo(1)} title="확인"/>
+            <Button style={styles.textContent} 
+                onPress={()=> {
+                        CustomerPicker.current.snapTo(1)
+                    }
+                } title="확인"/>
         </View>
     </View>
     );
 
-    const renderTime = () => (
+    const renderStartTime = () => (
     <View style={styles.custommerPickercontainer}>
         <View style={{paddingBottom:40, paddingTop:10}}>
         <View style={styles.textContainer}>
-            <Text style={styles.textSubtitle}> 시간 선택 </Text>
+            <Text style={styles.textSubtitle}> 시작 시간 선택 </Text>
         </View>
         </View>
         <View>
@@ -115,29 +178,55 @@ const Dash_cal = () => {
                 testID="dateTimePicker"
                 value={start}
                 mode='time'
-                is24Hour={true}
-                display="default"
+                display="spinner"
+                minuteInterval='5'
                 onChange={startTime}
-            />
-            <DateTimePicker
-                testID="dateTimePicker"
-                value={end}
-                mode='time'
-                is24Hour={true}
-                display="default"
-                onChange={endTime}
             />
         </View>
         <View style={styles.confirm}>
-            <Button style={styles.textContent} onPress={()=> TimeRef.current.snapTo(1)} title="취소"/>
-            <Button style={styles.textContent} onPress={()=> TimeRef.current.snapTo(1)} title="확인"/>
+            <Button style={styles.textContent} onPress={()=> StartTimeRef.current.snapTo(1)} title="취소"/>
+            <Button style={styles.textContent} 
+                onPress={()=> {
+                        StartTimeRef.current.snapTo(1)
+                        setTimeData(1)
+                    }
+                } title="확인"/>
         </View>
     </View>
     );
+    const renderEndTime = () => (
+        <View style={styles.custommerPickercontainer}>
+            <View style={{paddingBottom:40, paddingTop:10}}>
+            <View style={styles.textContainer}>
+                <Text style={styles.textSubtitle}> 종료 시간 선택 </Text>
+            </View>
+            </View>
+            <View>
+                <DateTimePicker
+                    testID="dateTimePicker"
+                    value={end}
+                    mode='time'
+                    display="spinner"
+                    minuteInterval='5'
+                    onChange={endTime}
+                />
+            </View>
+            <View style={styles.confirm}>
+                <Button style={styles.textContent} onPress={()=> EndTimeRef.current.snapTo(1)} title="취소"/>
+                <Button style={styles.textContent} 
+                    onPress={()=> {
+                            EndTimeRef.current.snapTo(1)
+                            setTimeData(0)
+                        }
+                    } title="확인"/>
+            </View>
+        </View>
+        );
 
     const sheetRef = React.useRef(null);
     const CustomerPicker = React.useRef(null);
-    const TimeRef = React.useRef(null);
+    const StartTimeRef = React.useRef(null);
+    const EndTimeRef = React.useRef(null);
 
     return (
         <>
@@ -168,10 +257,16 @@ const Dash_cal = () => {
             renderContent={renderCustomer}
         />
         <BottomSheet
-            ref={TimeRef}
+            ref={StartTimeRef}
             snapPoints={[400, 0, 0]}
             borderRadius={20}
-            renderContent={renderTime}
+            renderContent={renderStartTime}
+        />
+        <BottomSheet
+            ref={EndTimeRef}
+            snapPoints={[400, 0, 0]}
+            borderRadius={20}
+            renderContent={renderEndTime}
         />
         </>
     )
@@ -240,7 +335,7 @@ const styles = StyleSheet.create({
       },
       textContent: {
         fontSize: 16,
-        paddingLeft: 3,
+        paddingLeft: 7,
       },
       textSubtitle: {
         fontSize: 16,
