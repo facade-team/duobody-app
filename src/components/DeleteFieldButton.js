@@ -20,7 +20,7 @@ export default ({ dimensions, sessions, setSessions}) => {
     const newSessions = [...sessions]
     const popedSession = newSessions.splice(dimensions[0], 1)
     setSessions(newSessions)
-    console.log(newSessions)
+    //console.log(newSessions)
     //console.log(newSessions.splice(dimensions[0], 1))
   }
 

@@ -1,11 +1,12 @@
-import React, { useState } from 'react'
-import { useEffect } from 'react';
-import { StyleSheet, Text, View, ScrollView, Animated, TextInput, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState } from 'react'
+import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Platform } from 'react-native';
 import { Spacing, Typography, Colors } from '../../styles';
-import WorkoutInput from '../../components/WorkoutInput';
 import SetsInput from '../../components/SetsInput';
 import AddSetButton from '../../components/AddSetButton';
 import DeleteFieldButton from '../../components/DeleteFieldButton';
+import partAndField from '../../utils/partAndField';
+import AddFieldIOS from '../../components/AddFieldIOS';
+import AddFieldAndroid from '../../components/AddFieldAndroid';
 
 const styles = StyleSheet.create({
   container: {
@@ -30,28 +31,9 @@ const styles = StyleSheet.create({
 })
 
 export default IndividualSession = () => {
-  // new field
-  const [fieldValue, setFieldValue] = useState('');
-
-  /*
-  // new set
-  const [setValue, setSetValue] = useState([]);
-
-  const [weight, setWeight] = useState('20')
-  const [rep, setRep] = useState('10')
-
-  const addSet = (weight, rep) => {
-    const newSet = {
-      id: 1,
-      setNumber: 2,
-      weight,
-      rep,
-    }
-
-    setSets(sets => [...sets, newSet])
-  }
-*/
-
+  // toggle
+  const [partToggle, setPartToggle] = useState([false, false, false, false, false, false, false])
+  
   const addSession = (part, fieldName) => {
     const newSession = {
       id: sessions.length,
@@ -69,11 +51,6 @@ export default IndividualSession = () => {
 
     setSessions(oldSessions => [...oldSessions, newSession])
   }
-
-  const deleteSession = () => {
-
-  }
-
 
   const [sessions, setSessions] = useState([
     {
@@ -116,9 +93,37 @@ export default IndividualSession = () => {
     },
   ])
 
-  useEffect(() => {
-    //console.log(sessions)
-  })
+  const PartTitle = ({data__, index__}) => {
+
+    const handlePartToggle = () => {
+      let newPartToggle = [...partToggle]
+      if (newPartToggle[index__]) {
+        newPartToggle[index__] = false
+      }
+      else {
+        newPartToggle = newPartToggle.map((val, idx) => (index__ === idx) ? true : false)
+      }
+      setPartToggle(newPartToggle)
+    }
+
+    const styles = StyleSheet.create({
+      container: {
+        marginBottom: Spacing.SCALE_12,
+      },
+      textStyle: {
+        fontSize: Typography.FONT_SIZE_20,
+        color: !partToggle[index__] ? Colors.BLACK : Colors.ALERT,
+      }
+    })
+
+    return (
+      <View style={styles.container}>
+        <TouchableOpacity onPressOut={handlePartToggle}>
+          <Text key={index__} style={styles.textStyle} >-{data__.part}</Text>
+        </TouchableOpacity>
+      </View>
+    )
+  }
 
   return (
   <View style={styles.container}>
@@ -128,117 +133,70 @@ export default IndividualSession = () => {
     </View>
     <View style={styles.whiteBox}>
       <ScrollView>
-      <Text style={{fontSize: Typography.FONT_SIZE_20}}>-등</Text>
+        <View>
         {
-          sessions.map((data, index) => 
-            (data && data.part && (data.part === "등")) ? (
-              <View key={index}>
-                <View key={index} style={{margin:Spacing.SCALE_4}}>
-                  <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                    <Text key={index} style={{fontSize: Typography.FONT_SIZE_16}}>{data.field}</Text>
-                    <DeleteFieldButton
-                      dimensions={[index]}
-                      sessions={sessions}
-                      setSessions={setSessions}
-                    />
-                  </View>
-                  {
-                    data.set.map((data_ , index_)=> (
-                      <SetsInput
-                        key={index_} 
-                        index={index_}
-                        setNumber={data_.setNumber} 
-                        dbWeight={data_.weight} 
-                        dbRep={data_.rep} 
-                        dimensions={[index, index_]}
-                        sessions={sessions}
-                        setSessions={setSessions}
-                      />
-                    ))
-                  }
-                </View>
-                <AddSetButton
-                  dimensions={[index]}
-                  sessions={sessions}
-                  setSessions={setSessions}
-                />
-              </View>
-            ) : '' 
-          )
-        }
-        <WorkoutInput fieldValue={fieldValue} setFieldValue={setFieldValue} addSession={addSession} />
-      </ScrollView>
-    </View>
-  </View>
-)}
-
-
-/*
-
-{
-          sessions.map(data => (
-            <View>
-              <Text>{data.part}</Text>
+          partAndField.map((data__, index__) => (
+            <View key={index__}>
+              <PartTitle data__={data__} index__={index__} />
               {
-                data.fields.map(d => (
-                  <View>
-                    <Text>{d.field}</Text>
-                  </View>
-                ))
+                sessions.map((data, index) => 
+                  (data && data.part && data__.part === data.part && partToggle[index__]) && (
+                    <View key={index}>
+                      <View key={index}>
+                        <View key={index} style={{margin:Spacing.SCALE_4}}>
+                          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                            <Text key={index} style={{fontSize: Typography.FONT_SIZE_16}}>{data.field}</Text>
+                            <DeleteFieldButton
+                              dimensions={[index]}
+                              sessions={sessions}
+                              setSessions={setSessions}
+                            />
+                          </View>
+                          {
+                            data.set.map((data_ , index_)=> (
+                              <SetsInput
+                                key={index_} 
+                                index={index_}
+                                setNumber={data_.setNumber} 
+                                dbWeight={data_.weight} 
+                                dbRep={data_.rep} 
+                                dimensions={[index, index_]}
+                                sessions={sessions}
+                                setSessions={setSessions}
+                              />
+                            ))
+                          }
+                        </View>
+                        <AddSetButton
+                          dimensions={[index]}
+                          sessions={sessions}
+                          setSessions={setSessions}
+                        />
+                      </View>
+                    </View>
+                  )
+                )
+              }
+              {
+                (partToggle[index__]) && (Platform.OS === 'ios') &&
+                  <AddFieldIOS
+                    addSession={addSession}
+                    index={index__}
+                  />
+              }
+              {
+                (partToggle[index__]) && (Platform.OS !== 'ios') &&
+                  <AddFieldAndroid
+                    addSession={addSession}
+                    index={index__}
+                  /> 
               }
             </View>
           ))
         }
-
-*/
-
-/*
-
-const [sessions, setSessions] = useState([
-    {
-      id: 0,
-      part: '등',
-      fields: [
-        {
-          id: 0,
-          field: '렛풀다운',
-          sets: [
-            {
-              id: 0,
-              setNumber: 1,
-              weight: '40',
-              rep: '9'
-            },
-            {
-              id: 1,
-              setNumber: 2,
-              weight: '30',
-              rep: '8'
-            },
-          ]
-        },
-        {
-          id: 1,
-          field: '데드리프트',
-          sets: [
-            {
-              id: 0,
-              setNumber: 1,
-              weight: '80',
-              rep: '8'
-            },
-            {
-              id: 1,
-              setNumber: 2,
-              weight: '90',
-              rep: '5'
-            },
-          ]
-        },
-      ]
-    }
-  ])
-
-  */
-
-  
+        </View>
+      </ScrollView>
+    </View>
+  </View>
+  )
+}
