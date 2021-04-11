@@ -3,6 +3,7 @@ import {View} from 'react-native';
 import {Calendar} from 'react-native-calendars';
 import {LocaleConfig} from 'react-native-calendars';
 import { Colors } from '../styles';
+import { PRIMARY } from '../styles/colors';
 
 LocaleConfig.locales['fr'] = {
   monthNames: ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'],
@@ -15,16 +16,11 @@ LocaleConfig.defaultLocale = 'fr';
 
 // 날짜를 눌렀을 때 이벤트 추가해야 됨
 const currentDate = new Date().toISOString().slice(0, 10)
-//console.log(currentDate)
-
 
 const CalendarView = () => {
     let curr = console.log(String(currentDate))
-    const [markedDates, setMarkedDates] = useState(
-      {
-        '2021-04-16': {selected: true, selectedColor: Colors.PRIMARY},
-      },
-    )
+    const [markedDates, setMarkedDates] = useState({})
+  
     return (
       <View style={{ margin: 5, paddingTop: 20, flex: 1, borderWidth:0.5}}>
         <Calendar
@@ -37,22 +33,13 @@ const CalendarView = () => {
         maxDate={'2021-12-31'}
         // Handler which gets executed on day press. Default = undefined
         onDayPress={
-    
           (day) => {
-            day.selected = true
-            day.selectedColor = Colors.PRIMARY
-
             const selectedDate = day.dateString
-
-            console.log('selected : ' + selectedDate)
-            //const prevMarkedDatesState = [...markedDatesState]
+            
             let newMarked = {}
-            newMarked[selectedDate] = {selected: true, selectedColor: Colors.PRIMARY},
+            newMarked[selectedDate] = {selected: true, selectedColor: Colors.PRIMARY}
             setMarkedDates(newMarked)
-
-            //console.log('marked State: ' + markedDatesState)
-
-            //console.log('selected day', day)
+            
           }
         }
 
@@ -78,8 +65,7 @@ const CalendarView = () => {
         onPressArrowLeft={substractMonth => substractMonth()}
         // Handler which gets executed when press arrow icon right. It receive a callback can go next month
         onPressArrowRight={addMonth => addMonth()}
-        // Disable all touch events for disabled days. can be override with disableTouchEvent in markedDates
-        disableAllTouchEventsForDisabledDays={true}
+        
         /** Replace default month and year title with custom one. the function receive a date as parameter. */
         //renderHeader={(date) => {/*Return JSX*/}}
         />
