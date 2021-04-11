@@ -3,7 +3,6 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import Header from './src/components/Header';
 import Dash_cal from './src/screens/#2_dashboard/calendar';
-import Footer_dash from './src/navigation/navigation';
 import IndividualSession from './src/screens/#4_individual/indiv_session';
 import Navigation from './src/navigation/navigation';
 

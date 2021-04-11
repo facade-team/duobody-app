@@ -1,6 +1,7 @@
 import React from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Image } from 'react-native';
+
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { Colors, Spacing } from '../styles';
 import { NavigationContainer } from '@react-navigation/native';
@@ -253,7 +254,7 @@ const IndivProfileStackScreen = ({navigation}) => (
                     name = "home" 
                     size = {26}
                     backgroundColor = {Colors.PRIMARY}
-                    onPress = {() => navigation.navigate('Dashboard')}/>
+                    onPress = {() => navigation.navigate('Dash', { screen  : 'Dashboard'})}/>
             )
         }} />
     </IndivProfileStack.Navigator>
@@ -273,7 +274,7 @@ const IndivSessionStackScreen = ({navigation}) => (
                     name = "home" 
                     size = {26}
                     backgroundColor = {Colors.PRIMARY}
-                    onPress = {() => navigation.navigate('Dashboard')}/>
+                    onPress = {() => navigation.navigate('Dash', { screen  : 'Dashboard'})}/>
             )
         }} />
     </IndivSessionStack.Navigator>
@@ -293,7 +294,7 @@ const IndivMessageStackScreen = ({navigation}) => (
                     name = "home" 
                     size = {26}
                     backgroundColor = {Colors.PRIMARY}
-                    onPress = {() => navigation.navigate('Dashboard')}/>
+                    onPress = {() => navigation.navigate('Dash', { screen  : 'Dashboard'})}/>
             )
         }} />
     </IndivMessageStack.Navigator>
@@ -313,7 +314,7 @@ const IndivCalendarStackScreen = ({navigation}) => (
                     name = "home" 
                     size = {26}
                     backgroundColor = {Colors.PRIMARY}
-                    onPress = {() => navigation.navigate('Dashboard')}/>
+                    onPress = {() => navigation.navigate('Dash', { screen  : 'Dashboard'})}/>
             )
         }} />
     </IndivCalendarStack.Navigator>
@@ -333,7 +334,7 @@ const IndivEtcStackScreen = ({navigation}) => (
                     name = "home" 
                     size = {26}
                     backgroundColor = {Colors.PRIMARY}
-                    onPress = {() => navigation.navigate('Dashboard')}/>
+                    onPress = {() => navigation.navigate('Dash', { screen  : 'Dashboard'})}/>
             )
         }} />
     </IndivEtcStack.Navigator>
@@ -343,7 +344,8 @@ const Drawer = createDrawerNavigator();
 
 const Navigation = () => (
     <NavigationContainer>
-        <Drawer.Navigator>
+        <Drawer.Navigator
+        screenOptions= {{ gestureEnabled: false}}>
             <Drawer.Screen name = "Dash" component={Footer_dash} />
             <Drawer.Screen name = "Indiv" component = {Footer_indiv} />
         </Drawer.Navigator>
