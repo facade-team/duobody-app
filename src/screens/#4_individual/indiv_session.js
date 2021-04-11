@@ -9,6 +9,7 @@ import DeleteFieldButton from '../../components/DeleteFieldButton';
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: Colors.WHITE,
     flex: 1,
     justifyContent: 'center',
   },

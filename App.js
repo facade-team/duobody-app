@@ -3,14 +3,14 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import Header from './src/components/Header';
 import Dash_cal from './src/screens/#2_dashboard/calendar';
-import Footer_dash from './src/screens/#2_dashboard/Footer_dash';
+import Footer_dash from './src/navigation/navigation';
 import IndividualSession from './src/screens/#4_individual/indiv_session';
-import Footer_indiv from './src/screens/#4_individual/Footer_indiv';
+import Navigation from './src/navigation/navigation';
 
 const App = () => {
   return (
     <View style={styles.container}>
-      <Footer_indiv />
+      <Navigation/>
     </View>
   );
 }
