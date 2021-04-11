@@ -1,6 +1,6 @@
 import  * as React from 'react';
 import {useState} from 'react';
-import {StyleSheet, SafeAreaView, Button, Text, View, FlatList, TouchableOpacity } from 'react-native';
+import {StyleSheet, SafeAreaView, Text, View, FlatList, TouchableOpacity } from 'react-native';
 import Calendar from '../../components/Calendar';
 import CircleButton from '../../components/CircleButton'
 import Animated from 'react-native-reanimated';
@@ -8,6 +8,7 @@ import BottomSheet from 'reanimated-bottom-sheet';
 import {FontAwesome} from '@expo/vector-icons'
 import DateTimePicker from '@react-native-community/datetimepicker';
 import TraineeList from '../../components/TraineeList';
+
 
 const DATA = [
     {
@@ -35,6 +36,12 @@ const Item = ({ custommer, worktime }) => (
 );
 
 const Dash_cal = () => {
+    const [selectedTrainee, setSelectedTrainee] = useState('')
+    const [temp, setTemp] = useState('')
+
+    const setTrainee = () => {
+        setTemp(selectedTrainee)
+    }
 
     const [result, setResult] = useState(
         {
@@ -102,7 +109,7 @@ const Dash_cal = () => {
     const renderContent = () => (
         <View style={styles.bottomsheetcontainer}>
           <View style={styles.textRow}>
-            <TouchableOpacity onPress={()=> sheetRef.current.snapTo(1)}>
+            <TouchableOpacity onPressOut={()=> sheetRef.current.snapTo(1)}>
               <FontAwesome name="times" size={25} color="black"/>
             </TouchableOpacity>
             <FontAwesome name="check" size={25} color="black"/>
@@ -121,8 +128,8 @@ const Dash_cal = () => {
               <Text style={styles.textSubtitle}> 회원 선택 </Text>
             </View>
             <View style={styles.textContainer}>
-              <TouchableOpacity onPress={()=> CustomerPicker.current.snapTo(0)}>
-                <Text style={styles.textContent}>김현재 고객님</Text>
+              <TouchableOpacity onPressOut={()=> {CustomerPicker.current.snapTo(0)}}>
+                <Text style={styles.textContent}>{temp === '' ? '회원을 선택하세요' : `${temp} 회원님`}</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -132,11 +139,11 @@ const Dash_cal = () => {
           </View>
           <View style={styles.textContainer}>
             <View style={styles.textRow}>
-                <TouchableOpacity onPress={()=> StartTimeRef.current.snapTo(0)}>
+                <TouchableOpacity onPressOut={()=> StartTimeRef.current.snapTo(0)}>
                     <Text style={styles.textContent}>{result.resultStart}</Text>  
                 </TouchableOpacity>
                 <Text> - </Text>
-                <TouchableOpacity onPress={()=> EndTimeRef.current.snapTo(0)}>
+                <TouchableOpacity onPressOut={()=> EndTimeRef.current.snapTo(0)}>
                 <Text style={styles.textContent}>{result.resultEnd}</Text>
                 </TouchableOpacity>
                 <View/><View/><View/><View/><View/><View/><View/><View/><View/><View/>
@@ -153,15 +160,20 @@ const Dash_cal = () => {
             </View>
         </View>
 
-        <TraineeList/>
+        <TraineeList
+            setSelectedTrainee={setSelectedTrainee}
+        />
 
         <View style={styles.confirm}>
-            <Button style={styles.textContent} onPress={()=> CustomerPicker.current.snapTo(1)} title="취소"/>
-            <Button style={styles.textContent} 
-                onPress={()=> {
+            <TouchableOpacity onPressOut={()=> {CustomerPicker.current.snapTo(1)}}>
+                <Text style={styles.textConfirm} >취소</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPressOut={()=> {
                         CustomerPicker.current.snapTo(1)
-                    }
-                } title="확인"/>
+                        setTrainee()
+                    }}>
+                <Text style={styles.textConfirm} >확인</Text>
+            </TouchableOpacity>
         </View>
     </View>
     );
@@ -179,18 +191,20 @@ const Dash_cal = () => {
                 value={start}
                 mode='time'
                 display="spinner"
-                minuteInterval='5'
+                minuteInterval={5}
                 onChange={startTime}
             />
         </View>
         <View style={styles.confirm}>
-            <Button style={styles.textContent} onPress={()=> StartTimeRef.current.snapTo(1)} title="취소"/>
-            <Button style={styles.textContent} 
-                onPress={()=> {
+            <TouchableOpacity onPressOut={()=> {StartTimeRef.current.snapTo(1)}}>
+                <Text style={styles.textConfirm} >취소</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPressOut={()=> {
                         StartTimeRef.current.snapTo(1)
                         setTimeData(1)
-                    }
-                } title="확인"/>
+                    }}>
+                <Text style={styles.textConfirm} >확인</Text>
+            </TouchableOpacity>
         </View>
     </View>
     );
@@ -207,19 +221,24 @@ const Dash_cal = () => {
                     value={end}
                     mode='time'
                     display="spinner"
-                    minuteInterval='5'
+                    minuteInterval={5}
                     onChange={endTime}
                 />
             </View>
+
             <View style={styles.confirm}>
-                <Button style={styles.textContent} onPress={()=> EndTimeRef.current.snapTo(1)} title="취소"/>
-                <Button style={styles.textContent} 
-                    onPress={()=> {
+                <TouchableOpacity onPressOut={()=> {EndTimeRef.current.snapTo(1)}}>
+                    <Text style={styles.textConfirm} >취소</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPressOut={()=> {
                             EndTimeRef.current.snapTo(1)
                             setTimeData(0)
-                        }
-                    } title="확인"/>
+                        }}>
+                    <Text style={styles.textConfirm} >확인</Text>
+                </TouchableOpacity>
             </View>
+
+            
         </View>
         );
 
@@ -234,7 +253,7 @@ const Dash_cal = () => {
             <Calendar/>
             <View style={styles.bottomcontainer}>
                 <TouchableOpacity
-                    onPress={() => sheetRef.current.snapTo(0)}
+                    onPressOut={() => sheetRef.current.snapTo(0)}
                     style={styles.button}>
                     <CircleButton content={'+'} />
                 </TouchableOpacity>
@@ -245,28 +264,32 @@ const Dash_cal = () => {
         </SafeAreaView>
 
         <BottomSheet
-        ref={sheetRef}
-        snapPoints={[500, 0, 0]}
-        borderRadius={20}
-        renderContent={renderContent}
+            ref={sheetRef}
+            snapPoints={[500, 0, 0]}
+            borderRadius={20}
+            renderContent={renderContent}
+            initialSnap={1}
         />
         <BottomSheet
             ref={CustomerPicker}
             snapPoints={[400, 0, 0]}
             borderRadius={20}
             renderContent={renderCustomer}
+            initialSnap={1}
         />
         <BottomSheet
             ref={StartTimeRef}
             snapPoints={[400, 0, 0]}
             borderRadius={20}
             renderContent={renderStartTime}
+            initialSnap={1}
         />
         <BottomSheet
             ref={EndTimeRef}
             snapPoints={[400, 0, 0]}
             borderRadius={20}
             renderContent={renderEndTime}
+            initialSnap={1}
         />
         </>
     )
@@ -356,6 +379,13 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignSelf: 'flex-end',
         width: 150,
+        paddingTop: 10,
+        paddingBottom: 20,
+        paddingRight: 10
+      },
+      textConfirm: {
+          fontSize: 18,
+          color: '#177EFB'
       }
 })
 
