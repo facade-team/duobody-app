@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, StyleSheet, Dimensions, ScrollView, SafeAreaView, TouchableOpacity} from 'react-native';
+import { View, Text, Image, StyleSheet, Dimensions, ScrollView, SafeAreaView, TouchableOpacity, Button} from 'react-native';
 import { Spacing, Typography, Colors } from '../../styles';
 import InbodyChart from '../../components/InbodyChart';
 import getDateString from '../../utils/getDateString';
+
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 const styles = StyleSheet.create({
   mainContainer: {
@@ -173,7 +175,8 @@ function Change_view({ navigation, valueFormatter, ...props }) {
     const date = getDateString(apiData[0].date)
   })
 
-  const [weightGraph, setWeightGraph] = useState({
+  const [weightGraph, setWeightGraph] = useState(
+    {
       labels: ["4/1", "4/2", "4/3", "4/4", "4/5", "4/6", "4/7", "4/8", "4/9", "4/10", "4/11", "4/12"],
       datasets: [
         {
@@ -345,6 +348,29 @@ function Change_view({ navigation, valueFormatter, ...props }) {
     //console.log('Selected sm')
     //console.log(selectedSkeletalMuscle)
   })
+
+  const [date, setDate] = useState(new Date(1598051730000));
+  const [mode, setMode] = useState('date');
+  const [show, setShow] = useState(false);
+
+  const onChange = (event, selectedDate) => {
+    const currentDate = selectedDate || date;
+    setShow(Platform.OS === 'ios');
+    setDate(currentDate);
+  };
+
+  const showMode = (currentMode) => {
+    setShow(true);
+    setMode(currentMode);
+  };
+
+  const showDatepicker = () => {
+    showMode('date');
+  };
+
+  const showTimepicker = () => {
+    showMode('time');
+  };
   
   return (
     <SafeAreaView style={styles.mainContainer}>
@@ -367,9 +393,31 @@ function Change_view({ navigation, valueFormatter, ...props }) {
         </View>
         <View style={styles.subTitleContainer}>
           <Text style={styles.subTitle}>Graph</Text>
+          {/*
           <TouchableOpacity onPressOut={onDatePickHandler}>
             <Text>Click Me</Text>
           </TouchableOpacity>
+          */}
+          <View>
+            <DateTimePicker
+              style={{width: Spacing.SCALE_100,}}
+              testID="dateTimePicker"
+              value={date}
+              mode={'date'}
+              is24Hour={true}
+              display="default"
+              
+            />
+            <DateTimePicker
+              style={{width: Spacing.SCALE_100,}}
+              testID="dateTimePicker"
+              value={date}
+              mode={'date'}
+              is24Hour={true}
+              display="default"
+              
+            />
+          </View>
         </View>
         <View style={styles.graphContainer}>
           <View>
@@ -379,7 +427,7 @@ function Change_view({ navigation, valueFormatter, ...props }) {
               showsHorizontalScrollIndicator={false}
             >
               <View>
-                <InbodyChart data={weightGraph} idx={0} />
+                {(weightGraph === '') ? null : <InbodyChart data={weightGraph} idx={0} />}
                 <InbodyChart data={BMIGraph} idx={1} />
                 <InbodyChart data={fatGraph} idx={2} />
                 <InbodyChart data={skeletalMuscleGraph} idx={3} />
