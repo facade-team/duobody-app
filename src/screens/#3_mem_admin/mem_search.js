@@ -2,11 +2,7 @@ import React, { Component} from 'react';
 import {FlatList, StyleSheet, Text, Image, View, TouchableOpacity, Dimensions, TextInput } from 'react-native';
 import { Colors, Mixins, Spacing, Typography } from '../../styles';
 
-import { WHITE } from '../../styles/colors';
-
-class Search extends Component {
-
-    render() {
+const mem_search= () => {
         return (
         <View style={styles.container}>
           <View style={styles.bar}>
@@ -43,15 +39,16 @@ class Search extends Component {
       
     
   );
-    }
 }
+
+export default mem_search;
+
 
 const styles = StyleSheet.create({
     container:{
         flex:1,
         marginHorizontal: 5,
         backgroundColor: 'white',
-        paddingTop:100,
         padding:10,
         alignItems: "center",
         justifyContent: "center",
@@ -70,7 +67,7 @@ const styles = StyleSheet.create({
         flex:1,
         width: Dimensions.get('screen').width * 0.70,
         margin:3,
-        backgroundColor: WHITE,
+        backgroundColor: Colors.WHITE,
         paddingTop:10,
         paddingLeft:Dimensions.get('screen').width * 0.23,
         borderWidth:1,
@@ -93,5 +90,3 @@ const styles = StyleSheet.create({
       }
       
 })
-
-export default Search;

@@ -3,7 +3,6 @@ import {View} from 'react-native';
 import {Calendar} from 'react-native-calendars';
 import {LocaleConfig} from 'react-native-calendars';
 import { Colors } from '../styles';
-import { PRIMARY } from '../styles/colors';
 
 LocaleConfig.locales['fr'] = {
   monthNames: ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'],
@@ -22,7 +21,8 @@ const CalendarView = () => {
     const [markedDates, setMarkedDates] = useState({})
   
     return (
-      <View style={{ margin: 5, paddingTop: 20, flex: 1, borderWidth:0.5}}>
+      
+      <View style={{ margin: 5, paddingTop: 0, flex: 1, borderWidth:1}}>
         <Calendar
         //선택날짜 마킹
         markedDates={markedDates}

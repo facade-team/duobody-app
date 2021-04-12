@@ -8,6 +8,7 @@ import BottomSheet from 'reanimated-bottom-sheet';
 import {FontAwesome} from '@expo/vector-icons'
 import DateTimePicker from '@react-native-community/datetimepicker';
 import TraineeList from '../../components/TraineeList';
+import { Colors } from '../../styles';
 
 
 const DATA = [
@@ -297,7 +298,8 @@ const Dash_cal = () => {
 
 const styles = StyleSheet.create({
     wrap: {
-        flex: 1
+        flex: 1,
+        backgroundColor: Colors.WHITE,
     },
     bottomcontainer: {
         flex: 1.3,

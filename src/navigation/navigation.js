@@ -13,11 +13,14 @@ import Dash_Cal from '../screens/#2_dashboard/calendar';
 import Messenger from '../screens/#2_dashboard/messenger';
 import mem_add from '../screens/#3_mem_admin/mem_add';
 import mem_edit from '../screens/#3_mem_admin/mem_edit';
+import mem_search from '../screens/#3_mem_admin/mem_search';
 import indiv_profile from '../screens/#4_individual/indiv_profile';
 import indiv_session from '../screens/#4_individual/indiv_session';
 import indiv_calendar from '../screens/#4_individual/indiv_calendar';
 import ChatScreen from '../screens/#4_individual/indiv_msg';
 import indiv_etc from '../screens/#4_individual/indiv_etc';
+import change_add from '../screens/#5_profile/change_add';
+import change_view from '../screens/#5_profile/change_view';
 
 
 function TopLogo() {
@@ -153,11 +156,14 @@ const DashCalStack = createStackNavigator();
 const DashMsgStack = createStackNavigator();
 const MemAddStack = createStackNavigator();
 const MemEditStack = createStackNavigator();
+const MemSearchStack = createStackNavigator();
 const IndivProfileStack = createStackNavigator();
 const IndivSessionStack = createStackNavigator();
 const IndivCalendarStack = createStackNavigator();
 const IndivMessageStack = createStackNavigator();
 const IndivEtcStack = createStackNavigator();
+const ChangeAddStack = createStackNavigator();
+const ChangeViewStack = createStackNavigator();
 
 const DashStackScreen = ({navigation}) => (
     <DashStack.Navigator screenOptions={{
@@ -226,16 +232,36 @@ const MemEditStackScreen = ({navigation}) => (
     }}>
         <MemEditStack.Screen
         name = "Mem_Edit" component = {mem_edit} options = {{
-            title: 'Overview',
+            headerTitle: props => <TopLogo {...props} />,
             headerLeft: () => (
                 <Icon.Button 
-                    name = "ios-menu" 
+                    name = "arrow-back" 
                     size = {26}
                     backgroundColor = {Colors.PRIMARY}
                     onPress = {() => navigation.goBack()}/>
             )
             }} />
     </MemEditStack.Navigator>
+)
+
+const MemSearchStackScreen = ({navigation}) => (
+    <MemSearchStack.Navigator screenOptions={{
+        headerStyle: {
+            backgroundColor: Colors.PRIMARY,
+        },
+    }}>
+        <MemSearchStack.Screen
+        name = "Mem_Search" component = {mem_search} options = {{
+            headerTitle: props => <TopLogo {...props} />,
+            headerLeft: () => (
+                <Icon.Button 
+                    name = "arrow-back" 
+                    size = {26}
+                    backgroundColor = {Colors.PRIMARY}
+                    onPress = {() => navigation.goBack()}/>
+            )
+            }} />
+    </MemSearchStack.Navigator>
 )
 
 const IndivProfileStackScreen = ({navigation}) => (
@@ -338,6 +364,46 @@ const IndivEtcStackScreen = ({navigation}) => (
     </IndivEtcStack.Navigator>
 )
 
+const ChangeAddStackScreen = ({navigation}) => (
+    <ChangeAddStack.Navigator screenOptions={{
+        headerStyle: {
+            backgroundColor: Colors.PRIMARY,
+        },
+    }}>
+        <ChangeAddStack.Screen
+        name = 'change_add' component = {change_add} options={{
+            headerTitle: props => <TopLogo {...props} />,
+            headerLeft: () => (
+                <Icon.Button 
+                    name = "arrow-back" 
+                    size = {26}
+                    backgroundColor = {Colors.PRIMARY}
+                    onPress = {() => navigation.goBack()}/>
+            )
+        }} />
+    </ChangeAddStack.Navigator>
+)
+
+const ChangeViewStackScreen = ({navigation}) => (
+    <ChangeViewStack.Navigator screenOptions={{
+        headerStyle: {
+            backgroundColor: Colors.PRIMARY,
+        },
+    }}>
+        <ChangeViewStack.Screen
+        name = 'change_view' component = {change_view} options={{
+            headerTitle: props => <TopLogo {...props} />,
+            headerLeft: () => (
+                <Icon.Button 
+                    name = "arrow-back" 
+                    size = {26}
+                    backgroundColor = {Colors.PRIMARY}
+                    onPress = {() => navigation.goBack()}/>
+            )
+        }} />
+    </ChangeViewStack.Navigator>
+)
+
 const Drawer = createDrawerNavigator();
 
 const Navigation = () => (
@@ -347,6 +413,10 @@ const Navigation = () => (
             <Drawer.Screen name = "Dash" component={Footer_dash} />
             <Drawer.Screen name = "Indiv" component = {Footer_indiv} />
             <Drawer.Screen name = "Mem_Add" component = {MemAddStackScreen} />
+            <Drawer.Screen name = "Mem_Edit" component = {MemEditStackScreen} />
+            <Drawer.Screen name = "Mem_Search" component = {MemSearchStackScreen} />
+            <Drawer.Screen name = "Change_Add" component = {ChangeAddStackScreen} />
+            <Drawer.Screen name = "Change_View" component = {ChangeViewStackScreen} />
         </Drawer.Navigator>
     </NavigationContainer>
 )

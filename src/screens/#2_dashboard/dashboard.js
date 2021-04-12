@@ -1,27 +1,32 @@
 import React, { Component} from 'react';
-import {FlatList, StyleSheet, Text, Image, View, TouchableOpacity, Dimensions } from 'react-native';
+import { ScrollView, FlatList, StyleSheet, Text, Image, View, TouchableOpacity, Dimensions } from 'react-native';
 import { Colors, Mixins, Spacing, Typography } from '../../styles';
 import GrayTextButton from '../../components/GrayTextButton';
 import { WHITE } from '../../styles/colors';
-import { CenterFocusStrong } from '@material-ui/icons';
-import Icon from 'react-native-ionicons'
-import { SCALE_18 } from '../../styles/spacing';
+import Icon from 'react-native-vector-icons/Ionicons';
+import Navigation from '../../navigation/navigation';
+import { SafeAreaView } from 'react-navigation';
+import { color } from 'react-native-reanimated';
+import { SCALE_4 } from '../../styles/spacing';
 
-class Dash_dash extends Component {
-    render() {
+const Dash_dash = ({navigation}) => {
         return (
             <View style={styles.container}>
       <View style={styles.header}></View>
       <View style={styles.main}>
+        
+        
         <View style={styles.upper}>
           <View style={{flexDirection: "row", width: '90%', justifyContent: 'space-between'}}>
             <Text style={styles.listupleft}>3월 20일 (토)</Text>
             <Text style={styles.listright}>TODAY</Text>
-            
           </View>
+
+          
           <View style={styles.time}>
-            <View style={{}}>
+            <View>
             <FlatList
+              scrollEnabled={false}
               data={[
                 {key: '09'},
                 {key: '10'},
@@ -29,14 +34,13 @@ class Dash_dash extends Component {
                 {key: '12'},
                 {key: '13'},
                 {key: '14'},
-                
-                
               ]}
               renderItem={({item}) => <Text style={styles.timelist}>{item.key}</Text>}
             />
             </View>
             <View style={{}}>
             <FlatList
+              scrollEnabled={false}
               data={[
 
                 {key: '15'},
@@ -53,37 +57,52 @@ class Dash_dash extends Component {
           
           </View>
           
-          
         </View>
+           
         
         <View style={styles.down}>
-          <View style={{flex:1, flexDirection: 'row'}}>
+          <View style={{flexDirection: 'row', width: '95%', justifyContent: 'space-between', marginTop: Spacing.SCALE_4,marginBottom: Spacing.SCALE_4}}>
             <View style={{alignSelf:'flex-start'}}>
               <Text style={styles.listleft}>고객명단</Text>
             </View>
-            <View style={{alignItems:'flex-end'}}>
-              
+            <View style={{flexDirection: 'row', alignSelf:'flex-end', width: '18%', marginRight: 5, justifyContent: 'space-between'}}>
+              <Icon
+                name = "search" 
+                color = {Colors.BLACK} 
+                size = {Spacing.SCALE_20}
+                onPress = {() => navigation.navigate('Mem_Search')}
+              />
+              <Icon 
+                name = "add-circle" 
+                color = {Colors.Black} 
+                size = {Spacing.SCALE_24}
+                onPress = {() => navigation.navigate('Mem_Add')}
+                
+                />
             </View>
           </View>
 
           <View style={styles.list}>
-            <FlatList
-              data={[
-                {key: '김현재 고객님'},
-                {key: '김승우 고객님'},
-                {key: '최현수 고객님'},
-                {key: '오상훈 고객님'},
-                {key: '최이현 고객님'},
-              ]}
-              renderItem={({item}) => <Text style={styles.memlist}>{item.key}</Text>}
-            />
+            <TouchableOpacity 
+              onPress={() => navigation.navigate('Indiv', { screen: 'indiv_profile'})}>
+              <FlatList
+                data={[
+                  {key: '김현재 고객님'},
+                  {key: '김승우 고객님'},
+                  {key: '최현수 고객님'},
+                  {key: '오상훈 고객님'},
+                  {key: '최이현 고객님'},
+                  {key: '김문기 고객님'},
+                ]}
+                renderItem={({item}) => <Text style={styles.memlist}>{item.key}</Text>}
+              />
+             </TouchableOpacity>
           </View>
         
       </View>
       </View>
     </View>
   );
-    }
 }
 
 const styles = StyleSheet.create({
@@ -101,7 +120,7 @@ const styles = StyleSheet.create({
       listupleft: {
         margin:5,
         fontWeight: '900',
-        fontSize: SCALE_18,
+        fontSize: Spacing.SCALE_18,
         color: Colors.GRAY,
       },
       listleft: {
@@ -115,6 +134,7 @@ const styles = StyleSheet.create({
         fontSize: Spacing.SCALE_18,
       },
       list: {
+        flex:1,
         width: "90%",
         alignItems: "center",
         justifyContent: "center",
@@ -149,7 +169,7 @@ const styles = StyleSheet.create({
         width:'98%',
         margin:4,
         padding:4,
-        backgroundColor: WHITE,
+        backgroundColor: Colors.WHITE,
         alignItems: "center",
         justifyContent: "center",
         borderRadius: 8,
@@ -160,7 +180,8 @@ const styles = StyleSheet.create({
         width:'98%',
         margin:4,
         padding:4,
-        backgroundColor: WHITE,
+        marginBottom: 0,
+        backgroundColor: Colors.WHITE,
         alignItems: "center",
         justifyContent: "center",
         borderRadius: 8,
@@ -170,18 +191,82 @@ const styles = StyleSheet.create({
         flex:1,
         width: Dimensions.get('screen').width * 0.80,
         margin:3,
-        backgroundColor: WHITE,
+        backgroundColor: Colors.WHITE,
         paddingTop:10,
         paddingLeft:120,
         borderWidth:1,
         borderRadius: 8,
-        borderColor : '#2BAE56',
+        borderColor : Colors.PRIMARY,
         fontWeight: 'bold',
         fontSize: 20,
         height: Dimensions.get('screen').height * 0.06,
-        
       }
       
 })
 
   export default Dash_dash;
+
+
+  const DATA = [
+    {
+        key: '09',
+        id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
+        title: '김ㅇㅇ 회원님',
+    },
+    {
+        key: '10',
+        id: [],
+        title: [],
+    },
+    {
+        key: '11',
+        id: [],
+        title: [],
+    },
+    {
+        key: '12',
+        id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
+        title: '이ㅇㅇ 회원님',
+    },
+    {
+        key: '13',
+        id: [],
+        title: [],
+    },
+    {
+        key: '14',
+        id: [],
+        title: [],
+    },
+    {
+        key: '15',
+        id: [],
+        title: [],
+    },
+    {
+        key: '16',
+        id: '58694a0f-3da1-471f-bd96-145571e29d72',
+        title: '최ㅇㅇ 회원님',
+    },
+    {
+        key: '17',
+        id: [],
+        title: [],
+    },
+    {
+        key: '18',
+        id: [],
+        title: [],
+    },
+    {
+        key: '19',
+        id: [],
+        title: [],
+    },
+    {
+        key: '20',
+        id: [],
+        title: [],
+    },
+
+]

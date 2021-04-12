@@ -50,11 +50,12 @@ export default ({navigation}) => {
       <NameAndEditIcon>
         <Name>김승우 회원님</Name>
         <Icon name='edit' size={30} color='#4F8EF6'
-              onPress={() => navigation.navigate('Mem_Add')} />
+              onPress={() => navigation.navigate('Change_View')} />
       </NameAndEditIcon>
     </ProfileContainer>
     <InbodyContainer>
-      <Text>hello</Text>
+    <Icon name='plus' size={30} color={Colors.PRIMARY}
+              onPress={() => navigation.navigate('Change_Add')} />
     </InbodyContainer>
   </Container>
 )}
