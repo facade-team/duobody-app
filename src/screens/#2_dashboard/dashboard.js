@@ -83,8 +83,7 @@ const Dash_dash = ({navigation}) => {
           </View>
 
           <View style={styles.list}>
-            <TouchableOpacity 
-              onPress={() => navigation.navigate('Indiv', { screen: 'indiv_profile'})}>
+            
               <FlatList
                 data={[
                   {key: '김현재 고객님'},
@@ -96,7 +95,7 @@ const Dash_dash = ({navigation}) => {
                 ]}
                 renderItem={({item}) => <Text style={styles.memlist}>{item.key}</Text>}
               />
-             </TouchableOpacity>
+
           </View>
         
       </View>
