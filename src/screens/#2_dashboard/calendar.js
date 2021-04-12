@@ -10,23 +10,23 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import TraineeList from '../../components/TraineeList';
 
 
-const DATA = [
-    {
-        _id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-        name: '김oo 고객님',
-        worktime: '10:00 - 11:00'
-    },
-    {
-        _id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-        name: '이oo 고객님',
-        worktime: '13:00 - 14:00'
-    },
-    {
-        _id: '58694a0f-3da1-471f-bd96-145571e29d72',
-        name: '정oo 고객님',
-        worktime: '15:00 - 16:00'
-    }
-];
+// const DATA = [
+//     {
+//         _id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
+//         name: '김oo 고객님',
+//         worktime: '10:00 - 11:00'
+//     },
+//     {
+//         _id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
+//         name: '이oo 고객님',
+//         worktime: '13:00 - 14:00'
+//     },
+//     {
+//         _id: '58694a0f-3da1-471f-bd96-145571e29d72',
+//         name: '정oo 고객님',
+//         worktime: '15:00 - 16:00'
+//     }
+// ];
 
 const Item = ({ name, worktime }) => (
     <View style={styles.content}>
@@ -45,6 +45,24 @@ const Dash_cal = () => {
         date: today.getDate(),
         day: today.getDay()
     })
+
+    const [DATA,getDATA] = useState([
+        {
+            _id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
+            name: '김oo 고객님',
+            worktime: '10:00 - 11:00'
+        },
+        {
+            _id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
+            name: '이oo 고객님',
+            worktime: '13:00 - 14:00'
+        },
+        {
+            _id: '58694a0f-3da1-471f-bd96-145571e29d72',
+            name: '정oo 고객님',
+            worktime: '15:00 - 16:00'
+        }
+    ])
 
     const [selectedTrainee, setSelectedTrainee] = useState('')
     const [temp, setTemp] = useState('')
@@ -278,7 +296,11 @@ const Dash_cal = () => {
                         <CircleButton content={'+'} />
                     </TouchableOpacity>
                     <View style={styles.container}>
-                        <FlatList data={DATA} renderItem={renderItem} keyExtractor={item => item._id} />
+                        {selectedDate.date !== today.getDate() ? 
+                        <View>
+                            <Text style={{color:'#AAAAAA'}}>이날의 일정이 없습니다</Text>
+                        </View>
+                        :<FlatList data={DATA} renderItem={renderItem} keyExtractor={item => item._id} />}
                     </View>
                 </View>
             </SafeAreaView>
