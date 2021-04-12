@@ -10,6 +10,7 @@ import AddFieldAndroid from '../../components/AddFieldAndroid';
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: Colors.WHITE,
     flex: 1,
     justifyContent: 'center',
   },

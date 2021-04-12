@@ -19,9 +19,9 @@ const styles = StyleSheet.create({
 
 const CircleButton = ({content}) => {
   return(
-    <TouchableOpacity style={styles.roundButton}>
+    <View style={styles.roundButton}>
       <Text style={styles.text}>{content}</Text>
-    </TouchableOpacity>
+    </View>
   )
 }
 

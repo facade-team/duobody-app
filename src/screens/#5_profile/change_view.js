@@ -1,35 +1,32 @@
-import React, { useState } from 'react';
-import { View, Text, Button, Image, StyleSheet, Dimensions, ScrollView, SafeAreaView } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, Image, StyleSheet, Dimensions, ScrollView, SafeAreaView, TouchableOpacity, Button} from 'react-native';
 import { Spacing, Typography, Colors } from '../../styles';
-import { Circle, G, Rect, Svg, Text as TextSVG } from 'react-native-svg';
+import InbodyChart from '../../components/InbodyChart';
+import getDateString from '../../utils/getDateString';
 
-import {
-  LineChart,
-  BarChart,
-  PieChart,
-  ProgressChart,
-  ContributionGraph,
-  StackedBarChart
-} from "react-native-chart-kit"
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    height: Dimensions.get('window').height
   },
   title: {
     fontSize: Typography.FONT_SIZE_24,
     fontWeight: Typography.FONT_WEIGHT_BOLD,
+    alignSelf: 'center',
   },
   subTitleContainer: {
     padding: Spacing.SCALE_16,
     paddingTop: Spacing.SCALE_20,
-    alignSelf: 'flex-start',
+    flexDirection: 'row',
+    justifyContent: 'space-between'
   },
   subTitle: {
     flexDirection: 'row',
-    fontSize: Typography.LINE_HEIGHT_20,
+    fontSize: Typography.FONT_SIZE_20,
     alignSelf: 'flex-start',
     fontWeight: Typography.FONT_WEIGHT_BOLD,
   },
@@ -47,85 +44,229 @@ const styles = StyleSheet.create({
 
 function Change_view({ navigation, valueFormatter, ...props }) {
 
-  // ---------------------------- 'react-native-chart-kit' test start ----------------------------------
-
-
-
-  // ---------------------------- 'react-native-chart-kit' test end ------------------------------------
-
-
-  // ---------------------------- 'react-native-echarts-wrapper' test start ----------------------------
-/*
-  const option = {
-    xAxis: {
-      type: "category",
-      data: ["4/1", "4/2", "4/3", "4/4", "4/5", "4/6", "4/7"]
+  const [apiData, setApiData] = useState([
+    {
+      _id: "606d62456c64917180220613",
+      trainerId: "606d58daf19b2e4064b8f900",
+      traineeId: "606d5c9af19b2e4064b8f901",
+      weight: 70 + Number((Math.random()*6).toFixed(1)),
+      bmi: 18 + Number((Math.random()*6).toFixed(1)),
+      fat: 10+ Number((Math.random()*6).toFixed(1)),
+      skeletalMuscle: 33+ Number((Math.random()*6).toFixed(1)),
+      date: "2021-04-07T07:39:43.638Z",
+      __v: 0,
     },
-    yAxis: {
-      type: "value"
+    {
+      _id: "606d62456c64917180220614",
+      trainerId: "606d58daf19b2e4064b8f900",
+      traineeId: "606d5c9af19b2e4064b8f901",
+      weight: 70 + Number((Math.random()*6).toFixed(1)),
+      bmi: 18 + Number((Math.random()*6).toFixed(1)),
+      fat: 10+ Number((Math.random()*6).toFixed(1)),
+      skeletalMuscle: 33+ Number((Math.random()*6).toFixed(1)),
+      date: "2021-04-08T07:39:43.638Z",
+      __v: 0,
     },
-    series: [
-      {
-        data: [820, 932, 901, 934, 1290, 1330, 1320],
-        type: "line"
-      }
-    ]
-  }
+    {
+      _id: "606d62456c64917180220615",
+      trainerId: "606d58daf19b2e4064b8f900",
+      traineeId: "606d5c9af19b2e4064b8f901",
+      weight: 70 + Number((Math.random()*6).toFixed(1)),
+      bmi: 18 + Number((Math.random()*6).toFixed(1)),
+      fat: 10+ Number((Math.random()*6).toFixed(1)),
+      skeletalMuscle: 33+ Number((Math.random()*6).toFixed(1)),
+      date: "2021-04-09T07:39:43.638Z",
+      __v: 0,
+    },
+    {
+      _id: "606d62456c64917180220616",
+      trainerId: "606d58daf19b2e4064b8f900",
+      traineeId: "606d5c9af19b2e4064b8f901",
+      weight: 70 + Number((Math.random()*6).toFixed(1)),
+      bmi: 18 + Number((Math.random()*6).toFixed(1)),
+      fat: 10+ Number((Math.random()*6).toFixed(1)),
+      skeletalMuscle: 33+ Number((Math.random()*6).toFixed(1)),
+      date: "2021-04-10T07:39:43.638Z",
+      __v: 0,
+    },
+    {
+      _id: "606d62456c64917180220617",
+      trainerId: "606d58daf19b2e4064b8f900",
+      traineeId: "606d5c9af19b2e4064b8f901",
+      weight: 70 + Number((Math.random()*6).toFixed(1)),
+      bmi: 18 + Number((Math.random()*6).toFixed(1)),
+      fat: 10+ Number((Math.random()*6).toFixed(1)),
+      skeletalMuscle: 33+ Number((Math.random()*6).toFixed(1)),
+      date: "2021-04-11T07:39:43.638Z",
+      __v: 0,
+    },
+    {
+      _id: "606d62456c64917180220618",
+      trainerId: "606d58daf19b2e4064b8f900",
+      traineeId: "606d5c9af19b2e4064b8f901",
+      weight: 70 + Number((Math.random()*6).toFixed(1)),
+      bmi: 18 + Number((Math.random()*6).toFixed(1)),
+      fat: 10+ Number((Math.random()*6).toFixed(1)),
+      skeletalMuscle: 33+ Number((Math.random()*6).toFixed(1)),
+      date: "2021-04-12T07:39:43.638Z",
+      __v: 0,
+    },
+    {
+      _id: "606d62456c64917180220619",
+      trainerId: "606d58daf19b2e4064b8f900",
+      traineeId: "606d5c9af19b2e4064b8f901",
+      weight: 70 + Number((Math.random()*6).toFixed(1)),
+      bmi: 18 + Number((Math.random()*6).toFixed(1)),
+      fat: 10+ Number((Math.random()*6).toFixed(1)),
+      skeletalMuscle: 33+ Number((Math.random()*6).toFixed(1)),
+      date: "2021-04-13T07:39:43.638Z",
+      __v: 0,
+    },
+    {
+      _id: "606d62456c64917180220620",
+      trainerId: "606d58daf19b2e4064b8f900",
+      traineeId: "606d5c9af19b2e4064b8f901",
+      weight: 70 + Number((Math.random()*6).toFixed(1)),
+      bmi: 18 + Number((Math.random()*6).toFixed(1)),
+      fat: 10+ Number((Math.random()*6).toFixed(1)),
+      skeletalMuscle: 33+ Number((Math.random()*6).toFixed(1)),
+      date: "2021-04-14T07:39:43.638Z",
+      __v: 0,
+    },
+    {
+      _id: "606d62456c64917180220621",
+      trainerId: "606d58daf19b2e4064b8f900",
+      traineeId: "606d5c9af19b2e4064b8f901",
+      weight: 70 + Number((Math.random()*6).toFixed(1)),
+      bmi: 18 + Number((Math.random()*6).toFixed(1)),
+      fat: 10+ Number((Math.random()*6).toFixed(1)),
+      skeletalMuscle: 33+ Number((Math.random()*6).toFixed(1)),
+      date: "2021-04-15T07:39:43.638Z",
+      __v: 0,
+    },
+    {
+      _id: "606d62456c64917180220622",
+      trainerId: "606d58daf19b2e4064b8f900",
+      traineeId: "606d5c9af19b2e4064b8f901",
+      weight: 70 + Number((Math.random()*6).toFixed(1)),
+      bmi: 18 + Number((Math.random()*6).toFixed(1)),
+      fat: 10+ Number((Math.random()*6).toFixed(1)),
+      skeletalMuscle: 33+ Number((Math.random()*6).toFixed(1)),
+      date: "2021-04-16T07:39:43.638Z",
+      __v: 0,
+    },
+  ]
+)
 
-  const additionalCode = `
-    chart.on('click', function(param) {
-        var obj = {
-        type: 'event_clicked',
-        data: param.data
-        };
+  const [startDate, setStartDate] = useState('2021-04-07')
+  const [endDate, setEndDate] = useState('2021-04-14')
 
-        sendData(JSON.stringify(obj));
-    });
-  `
+  const [selectedDates, setSelectedDates] = useState([])
 
-  const onData = param => {
-    const obj = JSON.parse(param);
+  const [selectedApiData, setSelectedApiData] = useState([])
 
-    if (obj.type === "event_clicked") {
-      alert(`you tapped the chart series: ${obj.data}`);
+  const [selectedWeight, setSelectedWeight] = useState([])
+  const [selectedBMI, setSelectedBMI] = useState([])
+  const [selectedFat, setSelectedFat] = useState([])
+  const [selectedSkeletalMuscle, setSelectedSkeletalMuscle] = useState([])
+
+
+  useEffect(() => {
+    const date = getDateString(apiData[0].date)
+  })
+
+  const [weightGraph, setWeightGraph] = useState(
+    {
+      labels: ["4/1", "4/2", "4/3", "4/4", "4/5", "4/6", "4/7", "4/8", "4/9", "4/10", "4/11", "4/12"],
+      datasets: [
+        {
+          data: [
+            30.5,
+            32,
+            31.6,
+            32.4,
+            33.5,
+            34,
+            30.5,
+            32,
+            31.6,
+            32.4,
+            33.5,
+            34,
+          ]
+        }
+      ]
     }
-  }
+  )
 
-  const onRef = ref => {
-    if (ref) {
-      this.chart = ref;
-    }
-  }
-
-  const onButtonClearPressed = () => {
-    this.chart.clear();
-  };
-*/
-  // ---------------------------- 'react-native-echarts-wrapper' test end ------------------------------
-
-  const data1 = {
+  const [BMIGraph, setBMIGraph] = useState({
     labels: ["4/1", "4/2", "4/3", "4/4", "4/5", "4/6", "4/7", "4/8", "4/9", "4/10", "4/11", "4/12"],
     datasets: [
       {
         data: [
-          30.5,
-          32,
-          31.6,
-          32.4,
-          33.5,
-          34,
-          30.5,
-          32,
-          31.6,
-          32.4,
-          33.5,
-          34,
+          35.5,
+          31,
+          32.6,
+          37.4,
+          43.5,
+          44,
+          40.5,
+          37,
+          37.6,
+          39.4,
+          35.5,
+          41,
         ]
       }
     ]
-  }
+  })
+  
+  const [fatGraph, setFatGraph] = useState({
+      labels: ["4/1", "4/2", "4/3", "4/4", "4/5", "4/6", "4/7", "4/8", "4/9", "4/10", "4/11", "4/12"],
+      datasets: [
+        {
+          data: [
+            30.5,
+            32,
+            31.6,
+            32.4,
+            33.5,
+            34,
+            30.5,
+            32,
+            31.6,
+            32.4,
+            33.5,
+            34,
+          ]
+        }
+      ]
+    }
+  )
 
-  const data2 = {
+  const [skeletalMuscleGraph, setSkeletalMuscleGraph] = useState({
+    labels: ["4/1", "4/2", "4/3", "4/4", "4/5", "4/6", "4/7", "4/8", "4/9", "4/10", "4/11", "4/12"],
+    datasets: [
+      {
+        data: [
+          35.5,
+          31,
+          32.6,
+          37.4,
+          43.5,
+          44,
+          40.5,
+          37,
+          37.6,
+          39.4,
+          35.5,
+          41,
+        ]
+      }
+    ]
+  })
+
+  const data1 = {
     labels: ["4/1", "4/2", "4/3", "4/4", "4/5", "4/6", "4/7", "4/8", "4/9", "4/10", "4/11", "4/12"],
     datasets: [
       {
@@ -147,66 +288,95 @@ function Change_view({ navigation, valueFormatter, ...props }) {
     ]
   }
 
-  const renderDotContentOnGraph = (e) => {
-    const { x, y, index } = e;
-  }
-
-  const [tempstate, setTempstate] = useState(null);
-
-  const screenWidth = Dimensions.get('window').width;
-
-  const tempDecorator = () => {
-    return (tooltipPos.visible) ? (
-      <View>
-        <Svg>
-            <Rect
-              x={tooltipPos.x - 15} 
-              y={tooltipPos.y + 10} 
-              width="40" 
-              height="30" 
-              fill="black" 
-            />
-            <TextSVG
-              x={tooltipPos.x + 5}
-              y={tooltipPos.y + 30}
-              fill="white"
-              fontSize="16"
-              fontWeight="bold"
-              textAnchor="middle"
-            >
-              {tooltipPos.value}
-            </TextSVG>
-        </Svg>
-      </View>
-    ) : null
-  }
-
-  const onDataPointClickHandler = (data) => {
-    let isSamePoint = (tooltipPos.x === data.x && tooltipPos.y === data.y)
-    isSamePoint ? setTooltipPos((previousState) => {
-      return {
-        ...previousState,
-        value: data.value,
-        visible: !previousState.visible
-      }
-    }) :
-    setTooltipPos(
-      {
-        x : data.x,
-        value : data.value,
-        y : data.y,
-        visible : true
-      }
+  const onDatePickHandler = () => {
+    // api data에서 start 와 end 사이의 날짜 뽑기
+    let selectedApiDataArr = []
+    apiData.map((data) => 
+      (String(startDate) <= getDateString(data.date)) && (getDateString(data.date) <= String(endDate)) ? (
+        selectedApiDataArr.push(data)
+      )
+      : 
+      ''
     )
+    setSelectedApiData(selectedApiDataArr)
+    
+    let datesArr = []
+    selectedApiDataArr.map((data) => datesArr.push(getDateString(data.date)))
+    console.log(selectedDates)
+    setSelectedDates(datesArr)
+
+    
+    let weightArr = []
+    let bmiArr = []
+    let fatArr = []
+    let skeletalMuscleArr = []
+
+    selectedApiDataArr.map((data) => {
+      weightArr.push(data.weight)
+      bmiArr.push(data.bmi)
+      fatArr.push(data.fat)
+      skeletalMuscleArr.push(data.skeletalMuscle)
+    })
+
+    setSelectedWeight(weightArr)
+    setSelectedBMI(bmiArr)
+    setSelectedFat(fatArr)
+    setSelectedSkeletalMuscle(skeletalMuscleArr)
+
+    let prevWeight = weightGraph
+    let prevBMI = BMIGraph
+    let prevFat = fatGraph
+    let prevSkeletalMuscle = skeletalMuscleGraph
+    
+    prevWeight.labels = datesArr
+    prevBMI.labels = datesArr
+    prevFat.labels = datesArr
+    prevSkeletalMuscle.labels = datesArr
+
+    prevWeight.datasets[0].data = weightArr
+    prevBMI.datasets[0].data = bmiArr
+    prevFat.datasets[0].data = fatArr
+    prevSkeletalMuscle.datasets[0].data = skeletalMuscleArr
+
+    setWeightGraph(prevWeight)
+    setBMIGraph(prevBMI)
+    setFatGraph(prevFat)
+    setSkeletalMuscleGraph(prevSkeletalMuscle)
   }
 
-  const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0, visible: false, value: 0 })
+  useEffect(() => {
+    //console.log('Selected sm')
+    //console.log(selectedSkeletalMuscle)
+  })
 
+  const [date, setDate] = useState(new Date(1598051730000));
+  const [mode, setMode] = useState('date');
+  const [show, setShow] = useState(false);
+
+  const onChange = (event, selectedDate) => {
+    const currentDate = selectedDate || date;
+    setShow(Platform.OS === 'ios');
+    setDate(currentDate);
+  };
+
+  const showMode = (currentMode) => {
+    setShow(true);
+    setMode(currentMode);
+  };
+
+  const showDatepicker = () => {
+    showMode('date');
+  };
+
+  const showTimepicker = () => {
+    showMode('time');
+  };
   
-    return (
-      <View style={styles.mainContainer}>
-        <ScrollView>
-          <Text style={styles.title}>김승우 고객님 변화보기</Text>
+  return (
+    <SafeAreaView style={styles.mainContainer}>
+      <ScrollView>
+        <Text style={styles.title}>김승우 고객님 변화보기</Text>
+        <View>
           <View style={styles.subTitleContainer}>
             <Text style={styles.subTitle}>Exbody</Text>
           </View>
@@ -220,99 +390,54 @@ function Change_view({ navigation, valueFormatter, ...props }) {
               source={require('../../assets/exbody_temp1.jpeg')}
             />
           </View>
-          <View style={styles.subTitleContainer}>
-            <Text style={styles.subTitle}>Graph</Text>
+        </View>
+        <View style={styles.subTitleContainer}>
+          <Text style={styles.subTitle}>Graph</Text>
+          {/*
+          <TouchableOpacity onPressOut={onDatePickHandler}>
+            <Text>Click Me</Text>
+          </TouchableOpacity>
+          */}
+          <View>
+            <DateTimePicker
+              style={{width: Spacing.SCALE_100,}}
+              testID="dateTimePicker"
+              value={date}
+              mode={'date'}
+              is24Hour={true}
+              display="default"
+              
+            />
+            <DateTimePicker
+              style={{width: Spacing.SCALE_100,}}
+              testID="dateTimePicker"
+              value={date}
+              mode={'date'}
+              is24Hour={true}
+              display="default"
+              
+            />
           </View>
-          <View style={styles.graphContainer}>
-            <Text>This is graph</Text>
-            <View>
-              <Text>Bezier Line Chart</Text>
-              <ScrollView
-                horizontal={true}
-                contentOffset={{x: 0, y: 0}}
-                showsHorizontalScrollIndicator
-                height={600}
-              >
-                <View>
-                  <LineChart
-                    data={data1}
-                    width={Dimensions.get("window").width*2} // from react-native
-                    height={160}
-                    yAxisLabel=""
-                    yAxisSuffix="kg"
-                    yAxisInterval={1} // optional, defaults to 1
-                    chartConfig={{
-                      backgroundColor: Colors.WHITE,
-                      backgroundGradientFrom: Colors.WHITE,
-                      backgroundGradientTo: Colors.WHITE,
-                      fillShadowGradient: Colors.WHITE,
-                      decimalPlaces: 1, // optional, defaults to 2dp
-                      color: (opacity = 1) => `rgba(179, 69, 230, ${opacity})`,
-                      labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-                      style: {
-                        borderRadius: 4
-                      },
-                      propsForDots: {
-                        r: "4",
-                        strokeWidth: "1",
-                        stroke: `rgba(222, 150, 255, 1)`
-                      }
-                    }}
-                    style={{
-                      marginVertical: -5,
-                      borderRadius: 4
-                    }}
-                    decorator={tempDecorator}
-                    onDataPointClick={onDataPointClickHandler}
-                    withVerticalLabels={false}
-                    withHorizontalLabels={false}
-                    withVerticalLines={false}
-                    withHorizontalLines={false}
-                    withOuterLines={false}
-                  />
-                  <LineChart
-                    data={data2}
-                    width={Dimensions.get("window").width*2} // from react-native
-                    height={160}
-                    yAxisLabel=""
-                    yAxisSuffix="kg"
-                    yAxisInterval={1} // optional, defaults to 1
-                    chartConfig={{
-                      backgroundColor: Colors.WHITE,
-                      backgroundGradientFrom: Colors.WHITE,
-                      backgroundGradientTo: Colors.WHITE,
-                      fillShadowGradient: Colors.WHITE,
-                      decimalPlaces: 1, // optional, defaults to 2dp
-                      color: (opacity = 1) => `rgba(55, 33, 196, ${opacity})`,
-                      labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-                      style: {
-                        borderRadius: 4
-                      },
-                      propsForDots: {
-                        r: "4",
-                        strokeWidth: "1",
-                        stroke: `rgba(87, 62, 247, 1)`
-                      }
-                    }}
-                    style={{
-                      marginVertical: -5,
-                      borderRadius: 4
-                    }}
-                    decorator={tempDecorator}
-                    onDataPointClick={onDataPointClickHandler}
-                    withVerticalLabels={false}
-                    withHorizontalLabels={false}
-                    withVerticalLines={false}
-                    withHorizontalLines={false}
-                    withOuterLines={false}
-                  />
-                </View>
-              </ScrollView>
-            </View>
+        </View>
+        <View style={styles.graphContainer}>
+          <View>
+            <ScrollView
+              horizontal={true}
+              contentOffset={{x: 0, y: 0}}
+              showsHorizontalScrollIndicator={false}
+            >
+              <View>
+                {(weightGraph === '') ? null : <InbodyChart data={weightGraph} idx={0} />}
+                <InbodyChart data={BMIGraph} idx={1} />
+                <InbodyChart data={fatGraph} idx={2} />
+                <InbodyChart data={skeletalMuscleGraph} idx={3} />
+              </View>
+            </ScrollView>
           </View>
-        </ScrollView>
-      </View>
-    );
-  }
+        </View>
+      </ScrollView>
+    </SafeAreaView>
+  );
+}
 
-  export default Change_view;
+export default Change_view;
