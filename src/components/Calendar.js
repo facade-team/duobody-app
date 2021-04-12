@@ -14,15 +14,14 @@ LocaleConfig.locales['fr'] = {
 LocaleConfig.defaultLocale = 'fr';
 
 // 날짜를 눌렀을 때 이벤트 추가해야 됨
-const currentDate = new Date().toISOString().slice(0, 10)
+//const DateObject = new Date().toISOString().slice(0, 10)
 
-const CalendarView = () => {
-    let curr = console.log(String(currentDate))
+const CalendarView = ({setSelectedDate}) => {
+    // let curr = console.log(String(currentDate))
     const [markedDates, setMarkedDates] = useState({})
-  
+
     return (
-      
-      <View style={{ margin: 5, paddingTop: 0, flex: 1, borderWidth:1}}>
+      <View style={{ flex: 1, borderWidth:0.5}}>
         <Calendar
         //선택날짜 마킹
         markedDates={markedDates}
@@ -34,12 +33,22 @@ const CalendarView = () => {
         // Handler which gets executed on day press. Default = undefined
         onDayPress={
           (day) => {
-            const selectedDate = day.dateString
+            //console.log(day)
+            const temp = day.dateString
             
             let newMarked = {}
-            newMarked[selectedDate] = {selected: true, selectedColor: Colors.PRIMARY}
+            newMarked[temp] = {selected: true, selectedColor: Colors.PRIMARY}
             setMarkedDates(newMarked)
-            
+
+            const tempo = new Date(day.dateString).getDay()
+            //console.log(tempo)
+            //day object 넘겨주기
+            setSelectedDate({
+              year: day.year,
+              month: day.month,
+              date: day.day,
+              day: new Date(day.dateString).getDay()
+            })
           }
         }
 
@@ -56,7 +65,7 @@ const CalendarView = () => {
         // day from another month that is visible in calendar page. Default = false
         disableMonthChange={true}
         // If firstDay=1 week starts from Monday. Note that dayNames and dayNamesShort should still start from Sunday.
-        firstDay={1}
+        firstDay={0}
         // Hide day names. Default = false
         hideDayNames={false}
         // Show week numbers to the left. Default = false

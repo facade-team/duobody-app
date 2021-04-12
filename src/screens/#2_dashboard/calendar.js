@@ -1,11 +1,11 @@
-import  * as React from 'react';
-import {useState} from 'react';
-import {StyleSheet, SafeAreaView, Text, View, FlatList, TouchableOpacity } from 'react-native';
-import Calendar from '../../components/Calendar';
+import * as React from 'react';
+import { useState } from 'react';
+import { StyleSheet, SafeAreaView, Text, View, FlatList, TouchableOpacity } from 'react-native';
+import CalendarView from '../../components/Calendar';
 import CircleButton from '../../components/CircleButton'
 import Animated from 'react-native-reanimated';
 import BottomSheet from 'reanimated-bottom-sheet';
-import {FontAwesome} from '@expo/vector-icons'
+import { FontAwesome } from '@expo/vector-icons'
 import DateTimePicker from '@react-native-community/datetimepicker';
 import TraineeList from '../../components/TraineeList';
 import { Colors } from '../../styles';
@@ -13,30 +13,40 @@ import { Colors } from '../../styles';
 
 const DATA = [
     {
-      id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-      custommer: '김oo 고객님',
-      worktime: '10:00 - 11:00'
+        _id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
+        name: '김oo 고객님',
+        worktime: '10:00 - 11:00'
     },
     {
-      id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-      custommer: '이oo 고객님',
-      worktime: '13:00 - 14:00'
+        _id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
+        name: '이oo 고객님',
+        worktime: '13:00 - 14:00'
     },
     {
-      id: '58694a0f-3da1-471f-bd96-145571e29d72',
-      custommer: '정oo 고객님',
-      worktime: '15:00 - 16:00'
+        _id: '58694a0f-3da1-471f-bd96-145571e29d72',
+        name: '정oo 고객님',
+        worktime: '15:00 - 16:00'
     }
-  ];
+];
 
-const Item = ({ custommer, worktime }) => (
-<View style={styles.content}>
-    <Text style={styles.fontCustommer}>{custommer}</Text>
-    <Text style={styles.fontWorktime}>{worktime}</Text>
-</View>
+const Item = ({ name, worktime }) => (
+    <View style={styles.content}>
+        <Text style={styles.fontCustommer}>{name}</Text>
+        <Text style={styles.fontWorktime}>{worktime}</Text>
+    </View>
 );
 
 const Dash_cal = () => {
+    const today = new Date()
+    const koreaday = ['일','월','화','수','목','금','토']
+  
+    const [selectedDate,setSelectedDate] = useState({
+        year: today.getFullYear(),
+        month: today.getMonth() + 1,
+        date: today.getDate(),
+        day: today.getDay()
+    })
+
     const [selectedTrainee, setSelectedTrainee] = useState('')
     const [temp, setTemp] = useState('')
 
@@ -48,7 +58,7 @@ const Dash_cal = () => {
         {
             resultStart: "시작시간",
             resultEnd: "종료시간"
-        } 
+        }
     )
 
     const setTimeData = (flag) => {
@@ -56,28 +66,28 @@ const Dash_cal = () => {
 
         if (flag === 1) {
             temp = start
-        }else {
+        } else {
             temp = end
         }
 
-        const hours = (temp.getHours()<10?'0':'') + temp.getHours()
-        const minutes = (temp.getMinutes()<10?'0':'') + temp.getMinutes()
+        const hours = (temp.getHours() < 10 ? '0' : '') + temp.getHours()
+        const minutes = (temp.getMinutes() < 10 ? '0' : '') + temp.getMinutes()
 
 
         let res = {}
         res = hours + ' : ' + minutes
         console.log("res : " + res)
-        
+
         console.log("before setResult : " + result.resultStart + result.resultEnd)
-        
+
         setResult((state) => {
-            if (flag === 1){
+            if (flag === 1) {
                 return {
                     resultStart: res,
                     resultEnd: state.resultEnd
                 }
             }
-            if( flag === 0){
+            if (flag === 0) {
                 return {
                     resultStart: state.resultStart,
                     resultEnd: res
@@ -105,116 +115,69 @@ const Dash_cal = () => {
         setEnd(currentDate);
     };
 
-    const renderItem = ({ item }) => <Item custommer={item.custommer} worktime={item.worktime}/>;
-    
-    const renderContent = () => (
-        <View style={styles.bottomsheetcontainer}>
-          <View style={styles.textRow}>
-            <TouchableOpacity onPressOut={()=> sheetRef.current.snapTo(1)}>
-              <FontAwesome name="times" size={25} color="black"/>
-            </TouchableOpacity>
-            <FontAwesome name="check" size={25} color="black"/>
-          </View>
-          <View style={styles.textContainer}>
-            <Text style={styles.texttitle}> 일정 추가하기 </Text>
-          </View>
-          <View style={styles.textContainer}>
-            <Text style={styles.textContent}> 4월 10일 토</Text>
-          </View>
-    
-          <View style={styles.horizontalLine}/>
-    
-          <View style={{paddingBottom:40, paddingTop:10}}>
-            <View style={styles.textContainer}>
-              <Text style={styles.textSubtitle}> 회원 선택 </Text>
-            </View>
-            <View style={styles.textContainer}>
-              <TouchableOpacity onPressOut={()=> {CustomerPicker.current.snapTo(0)}}>
-                <Text style={styles.textContent}>{temp === '' ? '회원을 선택하세요' : `${temp} 회원님`}</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-    
-          <View style={styles.textContainer}>
-            <Text style={styles.textSubtitle}> 시간 선택 </Text>
-          </View>
-          <View style={styles.textContainer}>
-            <View style={styles.textRow}>
-                <TouchableOpacity onPressOut={()=> StartTimeRef.current.snapTo(0)}>
-                    <Text style={styles.textContent}>{result.resultStart}</Text>  
-                </TouchableOpacity>
-                <Text> - </Text>
-                <TouchableOpacity onPressOut={()=> EndTimeRef.current.snapTo(0)}>
-                <Text style={styles.textContent}>{result.resultEnd}</Text>
-                </TouchableOpacity>
-                <View/><View/><View/><View/><View/><View/><View/><View/><View/><View/>
-            </View>
-          </View>
-        </View>
-    );
-
     const renderCustomer = () => (
-    <View style={styles.custommerPickercontainer}>
-        <View style={{paddingBottom:40, paddingTop:10}}>
-            <View style={styles.textContainer}>
-                <Text style={styles.textSubtitle}> 회원 선택 </Text>
+        <View style={styles.custommerPickercontainer}>
+            <View style={{ paddingBottom: 40, paddingTop: 10 }}>
+                <View style={styles.textContainer}>
+                    <Text style={styles.textSubtitle}> 회원 선택 </Text>
+                </View>
+            </View>
+
+            <TraineeList
+                setSelectedTrainee={setSelectedTrainee}
+            />
+
+            <View style={styles.confirm}>
+                <TouchableOpacity onPressOut={() => { CustomerPicker.current.snapTo(1) }}>
+                    <Text style={styles.textConfirm} >취소</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPressOut={() => {
+                    CustomerPicker.current.snapTo(1)
+                    setTrainee()
+                }}>
+                    <Text style={styles.textConfirm} >확인</Text>
+                </TouchableOpacity>
             </View>
         </View>
-
-        <TraineeList
-            setSelectedTrainee={setSelectedTrainee}
-        />
-
-        <View style={styles.confirm}>
-            <TouchableOpacity onPressOut={()=> {CustomerPicker.current.snapTo(1)}}>
-                <Text style={styles.textConfirm} >취소</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPressOut={()=> {
-                        CustomerPicker.current.snapTo(1)
-                        setTrainee()
-                    }}>
-                <Text style={styles.textConfirm} >확인</Text>
-            </TouchableOpacity>
-        </View>
-    </View>
     );
 
     const renderStartTime = () => (
-    <View style={styles.custommerPickercontainer}>
-        <View style={{paddingBottom:40, paddingTop:10}}>
-        <View style={styles.textContainer}>
-            <Text style={styles.textSubtitle}> 시작 시간 선택 </Text>
+        <View style={styles.custommerPickercontainer}>
+            <View style={{ paddingBottom: 40, paddingTop: 10 }}>
+                <View style={styles.textContainer}>
+                    <Text style={styles.textSubtitle}> 시작 시간 선택 </Text>
+                </View>
+            </View>
+            <View>
+                <DateTimePicker
+                    testID="dateTimePicker"
+                    value={start}
+                    mode='time'
+                    display="spinner"
+                    minuteInterval={5}
+                    onChange={startTime}
+                />
+            </View>
+            <View style={styles.confirm}>
+                <TouchableOpacity onPressOut={() => { StartTimeRef.current.snapTo(1) }}>
+                    <Text style={styles.textConfirm} >취소</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPressOut={() => {
+                    StartTimeRef.current.snapTo(1)
+                    setTimeData(1)
+                }}>
+                    <Text style={styles.textConfirm} >확인</Text>
+                </TouchableOpacity>
+            </View>
         </View>
-        </View>
-        <View>
-            <DateTimePicker
-                testID="dateTimePicker"
-                value={start}
-                mode='time'
-                display="spinner"
-                minuteInterval={5}
-                onChange={startTime}
-            />
-        </View>
-        <View style={styles.confirm}>
-            <TouchableOpacity onPressOut={()=> {StartTimeRef.current.snapTo(1)}}>
-                <Text style={styles.textConfirm} >취소</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPressOut={()=> {
-                        StartTimeRef.current.snapTo(1)
-                        setTimeData(1)
-                    }}>
-                <Text style={styles.textConfirm} >확인</Text>
-            </TouchableOpacity>
-        </View>
-    </View>
     );
+
     const renderEndTime = () => (
         <View style={styles.custommerPickercontainer}>
-            <View style={{paddingBottom:40, paddingTop:10}}>
-            <View style={styles.textContainer}>
-                <Text style={styles.textSubtitle}> 종료 시간 선택 </Text>
-            </View>
+            <View style={{ paddingBottom: 40, paddingTop: 10 }}>
+                <View style={styles.textContainer}>
+                    <Text style={styles.textSubtitle}> 종료 시간 선택 </Text>
+                </View>
             </View>
             <View>
                 <DateTimePicker
@@ -228,70 +191,127 @@ const Dash_cal = () => {
             </View>
 
             <View style={styles.confirm}>
-                <TouchableOpacity onPressOut={()=> {EndTimeRef.current.snapTo(1)}}>
+                <TouchableOpacity onPressOut={() => { EndTimeRef.current.snapTo(1) }}>
                     <Text style={styles.textConfirm} >취소</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPressOut={()=> {
-                            EndTimeRef.current.snapTo(1)
-                            setTimeData(0)
-                        }}>
+                <TouchableOpacity onPressOut={() => {
+                    EndTimeRef.current.snapTo(1)
+                    setTimeData(0)
+                }}>
                     <Text style={styles.textConfirm} >확인</Text>
                 </TouchableOpacity>
             </View>
 
-            
+
         </View>
-        );
+    );
+
+    const renderItem = ({ item }) => <Item name={item.name} worktime={item.worktime} />;
+
+    const renderContent = () => (
+        <View style={styles.bottomsheetcontainer}>
+            <View style={styles.textRow}>
+                <TouchableOpacity onPressOut={() => sheetRef.current.snapTo(1)}>
+                    <FontAwesome name="times" size={25} color="black" />
+                </TouchableOpacity>
+                <FontAwesome name="check" size={25} color="black" />
+            </View>
+            <View style={styles.textContainer}>
+                <Text style={styles.texttitle}> 일정 추가하기 </Text>
+            </View>
+            <View style={styles.textContainer}>
+                <Text style={styles.textContent}> {selectedDate.month}월 {selectedDate.date}일 {koreaday[selectedDate.day]}요일</Text>
+            </View>
+
+            <View style={styles.horizontalLine} />
+
+            <View style={{ paddingBottom: 40, paddingTop: 10 }}>
+                <View style={styles.textContainer}>
+                    <Text style={styles.textSubtitle}> 회원 선택 </Text>
+                </View>
+                <View style={styles.textContainer}>
+                    <TouchableOpacity onPressOut={() => {
+                        //setToggleState(true)
+                        CustomerPicker.current.snapTo(0)
+                    }}>
+                        <Text style={styles.textContent}>{temp === '' ? '회원을 선택하세요' : `${temp} 회원님`}</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+
+            <View style={styles.textContainer}>
+                <Text style={styles.textSubtitle}> 시간 선택 </Text>
+            </View>
+            <View style={styles.textContainer}>
+                <View style={styles.textRow}>
+                    <TouchableOpacity onPressOut={() => StartTimeRef.current.snapTo(0)}>
+                        <Text style={styles.textContent}>{result.resultStart}</Text>
+                    </TouchableOpacity>
+                    <Text> - </Text>
+                    <TouchableOpacity onPressOut={() => EndTimeRef.current.snapTo(0)}>
+                        <Text style={styles.textContent}>{result.resultEnd}</Text>
+                    </TouchableOpacity>
+                    <View /><View /><View /><View /><View /><View /><View /><View /><View /><View />
+                </View>
+            </View>
+        </View>
+    );
+
 
     const sheetRef = React.useRef(null);
     const CustomerPicker = React.useRef(null);
     const StartTimeRef = React.useRef(null);
     const EndTimeRef = React.useRef(null);
 
+
     return (
         <>
-        <SafeAreaView style={styles.wrap}>
-            <Calendar/>
-            <View style={styles.bottomcontainer}>
-                <TouchableOpacity
-                    onPressOut={() => sheetRef.current.snapTo(0)}
-                    style={styles.button}>
-                    <CircleButton content={'+'} />
-                </TouchableOpacity>
-                <View style={styles.container}>
-                    <FlatList data={DATA} renderItem={renderItem} keyExtractor={item => item.id} />
+            <SafeAreaView style={styles.wrap}>
+                <View style={{flex:5}}>
+                    <CalendarView 
+                        setSelectedDate={setSelectedDate}
+                    />
                 </View>
-            </View>
-        </SafeAreaView>
+                <View style={styles.bottomcontainer}>
+                    <TouchableOpacity
+                        onPressOut={() => sheetRef.current.snapTo(0)}
+                        style={styles.button}>
+                        <CircleButton content={'+'} />
+                    </TouchableOpacity>
+                    <View style={styles.container}>
+                        <FlatList data={DATA} renderItem={renderItem} keyExtractor={item => item._id} />
+                    </View>
+                </View>
+            </SafeAreaView>
 
-        <BottomSheet
-            ref={sheetRef}
-            snapPoints={[500, 0, 0]}
-            borderRadius={20}
-            renderContent={renderContent}
-            initialSnap={1}
-        />
-        <BottomSheet
-            ref={CustomerPicker}
-            snapPoints={[400, 0, 0]}
-            borderRadius={20}
-            renderContent={renderCustomer}
-            initialSnap={1}
-        />
-        <BottomSheet
-            ref={StartTimeRef}
-            snapPoints={[400, 0, 0]}
-            borderRadius={20}
-            renderContent={renderStartTime}
-            initialSnap={1}
-        />
-        <BottomSheet
-            ref={EndTimeRef}
-            snapPoints={[400, 0, 0]}
-            borderRadius={20}
-            renderContent={renderEndTime}
-            initialSnap={1}
-        />
+            <BottomSheet
+                ref={sheetRef}
+                snapPoints={[500, 0, 0]}
+                borderRadius={20}
+                renderContent={renderContent}
+                initialSnap={1}
+            />
+            <BottomSheet
+                ref={CustomerPicker}
+                snapPoints={[400, 0, 0]}
+                borderRadius={20}
+                renderContent={renderCustomer}
+                initialSnap={1}
+            />
+            <BottomSheet
+                ref={StartTimeRef}
+                snapPoints={[400, 0, 0]}
+                borderRadius={20}
+                renderContent={renderStartTime}
+                initialSnap={1}
+            />
+            <BottomSheet
+                ref={EndTimeRef}
+                snapPoints={[400, 0, 0]}
+                borderRadius={20}
+                renderContent={renderEndTime}
+                initialSnap={1}
+            />
         </>
     )
 }
@@ -300,14 +320,15 @@ const styles = StyleSheet.create({
     wrap: {
         flex: 1,
         backgroundColor: Colors.WHITE,
+        margin: 5
     },
     bottomcontainer: {
-        flex: 1.3,
+        flex: 7,
         flexDirection: 'column',
         //backgroundColor : 'orange',
         alignItems: 'center',
-        margin: 5,
-        borderWidth:0.5
+        borderWidth: 0.5,
+        marginTop: 5
     },
     button: {
         flexDirection: 'row',
@@ -315,8 +336,8 @@ const styles = StyleSheet.create({
         alignSelf: 'flex-end'
     },
     container: {
-        flex:1,
-        flexDirection:'row',
+        flex: 1,
+        flexDirection: 'row',
         //backgroundColor : 'lightgray',
         justifyContent: 'space-around',
         margin: 5,
@@ -335,7 +356,7 @@ const styles = StyleSheet.create({
         fontSize: 20,
         marginBottom: 20,
     },
-    fontWorktime:{
+    fontWorktime: {
         fontSize: 20,
         fontWeight: 'bold',
         marginBottom: 20
@@ -343,40 +364,40 @@ const styles = StyleSheet.create({
     bottomsheetcontainer: {
         backgroundColor: 'white',
         padding: 20,
-        height: 500, 
-      },
-      custommerPickercontainer:{
+        height: 500,
+    },
+    custommerPickercontainer: {
         backgroundColor: '#E3E3E3',
         padding: 20,
         height: 400
-      },
-      textRow: {
+    },
+    textRow: {
         flexDirection: 'row',
         justifyContent: 'space-between'
-      },
-      texttitle: {
+    },
+    texttitle: {
         fontWeight: 'bold',
         fontSize: 25
-      },
-      textContent: {
+    },
+    textContent: {
         fontSize: 16,
         paddingLeft: 7,
-      },
-      textSubtitle: {
+    },
+    textSubtitle: {
         fontSize: 16,
         paddingLeft: 3,
         fontWeight: 'bold'
-      },
-      textContainer: {
+    },
+    textContainer: {
         //position: 'absolute',
         paddingTop: 16
-      },
-      horizontalLine: {
+    },
+    horizontalLine: {
         paddingTop: 13,
         borderBottomColor: '#E3E3E3',
         borderBottomWidth: 1,
-      },
-      confirm: {
+    },
+    confirm: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignSelf: 'flex-end',
@@ -384,11 +405,11 @@ const styles = StyleSheet.create({
         paddingTop: 10,
         paddingBottom: 20,
         paddingRight: 10
-      },
-      textConfirm: {
-          fontSize: 18,
-          color: '#177EFB'
-      }
+    },
+    textConfirm: {
+        fontSize: 18,
+        color: '#177EFB'
+    }
 })
 
-  export default Dash_cal;
+export default Dash_cal;
