@@ -34,18 +34,21 @@ const CalendarView = ({setSelectedDate}) => {
         // Handler which gets executed on day press. Default = undefined
         onDayPress={
           (day) => {
-            // console.log(day)
+            //console.log(day)
             const temp = day.dateString
             
             let newMarked = {}
             newMarked[temp] = {selected: true, selectedColor: Colors.PRIMARY}
             setMarkedDates(newMarked)
-            
+
+            const tempo = new Date(day.dateString).getDay()
+            //console.log(tempo)
             //day object 넘겨주기
             setSelectedDate({
               year: day.year,
               month: day.month,
-              day: day.day
+              date: day.day,
+              day: new Date(day.dateString).getDay()
             })
           }
         }

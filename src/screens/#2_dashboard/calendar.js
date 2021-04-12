@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useState } from 'react';
 import { StyleSheet, SafeAreaView, Text, View, FlatList, TouchableOpacity } from 'react-native';
-import Calendar from '../../components/Calendar';
+import CalendarView from '../../components/Calendar';
 import CircleButton from '../../components/CircleButton'
 import Animated from 'react-native-reanimated';
 import BottomSheet from 'reanimated-bottom-sheet';
@@ -12,32 +12,39 @@ import TraineeList from '../../components/TraineeList';
 
 const DATA = [
     {
-        id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-        custommer: '김oo 고객님',
+        _id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
+        name: '김oo 고객님',
         worktime: '10:00 - 11:00'
     },
     {
-        id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-        custommer: '이oo 고객님',
+        _id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
+        name: '이oo 고객님',
         worktime: '13:00 - 14:00'
     },
     {
-        id: '58694a0f-3da1-471f-bd96-145571e29d72',
-        custommer: '정oo 고객님',
+        _id: '58694a0f-3da1-471f-bd96-145571e29d72',
+        name: '정oo 고객님',
         worktime: '15:00 - 16:00'
     }
 ];
 
-const Item = ({ custommer, worktime }) => (
+const Item = ({ name, worktime }) => (
     <View style={styles.content}>
-        <Text style={styles.fontCustommer}>{custommer}</Text>
+        <Text style={styles.fontCustommer}>{name}</Text>
         <Text style={styles.fontWorktime}>{worktime}</Text>
     </View>
 );
 
 const Dash_cal = () => {
-    const [toggleState, setToggleState] = useState(false)
-
+    const today = new Date()
+    const koreaday = ['일','월','화','수','목','금','토']
+  
+    const [selectedDate,setSelectedDate] = useState({
+        year: today.getFullYear(),
+        month: today.getMonth() + 1,
+        date: today.getDate(),
+        day: today.getDay()
+    })
 
     const [selectedTrainee, setSelectedTrainee] = useState('')
     const [temp, setTemp] = useState('')
@@ -198,7 +205,7 @@ const Dash_cal = () => {
         </View>
     );
 
-    const renderItem = ({ item }) => <Item custommer={item.custommer} worktime={item.worktime} />;
+    const renderItem = ({ item }) => <Item name={item.name} worktime={item.worktime} />;
 
     const renderContent = () => (
         <View style={styles.bottomsheetcontainer}>
@@ -212,7 +219,7 @@ const Dash_cal = () => {
                 <Text style={styles.texttitle}> 일정 추가하기 </Text>
             </View>
             <View style={styles.textContainer}>
-                <Text style={styles.textContent}> 4월 10일 토</Text>
+                <Text style={styles.textContent}> {selectedDate.month}월 {selectedDate.date}일 {koreaday[selectedDate.day]}요일</Text>
             </View>
 
             <View style={styles.horizontalLine} />
@@ -259,7 +266,11 @@ const Dash_cal = () => {
     return (
         <>
             <SafeAreaView style={styles.wrap}>
-                <Calendar />
+                <View style={{flex:5}}>
+                    <CalendarView 
+                        setSelectedDate={setSelectedDate}
+                    />
+                </View>
                 <View style={styles.bottomcontainer}>
                     <TouchableOpacity
                         onPressOut={() => sheetRef.current.snapTo(0)}
@@ -267,7 +278,7 @@ const Dash_cal = () => {
                         <CircleButton content={'+'} />
                     </TouchableOpacity>
                     <View style={styles.container}>
-                        <FlatList data={DATA} renderItem={renderItem} keyExtractor={item => item.id} />
+                        <FlatList data={DATA} renderItem={renderItem} keyExtractor={item => item._id} />
                     </View>
                 </View>
             </SafeAreaView>
@@ -310,12 +321,12 @@ const styles = StyleSheet.create({
         margin: 5
     },
     bottomcontainer: {
-        flex: 1.3,
+        flex: 7,
         flexDirection: 'column',
         //backgroundColor : 'orange',
         alignItems: 'center',
-        margin: 5,
-        borderWidth: 0.5
+        borderWidth: 0.5,
+        marginTop: 5
     },
     button: {
         flexDirection: 'row',
