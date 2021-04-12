@@ -1,6 +1,6 @@
 import React from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { Image } from 'react-native';
+import { Image, StyleSheet } from 'react-native';
 
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { Colors, Spacing } from '../styles';
@@ -34,7 +34,6 @@ const Tab = createMaterialBottomTabNavigator();
 
 const Footer_dash = () => (
         <Tab.Navigator
-        initialRouteName='Dashboard'
         activeColor = {Colors.BLACK}
         inactiveColor = {Colors.PRIMARY}
         labeled = {true}
@@ -82,7 +81,6 @@ const Footer_dash = () => (
 
 const Footer_indiv = () => (
         <Tab.Navigator
-        initialRouteName='indiv_profile'
         activeColor = {Colors.BLACK}
         inactiveColor = {Colors.PRIMARY}
         labeled = {true}
@@ -208,10 +206,10 @@ const MemAddStackScreen = ({navigation}) => (
     }}>
         <MemAddStack.Screen
         name = "Mem_Add" component = {mem_add} options = {{
-            title: 'Overview',
+            headerTitle: props => <TopLogo {...props} />,
             headerLeft: () => (
                 <Icon.Button 
-                    name = "ios-menu" 
+                    name = "arrow-back" 
                     size = {26}
                     backgroundColor = {Colors.PRIMARY}
                     onPress = {() => navigation.goBack()}/>
@@ -247,7 +245,7 @@ const IndivProfileStackScreen = ({navigation}) => (
         },
     }}>
         <IndivProfileStack.Screen
-        name = 'IndivProfile' component = {indiv_profile} options={{
+        name = 'indiv_profile' component = {indiv_profile} options={{
             headerTitle: props => <TopLogo {...props} />,
             headerLeft: () => (
                 <Icon.Button 
@@ -267,7 +265,7 @@ const IndivSessionStackScreen = ({navigation}) => (
         },
     }}>
         <IndivSessionStack.Screen
-        name = 'IndivSession' component = {indiv_session} options={{
+        name = 'indiv_session' component = {indiv_session} options={{
             headerTitle: props => <TopLogo {...props} />,
             headerLeft: () => (
                 <Icon.Button 
@@ -287,7 +285,7 @@ const IndivMessageStackScreen = ({navigation}) => (
         },
     }}>
         <IndivMessageStack.Screen
-        name = 'IndivMessage' component = {ChatScreen} options={{
+        name = 'indiv_msg' component = {ChatScreen} options={{
             headerTitle: props => <TopLogo {...props} />,
             headerLeft: () => (
                 <Icon.Button 
@@ -307,7 +305,7 @@ const IndivCalendarStackScreen = ({navigation}) => (
         },
     }}>
         <IndivCalendarStack.Screen
-        name = 'IndivCalendar' component = {indiv_calendar} options={{
+        name = 'indiv_calendar' component = {indiv_calendar} options={{
             headerTitle: props => <TopLogo {...props} />,
             headerLeft: () => (
                 <Icon.Button 
@@ -327,7 +325,7 @@ const IndivEtcStackScreen = ({navigation}) => (
         },
     }}>
         <IndivEtcStack.Screen
-        name = 'IndivEtc' component = {indiv_etc} options={{
+        name = 'indiv_etc' component = {indiv_etc} options={{
             headerTitle: props => <TopLogo {...props} />,
             headerLeft: () => (
                 <Icon.Button 
@@ -345,11 +343,20 @@ const Drawer = createDrawerNavigator();
 const Navigation = () => (
     <NavigationContainer>
         <Drawer.Navigator
-        screenOptions= {{ gestureEnabled: false}}>
+        screenOptions= {{ gestureEnabled: true}}>
             <Drawer.Screen name = "Dash" component={Footer_dash} />
             <Drawer.Screen name = "Indiv" component = {Footer_indiv} />
+            <Drawer.Screen name = "Mem_Add" component = {MemAddStackScreen} />
         </Drawer.Navigator>
     </NavigationContainer>
 )
 
 export default Navigation;
+
+const styles = StyleSheet.create({
+    backbutton: {
+        width: Spacing.SCALE_20,
+        height: Spacing.SCALE_20,
+        marginLeft: Spacing.SCALE_8,
+    }
+})

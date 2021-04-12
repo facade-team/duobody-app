@@ -5,8 +5,7 @@ import GrayTextButton from '../../components/GrayTextButton';
 import { WHITE } from '../../styles/colors';
 import { CenterFocusStrong } from '@material-ui/icons';
 import Icon from 'react-native-ionicons'
-//import { Ionicons } from '@expo/vector-icons';
-//import { Footer_dash } from '../../components/Footer_dash'
+import { SCALE_18 } from '../../styles/spacing';
 
 class Dash_dash extends Component {
     render() {
@@ -15,8 +14,9 @@ class Dash_dash extends Component {
       <View style={styles.header}></View>
       <View style={styles.main}>
         <View style={styles.upper}>
-          <View >
-            <Text style={styles.listh}>TODAY</Text>
+          <View style={{flexDirection: "row", width: '90%', justifyContent: 'space-between'}}>
+            <Text style={styles.listupleft}>3월 20일 (토)</Text>
+            <Text style={styles.listright}>TODAY</Text>
             
           </View>
           <View style={styles.time}>
@@ -59,7 +59,7 @@ class Dash_dash extends Component {
         <View style={styles.down}>
           <View style={{flex:1, flexDirection: 'row'}}>
             <View style={{alignSelf:'flex-start'}}>
-              <Text style={styles.listh}>고객명단</Text>
+              <Text style={styles.listleft}>고객명단</Text>
             </View>
             <View style={{alignItems:'flex-end'}}>
               
@@ -98,10 +98,21 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
       },
-      listh: {
-        margin:10,
+      listupleft: {
+        margin:5,
+        fontWeight: '900',
+        fontSize: SCALE_18,
+        color: Colors.GRAY,
+      },
+      listleft: {
+        margin:5,
         fontWeight: 'bold',
-        fontSize: 20,
+        fontSize: Spacing.SCALE_18,
+      },
+      listright: {
+        margin:5,
+        fontWeight: '900',
+        fontSize: Spacing.SCALE_18,
       },
       list: {
         width: "90%",
@@ -119,23 +130,23 @@ const styles = StyleSheet.create({
       },
       timelist: {
         flex:1,
-        width: Dimensions.get('screen').width * 0.35,
+        width: Dimensions.get('screen').width * 0.40,
         margin:3,
         backgroundColor: WHITE,
         paddingTop:Dimensions.get('screen').height * 0.01,
-        paddingLeft:5,
+        paddingLeft:10,
         borderWidth:1,
         borderRadius: 8,
-        borderColor : '#2BAE56',
+        borderColor : Colors.PRIMARY,
         fontWeight: 'bold',
-        
-        fontSize: 15,
+        color: Colors.GRAY,
+        fontSize: Spacing.SCALE_18,
         height:20,
-        height: Dimensions.get('screen').height * 0.05,
+        height: Dimensions.get('screen').height * 0.048,
       },
       upper: {
         flex: 1,
-        width:'95%',
+        width:'98%',
         margin:4,
         padding:4,
         backgroundColor: WHITE,
@@ -146,7 +157,7 @@ const styles = StyleSheet.create({
       },
       down: {
         flex: 1,
-        width:'95%',
+        width:'98%',
         margin:4,
         padding:4,
         backgroundColor: WHITE,
@@ -157,11 +168,11 @@ const styles = StyleSheet.create({
       
       memlist: {
         flex:1,
-        width: Dimensions.get('screen').width * 0.70,
+        width: Dimensions.get('screen').width * 0.80,
         margin:3,
         backgroundColor: WHITE,
         paddingTop:10,
-        paddingLeft:100,
+        paddingLeft:120,
         borderWidth:1,
         borderRadius: 8,
         borderColor : '#2BAE56',

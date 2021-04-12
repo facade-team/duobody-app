@@ -26,9 +26,9 @@ const Item = ({ title, submessenger }) => (
   </View>
 );
 
-const Messenger = () => {
+const Messenger = ( {navigation} ) => {
   const renderItem = ({ item }) => (
-    <TouchableOpacity onPress={() => Alert.alert("개인간의 채팅화면으로 전환 필요","넘겨야 할 prop: 해당 대화 상대의 이름을 채팅방의 상단에 띄워야 함")}>
+    <TouchableOpacity onPress={() => navigation.navigate('Indiv', { screen: 'indiv_msg'})}>
       <Item title={item.title} submessenger={item.submessenger}/>
     </TouchableOpacity>
   );
