@@ -263,6 +263,28 @@ function Change_view({ navigation, valueFormatter, ...props }) {
     ]
   })
 
+  const data1 = {
+    labels: ["4/1", "4/2", "4/3", "4/4", "4/5", "4/6", "4/7", "4/8", "4/9", "4/10", "4/11", "4/12"],
+    datasets: [
+      {
+        data: [
+          35.5,
+          31,
+          32.6,
+          37.4,
+          43.5,
+          44,
+          40.5,
+          37,
+          37.6,
+          39.4,
+          35.5,
+          41,
+        ]
+      }
+    ]
+  }
+
   const onDatePickHandler = () => {
     // api data에서 start 와 end 사이의 날짜 뽑기
     let selectedApiDataArr = []
@@ -273,13 +295,14 @@ function Change_view({ navigation, valueFormatter, ...props }) {
       : 
       ''
     )
-
     setSelectedApiData(selectedApiDataArr)
-
+    
     let datesArr = []
     selectedApiDataArr.map((data) => datesArr.push(getDateString(data.date)))
-    setSelectedApiData(datesArr)
+    console.log(selectedDates)
+    setSelectedDates(datesArr)
 
+    
     let weightArr = []
     let bmiArr = []
     let fatArr = []
@@ -297,11 +320,11 @@ function Change_view({ navigation, valueFormatter, ...props }) {
     setSelectedFat(fatArr)
     setSelectedSkeletalMuscle(skeletalMuscleArr)
 
-    let prevWeight = [...weightGraph]
-    let prevBMI = [...BMIGraph]
-    let prevFat = [...fatGraph]
-    let prevSkeletalMuscle = [...skeletalMuscleGraph]
-
+    let prevWeight = weightGraph
+    let prevBMI = BMIGraph
+    let prevFat = fatGraph
+    let prevSkeletalMuscle = skeletalMuscleGraph
+    
     prevWeight.labels = datesArr
     prevBMI.labels = datesArr
     prevFat.labels = datesArr
@@ -317,6 +340,11 @@ function Change_view({ navigation, valueFormatter, ...props }) {
     setFatGraph(prevFat)
     setSkeletalMuscleGraph(prevSkeletalMuscle)
   }
+
+  useEffect(() => {
+    //console.log('Selected sm')
+    //console.log(selectedSkeletalMuscle)
+  })
   
   return (
     <SafeAreaView style={styles.mainContainer}>
