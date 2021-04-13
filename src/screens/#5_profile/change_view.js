@@ -158,8 +158,8 @@ function Change_view({ navigation, valueFormatter, ...props }) {
   ]
 )
 
-  const [startDate, setStartDate] = useState('2021-04-07')
-  const [endDate, setEndDate] = useState('2021-04-14')
+  const [startDate, setStartDate] = useState((apiData.length !== 0) ? getDateString(apiData[0].date) : '2021-04-07')
+  const [endDate, setEndDate] = useState((apiData.length !== 0) ? getDateString(apiData[apiData.length - 1].date) : '2021-04-14')
 
   const [selectedDates, setSelectedDates] = useState([])
 
@@ -169,11 +169,6 @@ function Change_view({ navigation, valueFormatter, ...props }) {
   const [selectedBMI, setSelectedBMI] = useState([])
   const [selectedFat, setSelectedFat] = useState([])
   const [selectedSkeletalMuscle, setSelectedSkeletalMuscle] = useState([])
-
-
-  useEffect(() => {
-    const date = getDateString(apiData[0].date)
-  })
 
   const [weightGraph, setWeightGraph] = useState(
     {
@@ -266,33 +261,21 @@ function Change_view({ navigation, valueFormatter, ...props }) {
     ]
   })
 
-  const data1 = {
-    labels: ["4/1", "4/2", "4/3", "4/4", "4/5", "4/6", "4/7", "4/8", "4/9", "4/10", "4/11", "4/12"],
-    datasets: [
-      {
-        data: [
-          35.5,
-          31,
-          32.6,
-          37.4,
-          43.5,
-          44,
-          40.5,
-          37,
-          37.6,
-          39.4,
-          35.5,
-          41,
-        ]
-      }
-    ]
-  }
-
-  const onDatePickHandler = () => {
+  const onDatePickHandler = (sDate, eDate) => {
+    let sD = startDate
+    let eD = endDate
+    if (sDate === null) {
+      eD = getDateString(eDate)
+      setEndDate(eD)
+    }
+    else {
+      sD = getDateString(sDate)
+      setStartDate(sD)
+    }
     // api data에서 start 와 end 사이의 날짜 뽑기
     let selectedApiDataArr = []
     apiData.map((data) => 
-      (String(startDate) <= getDateString(data.date)) && (getDateString(data.date) <= String(endDate)) ? (
+      (String(sD) <= getDateString(data.date)) && (getDateString(data.date) <= String(eD)) ? (
         selectedApiDataArr.push(data)
       )
       : 
@@ -302,7 +285,6 @@ function Change_view({ navigation, valueFormatter, ...props }) {
     
     let datesArr = []
     selectedApiDataArr.map((data) => datesArr.push(getDateString(data.date)))
-    console.log(selectedDates)
     setSelectedDates(datesArr)
 
     
@@ -344,19 +326,22 @@ function Change_view({ navigation, valueFormatter, ...props }) {
     setSkeletalMuscleGraph(prevSkeletalMuscle)
   }
 
-  useEffect(() => {
-    //console.log('Selected sm')
-    //console.log(selectedSkeletalMuscle)
-  })
-
-  const [date, setDate] = useState(new Date(1598051730000));
   const [mode, setMode] = useState('date');
-  const [show, setShow] = useState(false);
 
-  const onChange = (event, selectedDate) => {
-    const currentDate = selectedDate || date;
-    setShow(Platform.OS === 'ios');
-    setDate(currentDate);
+  const [calStartDate, setCalStartDate] = useState(new Date(startDate))
+  const [calEndDate, setCalEndDate] = useState(new Date(endDate))
+
+  const onChangeStartDate = (event, selectedDate) => {
+    const currentDate = selectedDate
+    setCalStartDate(currentDate)
+    setStartDate(getDateString(currentDate))
+    onDatePickHandler(currentDate, null)
+  };
+
+  const onChangeEndDate = (event, selectedDate) => {
+    const currentDate = selectedDate
+    setCalEndDate(currentDate)
+    onDatePickHandler(null, currentDate)
   };
 
   const showMode = (currentMode) => {
@@ -371,6 +356,9 @@ function Change_view({ navigation, valueFormatter, ...props }) {
   const showTimepicker = () => {
     showMode('time');
   };
+
+  const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0, visible: false, value: 0 })
+
   
   return (
     <SafeAreaView style={styles.mainContainer}>
@@ -402,20 +390,18 @@ function Change_view({ navigation, valueFormatter, ...props }) {
             <DateTimePicker
               style={{width: Spacing.SCALE_100,}}
               testID="dateTimePicker"
-              value={date}
+              value={calStartDate}
               mode={'date'}
-              is24Hour={true}
               display="default"
-              
+              onChange={onChangeStartDate}
             />
             <DateTimePicker
               style={{width: Spacing.SCALE_100,}}
-              testID="dateTimePicker"
-              value={date}
+              testID="dateTimePicker1"
+              value={calEndDate}
               mode={'date'}
-              is24Hour={true}
               display="default"
-              
+              onChange={onChangeEndDate}
             />
           </View>
         </View>
@@ -428,9 +414,9 @@ function Change_view({ navigation, valueFormatter, ...props }) {
             >
               <View>
                 {(weightGraph === '') ? null : <InbodyChart data={weightGraph} idx={0} />}
-                <InbodyChart data={BMIGraph} idx={1} />
-                <InbodyChart data={fatGraph} idx={2} />
-                <InbodyChart data={skeletalMuscleGraph} idx={3} />
+                {(BMIGraph === '') ? null : <InbodyChart data={BMIGraph} idx={1} />}
+                {(fatGraph === '') ? null : <InbodyChart data={fatGraph} idx={2} />}
+                {(skeletalMuscleGraph === '') ? null : <InbodyChart data={skeletalMuscleGraph} idx={3} />}
               </View>
             </ScrollView>
           </View>
