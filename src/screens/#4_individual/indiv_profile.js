@@ -41,7 +41,7 @@ const Name = styled.Text`
   font-weight: ${Typography.FONT_WEIGHT_BOLD};
 `
 
-export default () => {
+export default ({navigation}) => {
   const [loginText, setLoginText] = useState('');
   const [singupText, setSignupText] = useState('');
   return (
@@ -49,11 +49,13 @@ export default () => {
     <ProfileContainer>
       <NameAndEditIcon>
         <Name>김승우 회원님</Name>
-        <Icon name='edit' size={30} color='#4F8EF6' />
+        <Icon name='edit' size={30} color='#4F8EF6'
+              onPress={() => navigation.navigate('Change_View')} />
       </NameAndEditIcon>
     </ProfileContainer>
     <InbodyContainer>
-      <Text>hello</Text>
+    <Icon name='plus' size={30} color={Colors.PRIMARY}
+              onPress={() => navigation.navigate('Change_Add')} />
     </InbodyContainer>
   </Container>
 )}

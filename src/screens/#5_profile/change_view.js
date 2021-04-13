@@ -326,8 +326,6 @@ function Change_view({ navigation, valueFormatter, ...props }) {
     setSkeletalMuscleGraph(prevSkeletalMuscle)
   }
 
-  const [mode, setMode] = useState('date');
-
   const [calStartDate, setCalStartDate] = useState(new Date(startDate))
   const [calEndDate, setCalEndDate] = useState(new Date(endDate))
 
@@ -344,22 +342,6 @@ function Change_view({ navigation, valueFormatter, ...props }) {
     onDatePickHandler(null, currentDate)
   };
 
-  const showMode = (currentMode) => {
-    setShow(true);
-    setMode(currentMode);
-  };
-
-  const showDatepicker = () => {
-    showMode('date');
-  };
-
-  const showTimepicker = () => {
-    showMode('time');
-  };
-
-  const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0, visible: false, value: 0 })
-
-  
   return (
     <SafeAreaView style={styles.mainContainer}>
       <ScrollView>

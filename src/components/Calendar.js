@@ -14,20 +14,14 @@ LocaleConfig.locales['fr'] = {
 LocaleConfig.defaultLocale = 'fr';
 
 // 날짜를 눌렀을 때 이벤트 추가해야 됨
-const currentDate = new Date().toISOString().slice(0, 10)
-//console.log(currentDate)
+//const DateObject = new Date().toISOString().slice(0, 10)
 
-
-const CalendarView = () => {
-    let curr = console.log(String(currentDate))
-    const [markedDates, setMarkedDates] = useState(
-      {
-        '2021-04-16': {selected: true, selectedColor: Colors.PRIMARY},
-      },
-    )
+const CalendarView = ({setSelectedDate}) => {
+    // let curr = console.log(String(currentDate))
+    const [markedDates, setMarkedDates] = useState({})
 
     return (
-      <View style={{ margin: 5, paddingTop: 20, flex: 1, borderWidth:0.5}}>
+      <View style={{ flex: 1, borderWidth:0.5}}>
         <Calendar
         //선택날짜 마킹
         markedDates={markedDates}
@@ -38,22 +32,23 @@ const CalendarView = () => {
         maxDate={'2021-12-31'}
         // Handler which gets executed on day press. Default = undefined
         onDayPress={
-    
           (day) => {
-            day.selected = true
-            day.selectedColor = Colors.PRIMARY
-
-            const selectedDate = day.dateString
-
-            console.log('selected : ' + selectedDate)
-            //const prevMarkedDatesState = [...markedDatesState]
+            //console.log(day)
+            const temp = day.dateString
+            
             let newMarked = {}
-            newMarked[selectedDate] = {selected: true, selectedColor: Colors.PRIMARY},
+            newMarked[temp] = {selected: true, selectedColor: Colors.PRIMARY}
             setMarkedDates(newMarked)
 
-            //console.log('marked State: ' + markedDatesState)
-
-            //console.log('selected day', day)
+            const tempo = new Date(day.dateString).getDay()
+            //console.log(tempo)
+            //day object 넘겨주기
+            setSelectedDate({
+              year: day.year,
+              month: day.month,
+              date: day.day,
+              day: new Date(day.dateString).getDay()
+            })
           }
         }
 
@@ -70,7 +65,7 @@ const CalendarView = () => {
         // day from another month that is visible in calendar page. Default = false
         disableMonthChange={true}
         // If firstDay=1 week starts from Monday. Note that dayNames and dayNamesShort should still start from Sunday.
-        firstDay={1}
+        firstDay={0}
         // Hide day names. Default = false
         hideDayNames={false}
         // Show week numbers to the left. Default = false
@@ -79,13 +74,12 @@ const CalendarView = () => {
         onPressArrowLeft={substractMonth => substractMonth()}
         // Handler which gets executed when press arrow icon right. It receive a callback can go next month
         onPressArrowRight={addMonth => addMonth()}
-        // Disable all touch events for disabled days. can be override with disableTouchEvent in markedDates
-        disableAllTouchEventsForDisabledDays={true}
+        
         /** Replace default month and year title with custom one. the function receive a date as parameter. */
         //renderHeader={(date) => {/*Return JSX*/}}
         />
       </View>
     )
- }
+}
 
- export default CalendarView
+export default CalendarView
