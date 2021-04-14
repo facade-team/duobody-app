@@ -27,7 +27,7 @@ const LogoImage = styled.Image`
   height: ${Spacing.SCALE_200};
 `
 
-export default () => {
+export default ({navigation}) => {
   const [nameText, setNameText] = useState('')
   const [idText, setIdtext] = useState('')
   const [passwordText, setPasswordText] = useState('')
@@ -42,9 +42,14 @@ export default () => {
       <UnderLinedTextInput placeholder={'아이디'}  value={idText} onChangeText={setIdtext} />
       <UnderLinedTextInput placeholder={'비밀번호'} value={passwordText} onChangeText={setPasswordText} secureTextEntry={true} />
       <UnderLinedTextInput placeholder={'비밀번호 확인'} value={checkPasswordText} onChangeText={setCheckPasswordText} secureTextEntry={true} />
-      <GreenButton content={'인증코드 발송'} />
+      <GreenButton
+        content={'인증코드 발송'} 
+        onClick = {()=>navigation.navigate('Confirm')}
+      />
       <View style={{alignSelf:'flex-end'}}>
-        <GrayTextButton content='로그인' />
+        <GrayTextButton
+          content='로그인'
+          onClick = {()=>navigation.goBack()} />
       </View>
     </AuthContainer>
   </Container>

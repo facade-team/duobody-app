@@ -2,7 +2,7 @@ import React, {useState, useCallback, useEffect} from 'react';
 import { Bubble, GiftedChat } from 'react-native-gifted-chat'
 import {StyleSheet} from 'react-native';
 
-const ChatScreen = () => {
+const indiv_msg = () => {
     const [messages, setMessages] = useState([]);
 
     useEffect(() => {
@@ -57,4 +57,4 @@ const ChatScreen = () => {
     )
 }
 
-export default ChatScreen;
+export default indiv_msg;
