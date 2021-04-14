@@ -5,6 +5,18 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { SafeAreaView } from 'react-navigation';
 import { useNavigation } from '@react-navigation/native'
 
+const Dash_dash = ({navigation}) => {
+        return (
+            <View style={styles.container}>
+      <View style={styles.header}></View>
+      <View style={styles.main}>
+        
+        
+        <View style={styles.upper}>
+          <View style={{flexDirection: "row", width: '90%', justifyContent: 'space-between'}}>
+            <Text style={styles.listupleft}>3월 20일 (토)</Text>
+            <Text style={styles.listright}>TODAY</Text>
+          </View>
 
 const Dash_dash = () => {
 const navigation = useNavigation();
