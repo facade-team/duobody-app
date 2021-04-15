@@ -1,10 +1,11 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import styled from 'styled-components'
 import { View } from 'react-native';
 import GrayTextButton from '../../components/GrayTextButton';
 import UnderLinedTextInput from '../../components/UnderlinedTextInput';
 import { Spacing, Colors } from '../../styles';
 import GreenButton from '../../components/GreenButton';
+import { AuthContext } from '../../context/testContext';
 
 const Container = styled.View`
   flex: 1;
@@ -42,6 +43,8 @@ const LogoImage = styled.Image`
 export default () => {
   const [loginText, setLoginText] = useState('');
   const [singupText, setSignupText] = useState('');
+
+  const { signIn } = useContext(AuthContext);
   return (
   <Container>
     <WhiteboxContainer>
@@ -51,7 +54,7 @@ export default () => {
       <AuthContainer>
         <UnderLinedTextInput placeholder={'아이디'}  value={loginText} onChangeText={setLoginText} />
         <UnderLinedTextInput placeholder={'비밀번호'} value={singupText} onChangeText={setSignupText} secureTextEntry={true} />
-        <GreenButton content={'로그인'} />
+        <GreenButton content={'로그인'} onPressOut={signIn} />
         <View style={{alignSelf:'flex-end'}}>
           <GrayTextButton content='회원가입' />
         </View>

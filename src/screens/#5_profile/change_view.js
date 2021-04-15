@@ -1,22 +1,27 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, Image, StyleSheet, Dimensions, ScrollView, SafeAreaView, TouchableOpacity, Button} from 'react-native';
+import React, { useState, useEffect, useContext } from 'react';
+import { View, Text, Image, StyleSheet, Dimensions, ScrollView, SafeAreaView, TouchableOpacity, Button, Alert} from 'react-native';
 import { Spacing, Typography, Colors } from '../../styles';
 import InbodyChart from '../../components/InbodyChart';
 import getDateString from '../../utils/getDateString';
 
 import DateTimePicker from '@react-native-community/datetimepicker';
+import useAxios from 'axios-hooks';
+import axios from 'axios';
+import { AuthContext } from '../../context/testContext';
+
 
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    height: Dimensions.get('window').height
+    height: Dimensions.get('window').height,
   },
   title: {
     fontSize: Typography.FONT_SIZE_24,
     fontWeight: Typography.FONT_WEIGHT_BOLD,
     alignSelf: 'center',
+    paddingTop: Spacing.SCALE_20,
   },
   subTitleContainer: {
     padding: Spacing.SCALE_16,
@@ -331,16 +336,44 @@ function Change_view({ navigation, valueFormatter, ...props }) {
 
   const onChangeStartDate = (event, selectedDate) => {
     const currentDate = selectedDate
-    setCalStartDate(currentDate)
-    setStartDate(getDateString(currentDate))
-    onDatePickHandler(currentDate, null)
+    if(getDateString(currentDate) <= endDate) {
+      setStartDate(getDateString(currentDate))
+      onDatePickHandler(currentDate, null)
+    }
+    else {
+      Alert.alert('잘못된 날짜 범위 입니다')
+    }
   };
 
   const onChangeEndDate = (event, selectedDate) => {
     const currentDate = selectedDate
-    setCalEndDate(currentDate)
-    onDatePickHandler(null, currentDate)
+    if(startDate <= getDateString(currentDate)) {
+      setCalEndDate(currentDate)
+      onDatePickHandler(null, currentDate)
+    }
+    else {
+      Alert.alert('잘못된 날짜 범위 입니다')
+    }
   };
+
+  const getDataHanlder = () => {
+    
+    /*
+    axios.post('http://3.35.110.129/api/auth/login',
+    {
+      trainerId : "soul4927",
+      password: "123"
+    }).then(res => {
+      console.log(res.data.token)
+    })
+    */
+    
+    const { getToken } = useContext(AuthContext)
+    const ret = getToken()
+    console.log(ret)
+  }  
+
+  const { signOut } = useContext(AuthContext)
 
   return (
     <SafeAreaView style={styles.mainContainer}>
@@ -388,6 +421,12 @@ function Change_view({ navigation, valueFormatter, ...props }) {
           </View>
         </View>
         <View style={styles.graphContainer}>
+          <TouchableOpacity onPressOut={getDataHanlder}>
+            <Text>Click me!</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPressOut={signOut}>
+            <Text>Log Out</Text>
+          </TouchableOpacity>
           <View>
             <ScrollView
               horizontal={true}
