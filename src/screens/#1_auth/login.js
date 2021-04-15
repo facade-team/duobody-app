@@ -11,7 +11,7 @@ import axios from 'axios'
 
 const Container = styled.View`
   flex: 1;
-  background-Color: ${Colors.PRIMARY};
+  background-Color: ${Colors.WHITE};
   justify-content: center;
   align-items: center;
 `
@@ -57,10 +57,11 @@ export default ({navigation}) => {
     if (loginText === '') {
       Alert.alert('아이디를 입력하세요')
     }
-    if (passwordText === '') {
+    else if (passwordText === '') {
       Alert.alert('비밀번호를 입력하세요')
-    } 
-    signIn(loginText, passwordText)
+    } else {
+      signIn(loginText, passwordText)
+    }
   }
   return (
   <Container>

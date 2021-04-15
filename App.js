@@ -25,8 +25,8 @@ const authContextValue = useMemo(() => ({
   signIn: async (trainerId, password) => {
     await axios.post('/auth/login',
     {
-      trainerId: trainerId,
-      password: password,
+      trainerId,
+      password,
     }).then(async (res) => {
       try {
         console.log(res.data.token)
@@ -42,9 +42,21 @@ const authContextValue = useMemo(() => ({
       Alert.alert(errJson.message)
     })
   },
-  signUp: () => {
-    //setUserToken('abc')
-    //setIsLoading(false)
+  signUp: async (name, trainerId, password) => {
+    await axios.post('/auth/register',
+    {
+      name,
+      trainerId,
+      password,
+    }).then((res) => {
+      console.log(res.data)
+      dispatch({type: 'REGISTER'})
+      return null;
+    }).catch(error => {
+      const errJson = JSON.parse(error.response.request._response)
+      console.log(errJson)
+      Alert.alert(errJson.message)
+    })
   },
   signOut: async () => {
     try {
@@ -76,6 +88,12 @@ const authContextValue = useMemo(() => ({
           isLoading: false,
         }
       case 'REGISTER':
+        return {
+          ...prevState,
+          token: null,
+          isLoading: false,
+        }
+      case 'CONFIRM_SECRET':
         return {
           ...prevState,
           token: action.token,
