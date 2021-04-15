@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Platform } from 'react-native';
 import { Spacing, Typography, Colors } from '../../styles';
 import SetsInput from '../../components/SetsInput';
@@ -7,6 +7,8 @@ import DeleteFieldButton from '../../components/DeleteFieldButton';
 import partAndField from '../../utils/partAndField';
 import AddFieldIOS from '../../components/AddFieldIOS';
 import AddFieldAndroid from '../../components/AddFieldAndroid';
+import axios from 'axios'
+import { AuthContext } from '../../services/AuthContext';
 
 const styles = StyleSheet.create({
   container: {
@@ -126,11 +128,26 @@ export default IndividualSession = () => {
     )
   }
 
+  // test
+  const getApiTest = () => {
+    axios.get('http://3.35.110.129/api/trainee')
+    .then(res => console.log(res.data.data))
+    .catch(err => console.log(err.response))
+  }
+
+  const { signOut } = useContext(AuthContext)
+
   return (
   <View style={styles.container}>
     <View style={styles.titleContainer}>
       <Text style={styles.title}>Session</Text>
       <Text style={styles.title}>2021년 3월 17일</Text>
+      <TouchableOpacity onPressOut={getApiTest}>
+        <Text>API Test</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPressOut={signOut}>
+        <Text>Log out</Text>
+      </TouchableOpacity>
     </View>
     <View style={styles.whiteBox}>
       <ScrollView>

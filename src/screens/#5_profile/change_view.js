@@ -6,9 +6,9 @@ import getDateString from '../../utils/getDateString';
 
 import DateTimePicker from '@react-native-community/datetimepicker';
 import useAxios from 'axios-hooks';
-import axios from 'axios';
-import { AuthContext } from '../../context/testContext';
-
+// import axios from 'axios';
+import axios from '../../axios/api'
+import { AuthContext } from '../../services/AuthContext';
 
 const styles = StyleSheet.create({
   mainContainer: {
@@ -356,24 +356,9 @@ function Change_view({ navigation, valueFormatter, ...props }) {
     }
   };
 
-  const getDataHanlder = () => {
-    
-    /*
-    axios.post('http://3.35.110.129/api/auth/login',
-    {
-      trainerId : "soul4927",
-      password: "123"
-    }).then(res => {
-      console.log(res.data.token)
-    })
-    */
-    
-    const { getToken } = useContext(AuthContext)
-    const ret = getToken()
-    console.log(ret)
-  }  
-
   const { signOut } = useContext(AuthContext)
+
+  
 
   return (
     <SafeAreaView style={styles.mainContainer}>
@@ -421,12 +406,6 @@ function Change_view({ navigation, valueFormatter, ...props }) {
           </View>
         </View>
         <View style={styles.graphContainer}>
-          <TouchableOpacity onPressOut={getDataHanlder}>
-            <Text>Click me!</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPressOut={signOut}>
-            <Text>Log Out</Text>
-          </TouchableOpacity>
           <View>
             <ScrollView
               horizontal={true}
