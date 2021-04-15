@@ -26,7 +26,7 @@ const Item = ({ title, submessenger }) => (
   </View>
 );
 
-const Messenger = ( {navigation} ) => {
+const Dash_Msg = ( {navigation} ) => {
   const renderItem = ({ item }) => (
     <TouchableOpacity onPress={() => navigation.navigate('Indiv', { screen: 'indiv_msg'})}>
       <Item title={item.title} submessenger={item.submessenger}/>
@@ -40,7 +40,7 @@ const Messenger = ( {navigation} ) => {
   );
 }
 
-export default Messenger
+export default Dash_Msg
 
 const styles = StyleSheet.create({
   container: {
