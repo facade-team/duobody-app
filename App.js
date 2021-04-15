@@ -4,6 +4,8 @@ import Auth_Nav from './src/navigation/auth_nav';
 
 import Navigation from './src/navigation/navigation';
 
+
+
 const App = () => {
   return (
     <View style={styles.container}>
