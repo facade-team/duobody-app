@@ -1,7 +1,7 @@
 import React, { createContext, useEffect, useState, useMemo, useReducer, useContext } from 'react';
 import {authState, dispatch} from '../services/AuthReducer'
 
-const authContext = useMemo(() => ({
+const authContextValue = useMemo(() => ({
   signIn: async () => {
     let token = null;
     axios.post('http://3.35.110.129/api/auth/login',
@@ -33,4 +33,4 @@ const authContext = useMemo(() => ({
   }
 }), [])
 
-export default authContext
+export default authContextValue

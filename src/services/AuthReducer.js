@@ -34,7 +34,7 @@ const AuthReducer = (prevState, action) => {
   }
 }
 
-const [authState, dispatch] = useReducer(AuthReducer, initialAuthState)
+// const [authState, dispatch] = useReducer(AuthReducer, initialAuthState)
 
-export default {authState, dispatch}
+export default {initialAuthState, AuthReducer}
 

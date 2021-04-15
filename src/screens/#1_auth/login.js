@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react'
 import styled from 'styled-components'
-import { Button, TouchableOpacity, View, Text } from 'react-native';
+import { Button, TouchableOpacity, View, Text, Alert } from 'react-native';
 import GrayTextButton from '../../components/GrayTextButton';
 import UnderLinedTextInput from '../../components/UnderlinedTextInput';
 import { Spacing, Colors } from '../../styles';
@@ -43,14 +43,24 @@ const LogoImage = styled.Image`
 `
 export default ({navigation}) => {
   const [loginText, setLoginText] = useState('');
-  const [singupText, setSignupText] = useState('');
+  const [passwordText, setPasswordText] = useState('');
 
   const { signIn } = useContext(AuthContext);
 
   const getApiTest = () => {
-    axios.get('http:/3.35.110.129/api/trainee')
+    axios.get('/api/trainee')
     .then(res => console.log(res.data.data))
     .catch(error => console.log(error.response.request._response))
+  }
+
+  const handleOnCickLogin = () => {
+    if (loginText === '') {
+      Alert.alert('아이디를 입력하세요')
+    }
+    if (passwordText === '') {
+      Alert.alert('비밀번호를 입력하세요')
+    } 
+    signIn(loginText, passwordText)
   }
   return (
   <Container>
@@ -60,8 +70,8 @@ export default ({navigation}) => {
       </LogoContainer>
       <AuthContainer>
         <UnderLinedTextInput placeholder={'아이디'}  value={loginText} onChangeText={setLoginText} />
-        <UnderLinedTextInput placeholder={'비밀번호'} value={singupText} onChangeText={setSignupText} secureTextEntry={true} />
-        <GreenButton content={'로그인'} onPressOut={signIn} />
+        <UnderLinedTextInput placeholder={'비밀번호'} value={passwordText} onChangeText={setPasswordText} secureTextEntry={true} />
+        <GreenButton content={'로그인'} onPressOut={handleOnCickLogin} />
         <View style={{alignSelf:'flex-end'}}>
           <GrayTextButton
           content='회원가입'

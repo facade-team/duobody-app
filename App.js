@@ -1,19 +1,10 @@
-import React, { createContext, useEffect, useState, useMemo, useReducer, useContext } from 'react';
-import { StyleSheet, View, Text } from 'react-native';
-import Dash_cal from './src/screens/#2_dashboard/calendar';
-import IndividualSession from './src/screens/#4_individual/indiv_session';
-import Change_view from './src/screens/#5_profile/change_view';
+import React, { useEffect, useMemo, useReducer } from 'react';
+import { StyleSheet, View, Text, Alert } from 'react-native';
 import Navigation from './src/navigation/navigation';
-import { Provider as PaperProvider } from 'react-native-paper'
 import AsyncStorage from '@react-native-community/async-storage';
-import axios from 'axios';
-
-//test
-// import { AuthContext } from './src/context/testContext'
 import Auth_Nav from './src/navigation/auth_nav';
 import { AuthContext } from './src/services/AuthContext';
-// import authContextValue from './src/services/AuthService';
-// import {initialAuthState, AuthReducer} from './src/services/AuthReducer'
+import axios from './src/axios/api'
 
 const App = () => {
   useEffect(() => {
@@ -25,21 +16,55 @@ const App = () => {
         console.log(err)
       }
       dispatch({type: 'RETRIEVE_TOKEN', token: token})
-    }, 1)
+    }, 1000)
   }, [])
+  
+const authContextValue = useMemo(() => ({
+  signIn: async (trainerId, password) => {
+    await axios.post('/auth/login',
+    {
+      trainerId: trainerId,
+      password: password,
+    }).then(async (res) => {
+      try {
+        console.log(res.data.token)
+        await AsyncStorage.setItem('token', res.data.token)
+        token = await AsyncStorage.getItem('token')
+        dispatch({type: 'LOGIN', token})
+      } catch (error) {
+        console.log(error)
+      }
+    }).catch(error => {
+      const errJson = JSON.parse(error.response.request._response)
+      console.log(errJson)
+      Alert.alert(errJson.message)
+    })
+  },
+  signUp: () => {
+    //setUserToken('abc')
+    //setIsLoading(false)
+  },
+  signOut: async () => {
+    try {
+      await AsyncStorage.removeItem('token')
+    } catch (err) {
+      console.log(err)
+    }
+    dispatch({type: 'LOGOUT'})
+    }
+  }), [])
 
-  /*
-  const initialLoginState = {
+  const initialAuthState = {
     isLoading: true,
     token: null,
   }
 
-  const loginReducer = (prevState, action) => {
+  const AuthReducer = (prevState, action) => {
     switch( action.type ) {
       case 'RETRIEVE_TOKEN':
         return {
           ...prevState,
-          token: null,
+          token: action.token,
           isLoading: false,
         }
       case 'LOGIN':
@@ -63,109 +88,7 @@ const App = () => {
     }
   }
 
-  const [loginState, dispatch] = useReducer(loginReducer, initialLoginState)
-
-  const authContext = useMemo(() => ({
-    signIn: async () => {
-      let token = null;
-      axios.post('http://3.35.110.129/api/auth/login',
-        {
-          trainerId : "soul4927",
-          password: "123"
-        }).then(async (res) => {
-            try {
-              await AsyncStorage.setItem('token', res.data.token)
-              token = await AsyncStorage.getItem('token')
-              console.log(`logging in... token is : ${token}`)
-            } catch (err) {
-              console.log(err)
-            }
-            dispatch({type: 'LOGIN', id: 'soul4927', token: token})
-        })
-    },
-    signUp: () => {
-      //setUserToken('abc')
-      //setIsLoading(false)
-    },
-    signOut: async () => {
-      try {
-        await AsyncStorage.removeItem('token')
-      } catch (err) {
-        console.log(err)
-      }
-      dispatch({type: 'LOGOUT'})
-    }
-  }), [])
-  */
-
-  
-const authContextValue = useMemo(() => ({
-  signIn: async () => {
-    let token = null;
-    axios.post('http://3.35.110.129/api/auth/login',
-      {
-        trainerId : "soul4927",
-        password: "123"
-      }).then(async (res) => {
-          try {
-            await AsyncStorage.setItem('token', res.data.token)
-            token = await AsyncStorage.getItem('token')
-            console.log(`logging in... token is : ${token}`)
-          } catch (err) {
-            console.log(err)
-          }
-          dispatch({type: 'LOGIN', id: 'soul4927', token: token})
-      })
-  },
-  signUp: () => {
-    //setUserToken('abc')
-    //setIsLoading(false)
-  },
-  signOut: async () => {
-    try {
-      await AsyncStorage.removeItem('token')
-    } catch (err) {
-      console.log(err)
-    }
-    dispatch({type: 'LOGOUT'})
-  }
-}), [])
-
-const initialAuthState = {
-  isLoading: true,
-  token: null,
-}
-
-const AuthReducer = (prevState, action) => {
-  switch( action.type ) {
-    case 'RETRIEVE_TOKEN':
-      return {
-        ...prevState,
-        token: action.token,
-        isLoading: false,
-      }
-    case 'LOGIN':
-      return {
-        ...prevState,
-        token: action.token,
-        isLoading: false,
-      }
-    case 'REGISTER':
-      return {
-        ...prevState,
-        token: action.token,
-        isLoading: false,
-      }
-    case 'LOGOUT':
-      return {
-        ...prevState,
-        token: null,
-        isLoading: false,
-      }
-  }
-}
-
-const [authState, dispatch] = useReducer(AuthReducer, initialAuthState)
+  const [authState, dispatch] = useReducer(AuthReducer, initialAuthState)
 
 
   if (authState.isLoading) {
@@ -176,18 +99,15 @@ const [authState, dispatch] = useReducer(AuthReducer, initialAuthState)
     )
   }
 
-
-  // tutorial end...
+  const NavController = () => {
+    const isLoggedIn = authState.token
+    return isLoggedIn !== null ? <Navigation /> : <Auth_Nav />
+  }
 
   return (
     <AuthContext.Provider value={authContextValue}>
         <View style={styles.container}>
-          {(authState.token !== null) ? (
-              <Navigation/>
-            ) : (
-              <Auth_Nav />
-            )
-          }
+          <NavController />
         </View>
     </AuthContext.Provider>
   )
