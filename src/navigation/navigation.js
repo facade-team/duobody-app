@@ -10,14 +10,14 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 
 import Dash_dash from '../screens/#2_dashboard/dashboard';
 import Dash_Cal from '../screens/#2_dashboard/calendar';
-import Messenger from '../screens/#2_dashboard/messenger';
+import Dash_Msg from '../screens/#2_dashboard/messenger';
 import mem_add from '../screens/#3_mem_admin/mem_add';
 import mem_edit from '../screens/#3_mem_admin/mem_edit';
 import mem_search from '../screens/#3_mem_admin/mem_search';
 import indiv_profile from '../screens/#4_individual/indiv_profile';
 import indiv_session from '../screens/#4_individual/indiv_session';
 import indiv_calendar from '../screens/#4_individual/indiv_calendar';
-import ChatScreen from '../screens/#4_individual/indiv_msg';
+import indiv_msg from '../screens/#4_individual/indiv_msg';
 import indiv_etc from '../screens/#4_individual/indiv_etc';
 import change_add from '../screens/#5_profile/change_add';
 import change_view from '../screens/#5_profile/change_view';
@@ -198,7 +198,7 @@ const DashMsgStackScreen = ({navigation}) => (
         },
     }}>
         <DashMsgStack.Screen
-        name = 'DashMsg' component = {Messenger} options={{
+        name = 'Dash_Msg' component = {Dash_Msg} options={{
             headerTitle: props => <TopLogo {...props} />
         }} />
     </DashMsgStack.Navigator>
@@ -311,7 +311,7 @@ const IndivMessageStackScreen = ({navigation}) => (
         },
     }}>
         <IndivMessageStack.Screen
-        name = 'indiv_msg' component = {ChatScreen} options={{
+        name = 'indiv_msg' component = {indiv_msg} options={{
             headerTitle: props => <TopLogo {...props} />,
             headerLeft: () => (
                 <Icon.Button 
@@ -422,11 +422,3 @@ const Navigation = () => (
 )
 
 export default Navigation;
-
-const styles = StyleSheet.create({
-    backbutton: {
-        width: Spacing.SCALE_20,
-        height: Spacing.SCALE_20,
-        marginLeft: Spacing.SCALE_8,
-    }
-})

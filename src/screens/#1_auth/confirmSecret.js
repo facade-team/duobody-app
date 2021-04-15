@@ -33,7 +33,7 @@ const GuideText = styled.Text`
   margin-bottom: ${Spacing.SCALE_8};
 `
 
-export default () => {
+export default ({navigation}) => {
   const [secretText, setSecretText] = useState('');
   return (
   <Container>
@@ -43,10 +43,10 @@ export default () => {
     <AuthContainer>
       <GuideText>이메일 인증코드를 입력하세요</GuideText>
       <UnderLinedTextInput placeholder={'인증코드'}  value={secretText} onChangeText={setSecretText} />
-      <GreenButton content={'회원가입 완료'} />
-      <View style={{alignSelf:'flex-end'}}>
-        <GrayTextButton content='로그인' />
-      </View>
+      <GreenButton
+       content={'회원가입 완료'} 
+       onClick = {()=>navigation.navigate('Login')}
+     />
     </AuthContainer>
   </Container>
 )}

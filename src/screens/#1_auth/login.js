@@ -40,7 +40,7 @@ const LogoImage = styled.Image`
   height: ${Spacing.SCALE_200};
 `
 
-export default () => {
+export default ({navigation}) => {
   const [loginText, setLoginText] = useState('');
   const [singupText, setSignupText] = useState('');
 
@@ -56,7 +56,10 @@ export default () => {
         <UnderLinedTextInput placeholder={'비밀번호'} value={singupText} onChangeText={setSignupText} secureTextEntry={true} />
         <GreenButton content={'로그인'} onPressOut={signIn} />
         <View style={{alignSelf:'flex-end'}}>
-          <GrayTextButton content='회원가입' />
+          <GrayTextButton
+          content='회원가입'
+          onClick = {() => navigation.navigate('Signup')}
+        />
         </View>
       </AuthContainer>
     </WhiteboxContainer>

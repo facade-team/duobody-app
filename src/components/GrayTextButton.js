@@ -13,9 +13,9 @@ const ButtonText = styled.Text`
   font-weight: ${Typography.FONT_WEIGHT_BOLD};
 `
 
-const GrayTextButton = ({content}) => {
+const GrayTextButton = ({content, onClick}) => {
   return(
-    <Container>
+    <Container onPressOut = {onClick}>
       <ButtonText>
         {content}
       </ButtonText>
