@@ -1,60 +1,67 @@
 import React, { useState } from 'react';
-import { Circle, G, Rect, Svg, Text as TextSVG } from 'react-native-svg';
+import { Circle, ForeignObject, G, Rect, Svg, Text as TextSVG } from 'react-native-svg';
 import { Spacing, Typography, Colors } from '../styles';
 import { View, Text, Button, Image, StyleSheet, Dimensions, ScrollView, SafeAreaView } from 'react-native';
-import {
-  LineChart,
-  BarChart,
-  PieChart,
-  ProgressChart,
-  ContributionGraph,
-  StackedBarChart
-} from "react-native-chart-kit"
+import { LineChart } from "react-native-chart-kit"
 
 export default ({data, idx}) => {
-  const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0, visible: false, value: 0 })
+  const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0, visible: false, value: 0, date: ''})
 
   const tempDecorator = () => {
+    const units = ['kg', 'kg/m\xB2', 'kg', 'kg']
     return (tooltipPos.visible) ? (
       <View>
         <Svg>
             <Rect
-              x={tooltipPos.x - 15} 
-              y={tooltipPos.y + 10} 
-              width="40" 
-              height="30" 
-              fill="black" 
+              x={tooltipPos.x - 35} 
+              y={(tooltipPos.y > 50) ? tooltipPos.y - 45 : tooltipPos.y + 5} 
+              width="80" 
+              height="40" 
+              fill="white"
+              stroke={Colors.GRAY}
             />
             <TextSVG
               x={tooltipPos.x + 5}
-              y={tooltipPos.y + 30}
-              fill="white"
-              fontSize="16"
+              y={(tooltipPos.y > 50) ? tooltipPos.y - 30 : tooltipPos.y + 20}
+              fill="black"
+              fontSize={Typography.FONT_SIZE_12}
               fontWeight="bold"
               textAnchor="middle"
             >
-              {tooltipPos.value}
+              {tooltipPos.date}
+            </TextSVG>
+            <TextSVG
+              x={tooltipPos.x + 5}
+              y={(tooltipPos.y > 50) ? tooltipPos.y - 15 : tooltipPos.y + 35}
+              fill="black"
+              fontSize={Typography.FONT_SIZE_12}
+              fontWeight="bold"
+              textAnchor="middle"
+            >
+              {(idx === 1) ? `${tooltipPos.value}kg/m\xB2`: `${tooltipPos.value}kg`}
             </TextSVG>
         </Svg>
       </View>
     ) : null
   }
 
-  const onDataPointClickHandler = (data) => {
-    let isSamePoint = (tooltipPos.x === data.x && tooltipPos.y === data.y)
+  const onDataPointClickHandler = (clickedData) => {
+    let isSamePoint = (tooltipPos.x === clickedData.x && tooltipPos.y === clickedData.y)
     isSamePoint ? setTooltipPos((previousState) => {
       return {
         ...previousState,
-        value: data.value,
-        visible: !previousState.visible
+        value: clickedData.value,
+        visible: !previousState.visible,
+        date: data.labels[clickedData.index],
       }
     }) :
     setTooltipPos(
       {
-        x : data.x,
-        value : data.value,
-        y : data.y,
-        visible : true
+        x : clickedData.x,
+        value : clickedData.value,
+        y : clickedData.y,
+        visible : true,
+        date: data.labels[clickedData.index],
       }
     )
   }
