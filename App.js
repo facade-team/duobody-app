@@ -23,13 +23,12 @@ const App = () => {
   
 const authContextValue = useMemo(() => ({
   signIn: async (trainerId, password) => {
-    await axios.post('/auth/login',
+    axios.post('/auth/login',
     {
       trainerId,
       password,
     }).then(async (res) => {
       try {
-        console.log(res.data.token)
         await AsyncStorage.setItem('token', res.data.token)
         token = await AsyncStorage.getItem('token')
         dispatch({type: 'LOGIN', token})
@@ -38,26 +37,46 @@ const authContextValue = useMemo(() => ({
       }
     }).catch(error => {
       const errJson = JSON.parse(error.response.request._response)
-      console.log(errJson)
-      Alert.alert(errJson.message)
+      const message = errJson.msg || errJson.message
+      Alert.alert(message)
+      console.log(message === '인증에 실패하였습니다')
+      if (message === '인증에 실패하였습니다') {
+        return String(trainerId)
+      } else {
+        throw new Error(message)
+      }
     })
   },
-  signUp: async (name, trainerId, password) => {
-    await axios.post('/auth/register',
+  signUp: (name, trainerId, password) => {
+    axios.post('/auth/register',
     {
       name,
       trainerId,
       password,
     }).then((res) => {
+      Alert.alert('인증코드가 발송되었습니다.')
+    }).catch(error => {
+      const errJson = JSON.parse(error.response.request._response)
+      const message = errJson.msg || errJson.message
+      Alert.alert(message)
+      return errJson
+    })
+  },
+  confirmSecret: (trainerId, secretText) => {
+    axios.post('/auth/confirmsecret',
+    {
+      trainerId,
+      secret: secretText,
+    }).then((res) => {
       console.log(res.data)
-      dispatch({type: 'REGISTER'})
-      return null;
+      Alert.alert('회원가입에 성공했습니다. 로그인 해주세요.')
     }).catch(error => {
       const errJson = JSON.parse(error.response.request._response)
       console.log(errJson)
       Alert.alert(errJson.message)
     })
-  },
+  }
+  ,
   signOut: async () => {
     try {
       await AsyncStorage.removeItem('token')
@@ -82,18 +101,6 @@ const authContextValue = useMemo(() => ({
           isLoading: false,
         }
       case 'LOGIN':
-        return {
-          ...prevState,
-          token: action.token,
-          isLoading: false,
-        }
-      case 'REGISTER':
-        return {
-          ...prevState,
-          token: null,
-          isLoading: false,
-        }
-      case 'CONFIRM_SECRET':
         return {
           ...prevState,
           token: action.token,

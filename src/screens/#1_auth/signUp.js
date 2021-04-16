@@ -6,6 +6,7 @@ import GreenButton from '../../components/GreenButton';
 import UnderLinedTextInput from '../../components/UnderlinedTextInput';
 import { Spacing, Colors } from '../../styles';
 import { AuthContext } from '../../services/AuthContext';
+import axios from '../../axios/api';
 
 const Container = styled.View`
   flex: 1;
@@ -29,7 +30,7 @@ const LogoImage = styled.Image`
   height: ${Spacing.SCALE_200};
 `
 
-export default ({navigation}) => {
+export default ({ navigation }) => {
   const [nameText, setNameText] = useState('')
   const [idText, setIdtext] = useState('')
   const [passwordText, setPasswordText] = useState('')
@@ -37,30 +38,33 @@ export default ({navigation}) => {
 
   const { signUp } = useContext(AuthContext)
 
-  const handleOnCickSendSecret = () => {
+  const handleOnCickSendSecret = async () => {
     if (nameText === '') {
-      Alert.alert('이름을 입력하세요')
+      return Alert.alert('이름을 입력하세요')
     }
     else if (idText === '') {
-      Alert.alert('아이디를 입력하세요')
+      return Alert.alert('아이디를 입력하세요')
     }
     else if (passwordText === '') {
-      Alert.alert('비밀번호를 입력하세요')
+      return Alert.alert('비밀번호를 입력하세요')
     }
     else if (checkPasswordText === '') {
-      Alert.alert('비밀번호 확인란을 입력하세요')
+      return Alert.alert('비밀번호 확인란을 입력하세요')
     }
     else if (checkPasswordText !== passwordText) {
-      Alert.alert('비밀번호가 틀립니다')
+      return Alert.alert('비밀번호가 틀립니다')
     }
-    else {
-      const p = new Promise((resolve, reject) => {
-        resolve(signUp(nameText, idText, passwordText, navigation))
+    try {
+      signUp(nameText, idText, passwordText)
+      navigation.navigate('Confirm', {
+        trainerId: idText
       })
-      // signUp(nameText, idText, passwordText, navigation)
-      p.then(navigation.navigate('Confirm'))
+    } catch (e) {
+      console.log(e)
+      Alert.alert('회원가입에 실패했습니다')
     }
   }
+
   return (
   <Container>
     <LogoContainer>

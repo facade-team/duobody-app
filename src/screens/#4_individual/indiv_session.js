@@ -10,6 +10,8 @@ import AddFieldAndroid from '../../components/AddFieldAndroid';
 import axios from '../../axios/api'
 import { AuthContext } from '../../services/AuthContext';
 
+
+
 const styles = StyleSheet.create({
   container: {
     backgroundColor: Colors.WHITE,
@@ -130,8 +132,10 @@ export default IndividualSession = () => {
 
   // test
   const getApiTest = () => {
+
+    
     axios.get('/trainee')
-    .then(res => console.log(res.data.data))
+    .then(res => console.log(res.data.data[0].name))
     .catch(err => console.log(err.response))
   }
 

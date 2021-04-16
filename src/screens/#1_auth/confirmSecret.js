@@ -1,10 +1,11 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import styled from 'styled-components'
-import { Text, View } from 'react-native';
+import { Alert, Text, View } from 'react-native';
 import GrayTextButton from '../../components/GrayTextButton';
 import GreenButton from '../../components/GreenButton';
 import { Spacing, Colors } from '../../styles';
 import UnderLinedTextInput from '../../components/UnderlinedTextInput';
+import { AuthContext } from '../../services/AuthContext';
 
 const Container = styled.View`
   flex: 1;
@@ -34,7 +35,21 @@ const GuideText = styled.Text`
   margin-bottom: ${Spacing.SCALE_8};
 `
 
-export default ({navigation}) => {
+
+
+export default ({ route, navigation}) => {
+
+  const { trainerId } = route.params
+  const { confirmSecret } = useContext(AuthContext)
+
+  const handleOnCickConfirmSecret = () => {
+    if (secretText === '') {
+      return Alert.alert('인증코드를 입력하세요')
+    }
+    confirmSecret(trainerId, String(secretText))
+    navigation.navigate('Login')
+  }
+
   const [secretText, setSecretText] = useState('');
   return (
   <Container>
@@ -46,8 +61,8 @@ export default ({navigation}) => {
       <UnderLinedTextInput placeholder={'인증코드'}  value={secretText} onChangeText={setSecretText} />
       <GreenButton
         content={'회원가입 완료'} 
-        onClick = {()=>navigation.navigate('Login')}
-     />
+        onClick = {handleOnCickConfirmSecret}
+      />
     </AuthContainer>
   </Container>
 )}

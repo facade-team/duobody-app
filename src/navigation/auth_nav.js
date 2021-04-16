@@ -63,6 +63,7 @@ const ConfirmStackScreen = ({navigation}) => (
         <ConfirmStack.Screen
             name = 'Confirm'
             component = {Auth_confirm}
+            initialParams={{trainerId: ''}}
         />
     </ConfirmStack.Navigator>
 )
@@ -73,9 +74,9 @@ const Auth_Nav = () => (
     <NavigationContainer>
         <A_Drawer.Navigator
             screenOptions = {{gestureEnabled: true, headerShown: false,}}>
-                <A_Drawer.Screen name = 'Login' component = {LoginStackScreen}/>
-                <A_Drawer.Screen name = 'Signup' component = {SignupStackScreen}/>
-                <A_Drawer.Screen name = 'Confirm' component = {ConfirmStackScreen}/>
+                <A_Drawer.Screen name = 'Login' component = {Auth_login}/>
+                <A_Drawer.Screen name = 'Signup' component = {Auth_signup}/>
+                <A_Drawer.Screen name = 'Confirm' component = {Auth_confirm}/>
             </A_Drawer.Navigator>
     </NavigationContainer>
 )
