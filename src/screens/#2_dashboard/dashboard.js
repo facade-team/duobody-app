@@ -52,7 +52,7 @@ return (
           
       
     <View style={styles.down}>
-      <View style={{flexDirection: 'row', width: '95%', justifyContent: 'space-between', marginBottom: Spacing.SCALE_8}}>
+      <View style={{flexDirection: 'row', width: '95%', justifyContent: 'space-between', marginTop: Spacing.SCALE_8,marginBottom: Spacing.SCALE_8}}>
         <View>
           <Text style={styles.listleft}>고객명단</Text>
         </View>
@@ -93,7 +93,7 @@ const Mem_List = () => {
   const navigation = useNavigation();
   const renderItem = ({ item }) => (
     <TouchableOpacity 
-      onPress={() => navigation.navigate('Indiv')}
+      onPress={() => navigation.navigate('Indiv', {screen: 'indiv_profile'})}
     >
       <Item name = {item.name} />
     </TouchableOpacity>
@@ -137,11 +137,9 @@ const styles = StyleSheet.create({
         fontSize: Spacing.SCALE_18,
       },
       list: {
-        width: "90%",
         alignItems: 'center',
         justifyContent: 'space-between',
         flexDirection: 'row',
-        //수정사항
         width: Dimensions.get('screen').width * 0.80,
         height: Dimensions.get('screen').height * 0.06,
         margin:4,
