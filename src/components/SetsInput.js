@@ -63,7 +63,7 @@ export default ({
           const sumRepVal = String(num+repValNum)
           setRepVal(sumRepVal)
           const newSessions = [...sessions]
-          newSessions[dimensions[0]].set[dimensions[1]].rep = sumRepVal
+          newSessions[dimensions[0]].sets[dimensions[1]].rep = sumRepVal
           setSessions(newSessions)
         }
 
@@ -75,7 +75,7 @@ export default ({
           const sumWeightVal = String(num+weightValNum)
           setWeightVal(sumWeightVal)
           const newSessions = [...sessions]
-          newSessions[dimensions[0]].set[dimensions[1]].weight = sumWeightVal
+          newSessions[dimensions[0]].sets[dimensions[1]].weight = sumWeightVal
           setSessions(newSessions)
         }
       } 
@@ -95,7 +95,7 @@ export default ({
       if (text >= 0) {
         setWeightVal(text)
         const newSessions = [...sessions]
-        newSessions[dimensions[0]].set[dimensions[1]].weight = text
+        newSessions[dimensions[0]].sets[dimensions[1]].weight = text
         setSessions(newSessions)
       }
       else {
@@ -126,7 +126,7 @@ export default ({
       if (text > 0) {
         setRepVal(text)
         const newSessions = [...sessions]
-        newSessions[dimensions[0]].set[dimensions[1]].rep = text
+        newSessions[dimensions[0]].sets[dimensions[1]].rep = text
         setSessions(newSessions)
       }
       else {
@@ -151,12 +151,13 @@ export default ({
     )
   }
 
-  const [weightVal, setWeightVal] = useState(dbWeight)
-  const [repVal, setRepVal] = useState(dbRep)
+  const [weightVal, setWeightVal] = useState(Number(dbWeight))
+  const [repVal, setRepVal] = useState(Number(dbRep))
 
   useEffect(() => {
-    setWeightVal(dbWeight)
-    setRepVal(dbRep)
+    setWeightVal(Number(dbWeight))
+    setRepVal(Number(dbRep))
+    console.log(weightVal)
   })
 
   return (

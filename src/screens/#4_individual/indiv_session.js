@@ -9,14 +9,13 @@ import AddFieldIOS from '../../components/AddFieldIOS';
 import AddFieldAndroid from '../../components/AddFieldAndroid';
 import axios from '../../axios/api'
 import { AuthContext } from '../../services/AuthContext';
-
-
+import getDateStringWithNumber from '../../utils/getDateStringWithNumber'
 
 const styles = StyleSheet.create({
   container: {
     backgroundColor: Colors.WHITE,
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
   },
   titleContainer: {
     flexDirection: 'row',
@@ -32,6 +31,7 @@ const styles = StyleSheet.create({
     padding: Spacing.SCALE_12,
     margin: Spacing.SCALE_8,
     borderWidth: 1,
+    flex:1,
   }
 })
 
@@ -57,46 +57,7 @@ export default IndividualSession = () => {
     setSessions(oldSessions => [...oldSessions, newSession])
   }
 
-  const [sessions, setSessions] = useState([
-    {
-      id: 0,
-      part: '등',
-      field: '렛풀다운',
-      set: [
-        {
-          id: 0,
-          setNumber: 1,
-          weight: '40',
-          rep: '9'
-        },
-        {
-          id: 1,
-          setNumber: 2,
-          weight: '30',
-          rep: '8'
-        },
-      ]
-    },
-    {
-      id: 1,
-      part: '등',
-      field: '데드리프트',
-      set: [
-        {
-          id: 0,
-          setNumber: 1,
-          weight: '80',
-          rep: '8'
-        },
-        {
-          id: 1,
-          setNumber: 2,
-          weight: '90',
-          rep: '5'
-        },
-      ]
-    },
-  ])
+  const [sessions, setSessions] = useState([])
 
   const PartTitle = ({data__, index__}) => {
 
@@ -133,11 +94,50 @@ export default IndividualSession = () => {
   // test
   const getApiTest = () => {
 
+    axios.get('/trainee/606d59072a64c40bc62c91d5/lesson/month/202104')
+      .then(res => console.log(res.data.data))
+      .catch(err => console.log(err.response))
     
+    /*
     axios.get('/trainee')
     .then(res => console.log(res.data.data[0].name))
     .catch(err => console.log(err.response))
+    */
   }
+
+  const [renderedDate, setRenderedDate] = useState(new Date('2021-04-10'))
+  const [renderedStringDate, setRenderedStringDate] = useState('')
+  const [isSearched, setIsSearched] = useState(false)
+
+  const getDate = () => {
+    const date = getDateStringWithNumber(renderedDate)
+    setRenderedStringDate(date)
+  }
+
+  const callGetLessonByDateAPI = () => {
+    console.log(renderedStringDate)
+    axios.get(`/trainee/607991803f0da34aa063c3aa/lesson/date/${renderedStringDate}`)
+      .then(res => {
+        console.log(res.data.data[0])
+        let sessionsArr = []
+        res.data.data[0].sessions.map(data => sessionsArr.push(data))
+        setSessions(sessionsArr)
+        setIsSearched(true)
+      })
+      .catch(error => {
+        console.log(error)
+      })
+  }
+
+  useEffect(() => {
+    // 오늘 날짜로 api 조회
+    if (!isSearched) {
+      getDate()
+      callGetLessonByDateAPI()
+    }
+    // 한번 조회 했으면 toggle on
+
+  })
 
   const { signOut } = useContext(AuthContext)
 
@@ -145,7 +145,7 @@ export default IndividualSession = () => {
   <View style={styles.container}>
     <View style={styles.titleContainer}>
       <Text style={styles.title}>Session</Text>
-      <Text style={styles.title}>2021년 3월 17일</Text>
+      <Text style={styles.title}>{renderedDate.getFullYear()}년 {renderedDate.getMonth() + 1}월 {renderedDate.getDate()}일</Text>
       <TouchableOpacity onPressOut={getApiTest}>
         <Text>API Test</Text>
       </TouchableOpacity>
@@ -156,7 +156,7 @@ export default IndividualSession = () => {
     <View style={styles.whiteBox}>
       <ScrollView>
         <View>
-        {
+        {isSearched && 
           partAndField.map((data__, index__) => (
             <View key={index__}>
               <PartTitle data__={data__} index__={index__} />
@@ -175,11 +175,11 @@ export default IndividualSession = () => {
                             />
                           </View>
                           {
-                            data.set.map((data_ , index_)=> (
+                            data.sets.map((data_ , index_)=> (
                               <SetsInput
                                 key={index_} 
                                 index={index_}
-                                setNumber={data_.setNumber} 
+                                setNumber={data_.set} 
                                 dbWeight={data_.weight} 
                                 dbRep={data_.rep} 
                                 dimensions={[index, index_]}
@@ -222,3 +222,46 @@ export default IndividualSession = () => {
   </View>
   )
 }
+
+/*
+const [sessions, setSessions] = useState([
+    {
+      id: 0,
+      part: '등',
+      field: '렛풀다운',
+      set: [
+        {
+          id: 0,
+          setNumber: 1,
+          weight: '40',
+          rep: '9'
+        },
+        {
+          id: 1,
+          setNumber: 2,
+          weight: '30',
+          rep: '8'
+        },
+      ]
+    },
+    {
+      id: 1,
+      part: '등',
+      field: '데드리프트',
+      set: [
+        {
+          id: 0,
+          setNumber: 1,
+          weight: '80',
+          rep: '8'
+        },
+        {
+          id: 1,
+          setNumber: 2,
+          weight: '90',
+          rep: '5'
+        },
+      ]
+    },
+  ])
+  */
