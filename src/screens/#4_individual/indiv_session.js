@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useContext } from 'react'
-import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Platform } from 'react-native';
+import React, { useEffect, useState } from 'react'
+import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Platform, Dimensions } from 'react-native';
 import { Spacing, Typography, Colors } from '../../styles';
 import SetsInput from '../../components/SetsInput';
 import AddSetButton from '../../components/AddSetButton';
@@ -8,18 +8,19 @@ import partAndField from '../../utils/partAndField';
 import AddFieldIOS from '../../components/AddFieldIOS';
 import AddFieldAndroid from '../../components/AddFieldAndroid';
 import axios from '../../axios/api';
-import { AuthContext } from '../../services/AuthContext';
 import getDateStringWithNumber from '../../utils/getDateStringWithNumber'
+import SetsInputWithMinutes from '../../components/SetsInputWithMinutes';
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: Colors.WHITE,
+    backgroundColor: Colors.PRIMARY,
     flex: 1,
     justifyContent: 'flex-start',
   },
   titleContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    paddingBottom: Spacing.SCALE_12,
   },
   title: {
     fontSize: Typography.FONT_SIZE_20,
@@ -27,8 +28,11 @@ const styles = StyleSheet.create({
     margin: Spacing.SCALE_12,
   },
   whiteBox: {
-    borderColor: Colors.BLACK,
-    padding: Spacing.SCALE_12,
+    backgroundColor: Colors.WHITE,
+    borderRadius: 20,
+    borderColor: Colors.WHITE,
+    paddingLeft: Spacing.SCALE_12,
+    paddingRight: Spacing.SCALE_12,
     margin: Spacing.SCALE_8,
     borderWidth: 1,
     flex:1,
@@ -39,22 +43,40 @@ export default IndividualSession = () => {
   // toggle
   const [partToggle, setPartToggle] = useState([false, false, false, false, false, false, false])
   
-  const addSession = (part, fieldName) => {
-    const newSession = {
-      id: sessions.length,
-      part,
-      field: fieldName,
-      set: [
-        {
-          id: 0,
-          setNumber: 1,
-          weight: '20',
-          rep: '10',
-        },
-      ],
+  const addSession = (part, fieldName, index) => {
+    if (index === 5) {
+      const newSession = {
+        part,
+        field: fieldName,
+        sets: [
+          {
+            set: 1,
+            weight: null,
+            minutes: '10',
+            rep: null,
+          },
+        ],
+      }
+  
+      setSessions(oldSessions => [...oldSessions, newSession])
+    } else if (index === 6) {
+      console.log('not yet!')
+    } else {
+      const newSession = {
+        part,
+        field: fieldName,
+        sets: [
+          {
+            set: 1,
+            weight: '20',
+            minutes: null,
+            rep: '10',
+          },
+        ],
+      }
+  
+      setSessions(oldSessions => [...oldSessions, newSession])
     }
-
-    setSessions(oldSessions => [...oldSessions, newSession])
   }
 
   const [sessions, setSessions] = useState([])
@@ -91,20 +113,6 @@ export default IndividualSession = () => {
     )
   }
 
-  // test
-  const getApiTest = () => {
-
-    axios.get('/trainee/606d59072a64c40bc62c91d5/lesson/month/202104')
-      .then(res => console.log(res.data.data))
-      .catch(err => console.log(err.response))
-    
-    /*
-    axios.get('/trainee')
-    .then(res => console.log(res.data.data[0].name))
-    .catch(err => console.log(err.response))
-    */
-  }
-
   const [renderedDate, setRenderedDate] = useState(new Date('2021-04-10'))
   const [renderedStringDate, setRenderedStringDate] = useState('')
   const [isSearched, setIsSearched] = useState(false)
@@ -118,9 +126,33 @@ export default IndividualSession = () => {
     console.log(renderedStringDate)
     axios.get(`/trainee/607991803f0da34aa063c3aa/lesson/date/${renderedStringDate}`)
       .then(res => {
-        console.log(res.data.data[0])
         let sessionsArr = []
-        res.data.data[0].sessions.map(data => sessionsArr.push(data))
+        let start = ''
+        let end = ''
+        let trainerId = ''
+        
+        res.data.data[0].sessions.map(data => {
+          let newSession = {}
+          newSession.part = data.part
+          newSession.field = data.field
+          
+          let setsArr = []
+
+          data.sets.map(data_ => {
+            let newSet = {}
+            newSet.set = data_.set
+            newSet.weight = data_.weight
+            newSet.minutes = data_.minutes
+            newSet.rep = data_.rep
+
+            setsArr.push(newSet)
+          })
+
+          newSession.sets = setsArr
+
+          sessionsArr.push(newSession)
+        })
+        console.log(sessionsArr)
         setSessions(sessionsArr)
         setIsSearched(true)
       })
@@ -136,24 +168,15 @@ export default IndividualSession = () => {
       callGetLessonByDateAPI()
     }
     // 한번 조회 했으면 toggle on
-
   })
-
-  const { signOut } = useContext(AuthContext)
 
   return (
   <View style={styles.container}>
-    <View style={styles.titleContainer}>
-      <Text style={styles.title}>Session</Text>
-      <Text style={styles.title}>{renderedDate.getFullYear()}년 {renderedDate.getMonth() + 1}월 {renderedDate.getDate()}일</Text>
-      <TouchableOpacity onPressOut={getApiTest}>
-        <Text>API Test</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPressOut={signOut}>
-        <Text>Log out</Text>
-      </TouchableOpacity>
-    </View>
     <View style={styles.whiteBox}>
+      <View style={styles.titleContainer}>
+        <Text style={styles.title}>Session</Text>
+        <Text style={styles.title}>{renderedDate.getFullYear()}년 {renderedDate.getMonth() + 1}월 {renderedDate.getDate()}일</Text>
+      </View>
       <ScrollView>
         <View>
         {isSearched && 
@@ -175,13 +198,28 @@ export default IndividualSession = () => {
                             />
                           </View>
                           {
+                            (index__ === 5 ) &&
+                            data.sets.map((data_, index_) => (
+                              <SetsInputWithMinutes
+                                key={index_}
+                                index={index_}
+                                setNumber={data_.set} 
+                                dbMinutes={String(data_.minutes)}
+                                dimensions={[index, index_]}
+                                sessions={sessions}
+                                setSessions={setSessions}
+                              />
+                            ))
+                          }
+                          { 
+                            (index__ !== 5) &&
                             data.sets.map((data_ , index_)=> (
                               <SetsInput
                                 key={index_} 
                                 index={index_}
                                 setNumber={data_.set} 
-                                dbWeight={data_.weight} 
-                                dbRep={data_.rep} 
+                                dbWeight={String(data_.weight)} 
+                                dbRep={String(data_.rep)} 
                                 dimensions={[index, index_]}
                                 sessions={sessions}
                                 setSessions={setSessions}
@@ -214,7 +252,8 @@ export default IndividualSession = () => {
                   /> 
               }
             </View>
-          ))
+            )
+          )
         }
         </View>
       </ScrollView>

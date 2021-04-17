@@ -18,10 +18,10 @@ export default ({dimensions, sessions, setSessions}) => {
 
   const handleDeleteSet = () => {
     const newSessions = [...sessions]
-    const popedSet = newSessions[dimensions[0]].set.splice(dimensions[1], 1)
+    const popedSet = newSessions[dimensions[0]].sets.splice(dimensions[1], 1)
     // console.log(newSessions[dimensions[0]].set.length)
     console.log(newSessions)
-    if (newSessions[dimensions[0]].set.length === 0) {
+    if (newSessions[dimensions[0]].sets.length === 0) {
       const popedSession = newSessions.splice(dimensions[0], 1)
     }
     setSessions(newSessions)
