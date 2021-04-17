@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
     width: '98%',
   },
   name: {
-    paddingVertical: Spacing.SCALE_24,
+    paddingVertical: Spacing.SCALE_36,
     alignItems: 'center',
   },
   nametext: {
@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
   },
   dayselect: {
     alignItems: 'center',
-    paddingBottom: Spacing.SCALE_24,
+    paddingBottom: Spacing.SCALE_48,
   },
   wbmfcontainer:{
     alignItems: 'center',

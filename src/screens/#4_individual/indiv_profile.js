@@ -1,20 +1,48 @@
-import React, { useState } from 'react'
+import React, { useState, Component } from 'react'
 import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView, Dimensions } from 'react-native';
 import { Spacing, Colors, Typography } from '../../styles';
 import Icon from 'react-native-vector-icons/Ionicons';
+import axios from '../../axios/api';
 
-export default ({navigation}) => {
+
+const indiv_profile = ({navigation, Component}) => {
+
   const [loginText, setLoginText] = useState('');
   const [singupText, setSignupText] = useState('');
-  return (
+  let memdata;
 
+  const getApiTest = () => {
+    axios.get('/trainee')
+    .then(res => console.log(res.data.data[0]))
+  };
+
+  const getApiData = () => {
+    axios.get('/trainee')
+    .then(res => {
+      memdata = res.data.data[0].name;
+      console.log(memdata);
+    })
+
+  };
+
+
+  return (
   <SafeAreaView style = {styles.container}>
     <ScrollView>
     <View style = {styles.profilecontainer}>
       <View style = {styles.nameandediticon}>
         <Text style = {styles.name}>
-          김승우 회원님
+          {getApiTest}
+          {console.log(JSON.stringify(memdata)+'asdf')}
+          {JSON.stringify(memdata)} 회원님
+          {console.log(JSON.stringify(memdata)+'0000')}
         </Text>
+
+        <TouchableOpacity
+          onPressOut={getApiData}>
+        <Text>API Test</Text>
+      </TouchableOpacity>
+
         <Icon name='create' size={30} color={Colors.BLACK}
               onPress={() => navigation.navigate('Mem_Edit')} />
       </View>
@@ -94,11 +122,11 @@ export default ({navigation}) => {
         </View>
         </TouchableOpacity>
     </View>
-    
     </ScrollView>
   </SafeAreaView>
-
 )}
+
+export default indiv_profile;
 
 const styles = StyleSheet.create({
   container: {
