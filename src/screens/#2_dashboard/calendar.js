@@ -420,10 +420,11 @@ const Dash_cal = () => {
 }
 
 const styles = StyleSheet.create({
+    
     wrap: {
         flex: 1,
         backgroundColor: Colors.WHITE,
-        margin: 5
+        margin: 5,
     },
     bottomcontainer: {
         flex: 1,
