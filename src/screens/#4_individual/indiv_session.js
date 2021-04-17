@@ -7,7 +7,7 @@ import DeleteFieldButton from '../../components/DeleteFieldButton';
 import partAndField from '../../utils/partAndField';
 import AddFieldIOS from '../../components/AddFieldIOS';
 import AddFieldAndroid from '../../components/AddFieldAndroid';
-import axios from '../../axios/api'
+import axios from '../../axios/api';
 import { AuthContext } from '../../services/AuthContext';
 
 const styles = StyleSheet.create({
@@ -131,7 +131,7 @@ export default IndividualSession = () => {
   // test
   const getApiTest = () => {
     axios.get('/trainee')
-    .then(res => console.log(res.data.data))
+    .then(res => console.log(res.data.data[0].phoneNumber))
     .catch(err => console.log(err.response))
   }
 

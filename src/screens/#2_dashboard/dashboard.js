@@ -52,7 +52,7 @@ return (
           
       
     <View style={styles.down}>
-      <View style={{flexDirection: 'row', width: '95%', justifyContent: 'space-between', marginBottom: Spacing.SCALE_8}}>
+      <View style={{flexDirection: 'row', width: '95%', justifyContent: 'space-between', marginTop: Spacing.SCALE_8,marginBottom: Spacing.SCALE_8}}>
         <View>
           <Text style={styles.listleft}>고객명단</Text>
         </View>
@@ -93,7 +93,7 @@ const Mem_List = () => {
   const navigation = useNavigation();
   const renderItem = ({ item }) => (
     <TouchableOpacity 
-      onPress={() => navigation.navigate('Indiv')}
+      onPress={() => navigation.navigate('Indiv', {screen: 'indiv_profile'})}
     >
       <Item name = {item.name} />
     </TouchableOpacity>
@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
     container:{
         flex:1,
         backgroundColor: Colors.PRIMARY,
-        padding: 10,
+        padding: 0,
       },
       main: {
         flex: 1,
@@ -137,11 +137,9 @@ const styles = StyleSheet.create({
         fontSize: Spacing.SCALE_18,
       },
       list: {
-        width: "90%",
         alignItems: 'center',
         justifyContent: 'space-between',
         flexDirection: 'row',
-        //수정사항
         width: Dimensions.get('screen').width * 0.80,
         height: Dimensions.get('screen').height * 0.06,
         margin:4,
@@ -189,25 +187,25 @@ const styles = StyleSheet.create({
       },
       upper: {
         flex: 1,
-        width:'98%',
-        margin:4,
+        width:'97.5%',
+        margin:5,
         padding:4,
         backgroundColor: Colors.WHITE,
         alignItems: "center",
         justifyContent: "center",
-        borderRadius: 8,
+        borderRadius: 20,
         
       },
       down: {
         flex: 1,
-        width:'98%',
-        margin:4,
+        width:'97.5%',
+        margin:5,
         padding:4,
-        marginBottom: 0,
+        marginBottom: 5,
         backgroundColor: Colors.WHITE,
         alignItems: "center",
         justifyContent: "center",
-        borderRadius: 8,
+        borderRadius: 20,
       },
       
       

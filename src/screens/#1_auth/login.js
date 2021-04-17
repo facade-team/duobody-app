@@ -69,7 +69,7 @@ export default ({navigation}) => {
         <LogoImage source={require('../../assets/logo_square.png')} />
       </LogoContainer>
       <AuthContainer>
-        <UnderLinedTextInput placeholder={'아이디'}  value={loginText} onChangeText={setLoginText} />
+        <UnderLinedTextInput placeholder={'아이디'}  value={loginText} onChangeText={setLoginText} autoCapitalize={'none'}/>
         <UnderLinedTextInput placeholder={'비밀번호'} value={passwordText} onChangeText={setPasswordText} secureTextEntry={true} />
         <GreenButton content={'로그인'} onPressOut={handleOnCickLogin} />
         <View style={{alignSelf:'flex-end'}}>
