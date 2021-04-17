@@ -17,11 +17,10 @@ const ButtonText = styled.Text`
   font-weight: ${Typography.FONT_WEIGHT_BOLD};
 `
 
-const GreenButton = ({content, onPressOut}) => {
+const GreenButton = ({content, onClick}) => {
 
   const handleOnPressOut = () => {
-    console.log('clicked!')
-    onPressOut()
+    onClick()
   }
 
   return(

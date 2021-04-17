@@ -25,7 +25,8 @@ const UnderLinedTextInput = ({
   autoCapitalize,
 }) => (
   <Container>
-    <TextInput 
+    <TextInput
+      autoCapitalize='none'
       placeholder={placeholder}
       value={value}
       onChangeText={text => onChangeText(text)}
