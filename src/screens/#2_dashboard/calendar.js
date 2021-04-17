@@ -22,8 +22,29 @@ const Dash_cal = () => {
     let urlstring = ''
     const [gotDataFlag, setGotDataFlag] = useState(urlstring)
 
-    useEffect(()=>{
+    const [traineeDidMount,setTraineeDidMount] = useState(false)
+    const [TraineeListFromDB, setTraineeListFromDB] = useState([])
 
+    useEffect(()=>{
+        //trainee 불러오기
+        if(!traineeDidMount){
+            axios.get('/trainee').then((res)=>{
+                res.data.data.map(d=>{
+                    let newTrainee = {}
+                    newTrainee._id = d._id
+                    newTrainee.name = d.name
+
+                    setTraineeListFromDB(prevArray => [...prevArray, newTrainee])
+                })
+                
+            }).catch(error => {
+                console.log(error)
+            })
+            setTraineeDidMount(true)
+        }
+
+
+        //해당 날짜 일정 불러오기 - url 형식에 맞게 날짜 string으로 변경
         let stringmonth = selectedDatePick.month
         let stringdate = selectedDatePick.date
         if(stringmonth < 10){
@@ -141,7 +162,6 @@ const Dash_cal = () => {
         res = {}
     }
     const onIosStart = (event, selectedDate) => {
-        // console.log("selectedDate : " + selectedDate)
         const currentDate = selectedDate || start;
         
         setShow(Platform.OS === 'ios')
@@ -150,7 +170,6 @@ const Dash_cal = () => {
         setTempTime(currentDate);
     }
     const onIosEnd = (event, selectedDate) => {
-        // console.log("selectedDate : " + selectedDate)
         const currentDate = selectedDate || end;
         
         setShow(Platform.OS === 'ios')
@@ -178,7 +197,6 @@ const Dash_cal = () => {
         setStartTimeData(currentDate);
     }
     const onAndroidEnd = (event, selectedDate) => {
-        // console.log("selectedDAte : " + selectedDate)
         const currentDate = selectedDate || end;
         
         setShowSecond()
@@ -200,6 +218,7 @@ const Dash_cal = () => {
 
             <TraineeList
                 setSelectedTrainee={setSelectedTrainee}
+                DATA = {TraineeListFromDB}
             />
 
             <View style={styles.confirm}>

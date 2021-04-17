@@ -1,32 +1,32 @@
 import React from 'react';
 import { SafeAreaView, View, FlatList, StyleSheet, Text, StatusBar, TouchableOpacity } from 'react-native';
 
-const DATA = [
-  {
-      _id : "606d5c9af19b2e4064b8f901",
-      name: "최이현"
-  },
-  {
-      _id : "606d5c9af19b2e4064b8f902",
-      name: "김현재"
-  },
-  {
-      _id : "606d5c9af19b2e4064b8f903",
-      name: "김승우"
-  },
-  {
-      _id : "606d5c9af19b2e4064b8f904",
-      name: "김문기"
-  },
-  {
-      _id : "606d5c9af19b2e4064b8f905",
-      name: "오상훈"
-  },
-  {
-      _id : "606d5c9af19b2e4064b8f906",
-      name: "최현수"
-  }
-];
+// const DATA = [
+//   {
+//       _id : "606d5c9af19b2e4064b8f901",
+//       name: "최이현"
+//   },
+//   {
+//       _id : "606d5c9af19b2e4064b8f902",
+//       name: "김현재"
+//   },
+//   {
+//       _id : "606d5c9af19b2e4064b8f903",
+//       name: "김승우"
+//   },
+//   {
+//       _id : "606d5c9af19b2e4064b8f904",
+//       name: "김문기"
+//   },
+//   {
+//       _id : "606d5c9af19b2e4064b8f905",
+//       name: "오상훈"
+//   },
+//   {
+//       _id : "606d5c9af19b2e4064b8f906",
+//       name: "최현수"
+//   }
+// ];
 
 const Item = ({ name }) => (
   <View style={styles.item}>
@@ -34,7 +34,7 @@ const Item = ({ name }) => (
   </View>
 );
 
-const TraineeList = ({setSelectedTrainee}) => {
+const TraineeList = ({setSelectedTrainee, DATA}) => {
   const renderItem = ({ item }) => (
     <TouchableOpacity onPressOut={() => {
       // console.log("찍히냐?")
