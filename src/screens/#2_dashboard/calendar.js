@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useState } from 'react';
-import { StyleSheet, SafeAreaView, Text, View, FlatList, TouchableOpacity } from 'react-native';
+import { StyleSheet, SafeAreaView, Text, View, FlatList, TouchableOpacity, Platform } from 'react-native';
 import CalendarView from '../../components/Calendar';
 import CircleButton from '../../components/CircleButton'
 import Animated from 'react-native-reanimated';
@@ -10,32 +10,35 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import TraineeList from '../../components/TraineeList';
 
 
-// const DATA = [
-//     {
-//         _id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-//         name: '김oo 고객님',
-//         worktime: '10:00 - 11:00'
-//     },
-//     {
-//         _id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-//         name: '이oo 고객님',
-//         worktime: '13:00 - 14:00'
-//     },
-//     {
-//         _id: '58694a0f-3da1-471f-bd96-145571e29d72',
-//         name: '정oo 고객님',
-//         worktime: '15:00 - 16:00'
-//     }
-// ];
-
 const Item = ({ name, worktime }) => (
     <View style={styles.content}>
-        <Text style={styles.fontCustommer}>{name}</Text>
+        <Text style={styles.fontCustommer}>{name} 회원님</Text>
         <Text style={styles.fontWorktime}>{worktime}</Text>
     </View>
 );
 
 const Dash_cal = () => {
+    
+    // local storage에 데이터 저장하는 함수
+    const saveDataLocalStorage = () => {
+        //ID
+        const randomid = Math.random().toString(36).substr(2,11);
+        //NAME
+        const newname = temp
+        //WORKTIME
+        const fullTime = startTime.startTime + ' - ' +  endTime.endTime
+
+        const newData = {
+            _id: randomid,
+            name: newname,
+            worktime: fullTime
+        }
+
+        //DATA에 push   
+        setDATA(prevArray => [...prevArray, newData])
+
+    }
+
     const today = new Date()
     const koreaday = ['일','월','화','수','목','금','토']
   
@@ -46,21 +49,21 @@ const Dash_cal = () => {
         day: today.getDay()
     })
 
-    const [DATA,getDATA] = useState([
+    const [DATA,setDATA] = useState([
         {
             _id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-            name: '김oo 고객님',
-            worktime: '10:00 - 11:00'
+            name: '김승우',
+            worktime: '10 : 00 - 11 : 00'
         },
         {
             _id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-            name: '이oo 고객님',
-            worktime: '13:00 - 14:00'
+            name: '최이현',
+            worktime: '13 : 00 - 14 : 00'
         },
         {
             _id: '58694a0f-3da1-471f-bd96-145571e29d72',
-            name: '정oo 고객님',
-            worktime: '15:00 - 16:00'
+            name: '김문기',
+            worktime: '15 : 00 - 16 : 00'
         }
     ])
 
@@ -71,66 +74,95 @@ const Dash_cal = () => {
         setTemp(selectedTrainee)
     }
 
-    const [result, setResult] = useState(
-        {
-            resultStart: "시작시간",
-            resultEnd: "종료시간"
-        }
-    )
+    
+    //ios datetimepicker
+    const [show,setShow] = useState(false);
+    const [start, setStart] = useState(new Date());
+    const [end, setEnd] = useState(new Date());
+    const [temptime, setTempTime] = useState('')
 
-    const setTimeData = (flag) => {
-        let temp = new Date()
-
-        if (flag === 1) {
-            temp = start
-        } else {
-            temp = end
-        }
+    const [startTime, setStartTime] = useState({
+        startTime: "시작시간"
+    })
+    const [endTime, setEndTime] = useState({
+        endTime: "종료시간"
+    })
+    
+    const setStartTimeData = (currentDate) => {
+        const temp = currentDate
 
         const hours = (temp.getHours() < 10 ? '0' : '') + temp.getHours()
         const minutes = (temp.getMinutes() < 10 ? '0' : '') + temp.getMinutes()
-
-
+    
         let res = {}
         res = hours + ' : ' + minutes
-        console.log("res : " + res)
-
-        console.log("before setResult : " + result.resultStart + result.resultEnd)
-
-        setResult((state) => {
-            if (flag === 1) {
-                return {
-                    resultStart: res,
-                    resultEnd: state.resultEnd
-                }
-            }
-            if (flag === 0) {
-                return {
-                    resultStart: state.resultStart,
-                    resultEnd: res
-                }
-            }
-        });
-
-        console.log("after setResult : " + result.resultStart + result.resultEnd)
-
+        setStartTime({
+          startTime: res
+        })
         res = {}
+    }
+    const setEndTimeData = (currentDate) => {
+        const temp = currentDate
 
+        const hours = (temp.getHours() < 10 ? '0' : '') + temp.getHours()
+        const minutes = (temp.getMinutes() < 10 ? '0' : '') + temp.getMinutes()
+    
+        let res = {}
+        res = hours + ' : ' + minutes
+        setEndTime({
+          endTime: res
+        })
+        res = {}
+    }
+    const onIosStart = (event, selectedDate) => {
+        // console.log("selectedDate : " + selectedDate)
+        const currentDate = selectedDate || start;
+        
+        setShow(Platform.OS === 'ios')
+
+        setStart(currentDate);
+        setTempTime(currentDate);
+    }
+    const onIosEnd = (event, selectedDate) => {
+        // console.log("selectedDate : " + selectedDate)
+        const currentDate = selectedDate || end;
+        
+        setShow(Platform.OS === 'ios')
+
+        setEnd(currentDate);
+        setTempTime(currentDate);
+    }
+    // android datetimepicker
+    const [showFirst, setShowFirst] = useState(false);
+    const [showSecond, setShowSecond] = useState(false);
+
+    const showAndroidStartPicker = () => {
+        setShowFirst(true)
+    }
+    const showAndroidEndPicker = () => {
+        setShowSecond(true)
     }
 
-    const [start, setStart] = useState(new Date());
-    const [end, setEnd] = useState(new Date());
-
-    const startTime = (event, selectedDate) => {
+    const onAndroidStart = (event, selectedDate) => {
         const currentDate = selectedDate || start;
+        
+        setShowFirst()
+
         setStart(currentDate);
-    };
-
-
-    const endTime = (event, selectedDate) => {
+        setStartTimeData(currentDate);
+    }
+    const onAndroidEnd = (event, selectedDate) => {
+        // console.log("selectedDAte : " + selectedDate)
         const currentDate = selectedDate || end;
+        
+        setShowSecond()
+
         setEnd(currentDate);
-    };
+        setEndTimeData(currentDate);
+    }
+
+
+
 
     const renderCustomer = () => (
         <View style={styles.custommerPickercontainer}>
@@ -166,14 +198,16 @@ const Dash_cal = () => {
                 </View>
             </View>
             <View>
-                <DateTimePicker
+                {show && (<DateTimePicker
                     testID="dateTimePicker"
                     value={start}
                     mode='time'
                     display="spinner"
                     minuteInterval={5}
-                    onChange={startTime}
+                    onChange={onIosStart}
+                    is24Hour={true}
                 />
+                )}
             </View>
             <View style={styles.confirm}>
                 <TouchableOpacity onPressOut={() => { StartTimeRef.current.snapTo(1) }}>
@@ -181,7 +215,7 @@ const Dash_cal = () => {
                 </TouchableOpacity>
                 <TouchableOpacity onPressOut={() => {
                     StartTimeRef.current.snapTo(1)
-                    setTimeData(1)
+                    setStartTimeData(temptime)
                 }}>
                     <Text style={styles.textConfirm} >확인</Text>
                 </TouchableOpacity>
@@ -197,14 +231,16 @@ const Dash_cal = () => {
                 </View>
             </View>
             <View>
-                <DateTimePicker
+                {show && 
+                    (<DateTimePicker
                     testID="dateTimePicker"
                     value={end}
                     mode='time'
                     display="spinner"
                     minuteInterval={5}
-                    onChange={endTime}
-                />
+                    onChange={onIosEnd}
+                    />
+                )}
             </View>
 
             <View style={styles.confirm}>
@@ -213,7 +249,7 @@ const Dash_cal = () => {
                 </TouchableOpacity>
                 <TouchableOpacity onPressOut={() => {
                     EndTimeRef.current.snapTo(1)
-                    setTimeData(0)
+                    setEndTimeData(temptime)
                 }}>
                     <Text style={styles.textConfirm} >확인</Text>
                 </TouchableOpacity>
@@ -231,7 +267,14 @@ const Dash_cal = () => {
                 <TouchableOpacity onPressOut={() => sheetRef.current.snapTo(1)}>
                     <FontAwesome name="times" size={25} color="black" />
                 </TouchableOpacity>
-                <FontAwesome name="check" size={25} color="black" />
+                <TouchableOpacity
+                    onPressOut={() => {
+                            sheetRef.current.snapTo(1)
+                            saveDataLocalStorage()
+                        }
+                    }>
+                    <FontAwesome name="check" size={25} color="black" />
+                </TouchableOpacity>
             </View>
             <View style={styles.textContainer}>
                 <Text style={styles.texttitle}> 일정 추가하기 </Text>
@@ -248,7 +291,6 @@ const Dash_cal = () => {
                 </View>
                 <View style={styles.textContainer}>
                     <TouchableOpacity onPressOut={() => {
-                        //setToggleState(true)
                         CustomerPicker.current.snapTo(0)
                     }}>
                         <Text style={styles.textContent}>{temp === '' ? '회원을 선택하세요' : `${temp} 회원님`}</Text>
@@ -260,17 +302,57 @@ const Dash_cal = () => {
                 <Text style={styles.textSubtitle}> 시간 선택 </Text>
             </View>
             <View style={styles.textContainer}>
-                <View style={styles.textRow}>
-                    <TouchableOpacity onPressOut={() => StartTimeRef.current.snapTo(0)}>
-                        <Text style={styles.textContent}>{result.resultStart}</Text>
-                    </TouchableOpacity>
-                    <Text> - </Text>
-                    <TouchableOpacity onPressOut={() => EndTimeRef.current.snapTo(0)}>
-                        <Text style={styles.textContent}>{result.resultEnd}</Text>
-                    </TouchableOpacity>
-                    <View /><View /><View /><View /><View /><View /><View /><View /><View /><View />
-                </View>
+                {
+                    Platform.OS === 'ios' ?
+                    <View style={styles.textRow}>
+                        <TouchableOpacity onPressOut={() => {
+                                setShow(true)
+                                StartTimeRef.current.snapTo(0)}
+                            }>
+                            <Text style={styles.textContent}>{startTime.startTime}</Text>
+                        </TouchableOpacity>
+                        <Text> - </Text>
+                        <TouchableOpacity onPressOut={() => {
+                                setShow(true)
+                                EndTimeRef.current.snapTo(0)}
+                            }>
+                            <Text style={styles.textContent}>{endTime.endTime}</Text>
+                        </TouchableOpacity>
+                        <View /><View /><View /><View /><View /><View /><View /><View /><View /><View />
+                    </View> :
+                    <View style={styles.textRow}>
+                        <TouchableOpacity onPressOut={() => showAndroidStartPicker()}>
+                            <Text style={styles.textContent}>{startTime.startTime}</Text>
+                        </TouchableOpacity>
+                        <Text> - </Text>
+                        <TouchableOpacity onPressOut={() => showAndroidEndPicker()}>
+                            <Text style={styles.textContent}>{endTime.endTime}</Text>
+                        </TouchableOpacity>
+                        <View /><View /><View /><View /><View /><View /><View /><View /><View /><View />
+                    </View>
+                    
+                }
             </View>
+            {showFirst && (
+                <DateTimePicker
+                testID="dateTimePicker"
+                value={start}
+                mode= "time"
+                is24Hour={true}
+                onChange={onAndroidStart}
+                minuteInterval= {5}
+                />
+            )}
+            {showSecond && (
+                <DateTimePicker
+                testID="dateTimePicker"
+                value={end}
+                mode= "time"
+                is24Hour={true}
+                onChange={onAndroidEnd}
+                minuteInterval= {5}
+                />
+            )}
         </View>
     );
 
@@ -280,11 +362,10 @@ const Dash_cal = () => {
     const StartTimeRef = React.useRef(null);
     const EndTimeRef = React.useRef(null);
 
-
     return (
         <>
             <SafeAreaView style={styles.wrap}>
-                <View style={{flex:5}}>
+                <View style={{flex:1}}>
                     <CalendarView 
                         setSelectedDate={setSelectedDate}
                     />
@@ -343,7 +424,7 @@ const styles = StyleSheet.create({
         margin: 5
     },
     bottomcontainer: {
-        flex: 7,
+        flex: 1,
         flexDirection: 'column',
         //backgroundColor : 'orange',
         alignItems: 'center',
