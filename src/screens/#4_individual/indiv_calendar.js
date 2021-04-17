@@ -10,7 +10,7 @@ function Indiv_calendar({ navigation }) {
   const [selectedDate,setSelectedDate] = useState({
     year: today.getFullYear(),
     month: today.getMonth() + 1,
-    day: today.getDate()
+    date: today.getDate()
   })
 
   return (
@@ -22,7 +22,7 @@ function Indiv_calendar({ navigation }) {
       </View>
       <View style={{flex: 1}}>
         <View style={styles.container}>
-          <Text>{selectedDate.year}년 {selectedDate.month}월 {selectedDate.day}일</Text>
+          <Text>{selectedDate.year}년 {selectedDate.month}월 {selectedDate.date}일</Text>
           <Text>09:00~11:00</Text>
         </View>
         <View style={{flex:6, borderWidth:0.5}}>
