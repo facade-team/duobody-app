@@ -1,5 +1,6 @@
 import React from 'react';
 import { SafeAreaView, View, FlatList, StyleSheet, Text, StatusBar, TouchableOpacity, Alert } from 'react-native';
+import { Colors } from '../../styles';
 
 const DATA = [
   {
@@ -35,7 +36,9 @@ const Dash_Msg = ( {navigation} ) => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <View style = {styles.maincontainer}>
         <FlatList data={DATA} renderItem={renderItem} keyExtractor={item => item.id} />
+      </View>
     </SafeAreaView>
   );
 }
@@ -45,7 +48,14 @@ export default Dash_Msg
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: Colors.PRIMARY,
     marginTop: StatusBar.currentHeight || 0,
+  },
+  maincontainer:{
+    backgroundColor: Colors.WHITE,
+    margin: 5,
+    height: '98.5%',
+    borderRadius: 20,
   },
   item: {
     backgroundColor: '#ffffff',

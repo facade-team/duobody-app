@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
     container:{
         flex:1,
         backgroundColor: Colors.PRIMARY,
-        padding: 10,
+        padding: 0,
       },
       main: {
         flex: 1,
@@ -187,25 +187,25 @@ const styles = StyleSheet.create({
       },
       upper: {
         flex: 1,
-        width:'98%',
-        margin:4,
+        width:'97.5%',
+        margin:5,
         padding:4,
         backgroundColor: Colors.WHITE,
         alignItems: "center",
         justifyContent: "center",
-        borderRadius: 8,
+        borderRadius: 20,
         
       },
       down: {
         flex: 1,
-        width:'98%',
-        margin:4,
+        width:'97.5%',
+        margin:5,
         padding:4,
-        marginBottom: 0,
+        marginBottom: 5,
         backgroundColor: Colors.WHITE,
         alignItems: "center",
         justifyContent: "center",
-        borderRadius: 8,
+        borderRadius: 20,
       },
       
       
