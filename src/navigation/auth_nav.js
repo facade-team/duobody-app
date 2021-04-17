@@ -15,9 +15,14 @@ const ConfirmStack = createStackNavigator();
 
 const LoginStackScreen = ({navigation}) => (
     <LoginStack.Navigator screenOptions={{
-        headerStyle: {
-            backgroundColor: Colors.PRIMARY,
-        },
+      headerStyle: {
+        backgroundColor: Colors.WHITE,
+        shadowColor: 'transparent',
+      },
+      headerTintColor: Colors.WHITE,
+      headerTitleStyle: {
+        color: Colors.WHITE,
+      },
     }}>
         <LoginStack.Screen
             name = 'login'
@@ -28,9 +33,14 @@ const LoginStackScreen = ({navigation}) => (
 
 const SignupStackScreen = ({navigation}) => (
     <SignupStack.Navigator screenOptions={{
-        headerStyle: {
-            backgroundColor: Colors.PRIMARY,
-        },
+      headerStyle: {
+        backgroundColor: Colors.WHITE,
+        shadowColor: 'transparent',
+      },
+      headerTintColor: Colors.WHITE,
+      headerTitleStyle: {
+        color: Colors.WHITE,
+      },
     }}>
         <SignupStack.Screen
             name = 'Signup'
@@ -41,13 +51,19 @@ const SignupStackScreen = ({navigation}) => (
 
 const ConfirmStackScreen = ({navigation}) => (
     <ConfirmStack.Navigator screenOptions={{
-        headerStyle: {
-            backgroundColor: Colors.PRIMARY,
-        },
+      headerStyle: {
+        backgroundColor: Colors.WHITE,
+        shadowColor: 'transparent',
+      },
+      headerTintColor: Colors.WHITE,
+      headerTitleStyle: {
+        color: Colors.WHITE,
+      },
     }}>
         <ConfirmStack.Screen
             name = 'Confirm'
             component = {Auth_confirm}
+            initialParams={{trainerId: ''}}
         />
     </ConfirmStack.Navigator>
 )
@@ -57,10 +73,10 @@ const A_Drawer = createDrawerNavigator();
 const Auth_Nav = () => (
     <NavigationContainer>
         <A_Drawer.Navigator
-            screenOptions = {{gestureEnabled: true}}>
-                <A_Drawer.Screen name = 'Login' component = {LoginStackScreen}/>
-                <A_Drawer.Screen name = 'Signup' component = {SignupStackScreen}/>
-                <A_Drawer.Screen name = 'Confirm' component = {ConfirmStackScreen}/>
+            screenOptions = {{gestureEnabled: true, headerShown: false,}}>
+                <A_Drawer.Screen name = 'Login' component = {Auth_login}/>
+                <A_Drawer.Screen name = 'Signup' component = {Auth_signup}/>
+                <A_Drawer.Screen name = 'Confirm' component = {Auth_confirm}/>
             </A_Drawer.Navigator>
     </NavigationContainer>
 )

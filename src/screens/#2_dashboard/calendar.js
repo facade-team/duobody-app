@@ -411,11 +411,14 @@ const Dash_cal = () => {
     return (
         <>
             <SafeAreaView style={styles.wrap}>
-                <View style={{flex:1}}>
+                <View style = {styles.maincontainer}>
+                <View style={{flex:1, marginTop: 12}}>
                     <CalendarView 
                         setSelectedDatePick={setSelectedDatePick}
                     />
                 </View>
+                </View>
+                <View style = {styles.downcontainer}>
                 <View style={styles.bottomcontainer}>
                     <TouchableOpacity
                         onPressOut={() => sheetRef.current.snapTo(0)}
@@ -430,6 +433,7 @@ const Dash_cal = () => {
                         </View>
                             :<FlatList data={DATA} renderItem={renderItem} keyExtractor={item => item._id} />}
                     </View>
+                </View>
                 </View>
             </SafeAreaView>
 
@@ -468,17 +472,28 @@ const Dash_cal = () => {
 const styles = StyleSheet.create({
     
     wrap: {
-        flex: 1,
+        flex: 15,
+        backgroundColor: Colors.PRIMARY,
+        margin: 0,
+    },
+    maincontainer: {
+        flex:7,
         backgroundColor: Colors.WHITE,
+        borderRadius: 20,
         margin: 5,
     },
+    downcontainer: {
+        flex:6,
+        backgroundColor: Colors.WHITE,
+        margin: 5,
+        borderRadius: 15,
+
+    },
     bottomcontainer: {
-        flex: 1,
+        flex: 6,
         flexDirection: 'column',
-        //backgroundColor : 'orange',
         alignItems: 'center',
-        borderWidth: 0.5,
-        marginTop: 5
+        borderRadius: 15,
     },
     button: {
         flexDirection: 'row',

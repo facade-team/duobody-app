@@ -21,7 +21,7 @@ const CalendarView = ({setSelectedDatePick}) => {
     const [markedDates, setMarkedDates] = useState({})
 
     return (
-      <View style={{ flex: 1, borderWidth:0.5}}>
+      <View style={{ flex: 1, paddingTop: 5,}}>
         <Calendar
         //선택날짜 마킹
         markedDates={markedDates}
