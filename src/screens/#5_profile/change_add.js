@@ -4,8 +4,7 @@ import { Colors, Spacing, Typography } from '../../styles';
 import UnderLinedTextInputBig from '../../components/UnderlinedTextInputBig';
 import axios from '../../axios/api';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import getDateString from '../../utils/getDateString';
-
+import getDateStringWithNumber from '../../utils/getDateStringWithNumber';
 
 
 const change_add = ({navigation}) => {
@@ -15,24 +14,29 @@ const change_add = ({navigation}) => {
   const [fatText, setFatText] = useState('');
   const [DATAFromDB, setDATAFromDB] = useState([]);
   const [gotData, setGotData] = useState(false);
-  const [pickedDate, setPickedDate] = useState('2021-04-18');
+  const [pickedDate, setPickedDate] = useState('2021-04-10');
   const [CalDate, setCalDate] = useState(new Date(pickedDate))
+  const [InbodyFromDB, setInbodyFromDB] = useState([]);
 
   const onChangePickedDate = (event, selectedDate) => {
     const currentDate = selectedDate;
+    setCalDate(currentDate);
     setPickedDate(currentDate);
   };
 
-  const _id = '607991633f0da34aa063c3a9'; // moong
-  //const _id = '607991803f0da34aa063c3aa'; // nowkim
+  const datestr = getDateStringWithNumber(new Date(pickedDate));
+  
+  //const _id = '607991633f0da34aa063c3a9'; // moong
+  const _id = '607991803f0da34aa063c3aa'; // nowkim
   //const _id = '606d59072a64c40bc62c91d5'; // jimin
 
   const [FormerID, setFormerID] = useState(_id);
+  const [FormerDate, setFormerDate] = useState('20210410');
 
   const getApiTest = () => {
-    axios.get(`/trainee/${_id}/inbody/latest`)
+    axios.get(`/trainee/${_id}/inbody/date/${datestr}`)
     .then(res => {
-      console.log(res.data)
+      console.log(res.data.data)
     })
     .catch(err => console.log('this is error from inbody ' +err))
   };
@@ -50,6 +54,21 @@ const change_add = ({navigation}) => {
     }
     setGotData(true);
     setFormerID(_id);
+
+    if(FormerDate !== datestr){
+      axios.get(`trainee/${_id}/inbody/date/${datestr}`)
+      .then(res => {
+        res.data.data.map(tmp=>{
+          let newinbody = {};
+          newinbody.bmi = tmp.bmi
+          newinbody.fat = tmp.fat
+          newinbody.skeletalMuscle = tmp.skeletalMuscle
+          newinbody.weight = tmp.weight
+
+          setInbodyFromDB(prevArray => [...prevArray, newinbody])
+        })
+      }).catch(err => console.log(err))
+    }
   });
 
 
@@ -75,6 +94,7 @@ return (
           display="default"
           onChange={onChangePickedDate}
         />
+
       </View>
 
       <View style = {styles.wbmfcontainer}>
@@ -91,6 +111,7 @@ return (
           <View style = {styles.individual}>
             <UnderLinedTextInputBig placeholder={'체지방: ??kg'} value = {fatText} onChangeText={setFatText}/>
           </View>
+          <Text>{InbodyFromDB.bmi}</Text>
         </View>
       </View>
 
