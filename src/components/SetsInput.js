@@ -157,7 +157,6 @@ export default ({
   useEffect(() => {
     setWeightVal(dbWeight)
     setRepVal(dbRep)
-    console.log(weightVal)
   })
 
   return (

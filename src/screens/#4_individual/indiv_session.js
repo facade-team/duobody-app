@@ -12,7 +12,7 @@ import getDateStringWithNumber from '../../utils/getDateStringWithNumber'
 import SetsInputWithMinutes from '../../components/SetsInputWithMinutes'
 import DateTimePicker from '@react-native-community/datetimepicker';
 import UnderLinedTextInput from '../../components/UnderlinedTextInput';
-
+import GreenButton from '../../components/GreenButton';
 
 const styles = StyleSheet.create({
   container: {
@@ -23,12 +23,12 @@ const styles = StyleSheet.create({
   titleContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingBottom: Spacing.SCALE_12,
+    paddingBottom: Spacing.SCALE_4,
   },
   timePickerContainer: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
-    paddingBottom: Spacing.SCALE_12,
+    paddingBottom: Spacing.SCALE_4,
   },
   title: {
     fontSize: Typography.FONT_SIZE_20,
@@ -121,9 +121,12 @@ export default IndividualSession = () => {
     )
   }
 
-  const [renderedDate, setRenderedDate] = useState(new Date('2021-04-10'))
+  const [renderedDate, setRenderedDate] = useState(new Date())
   const [renderedStringDate, setRenderedStringDate] = useState('')
   const [isSearched, setIsSearched] = useState(false)
+  const [lessonId, setLessonId] = useState(null)
+  const [lesson, setLesson] = useState(null)
+  const [traineeId, setTraineeId] = useState('607991803f0da34aa063c3aa')
 
   const getDate = () => {
     const date = getDateStringWithNumber(renderedDate)
@@ -131,36 +134,41 @@ export default IndividualSession = () => {
   }
 
   const callGetLessonByDateAPI = () => {
-    console.log(renderedStringDate)
-    axios.get(`/trainee/607991803f0da34aa063c3aa/lesson/date/${renderedStringDate}`)
+    axios.get(`/trainee/${traineeId}/lesson/date/${renderedStringDate}`)
       .then(res => {
         let sessionsArr = []
-        let start = ''
-        let end = ''
-        let trainerId = ''
-        
-        res.data.data[0].sessions.map(data => {
-          let newSession = {}
-          newSession.part = data.part
-          newSession.field = data.field
-          
-          let setsArr = []
-
-          data.sets.map(data_ => {
-            let newSet = {}
-            newSet.set = data_.set
-            newSet.weight = data_.weight
-            newSet.minutes = data_.minutes
-            newSet.rep = data_.rep
-
-            setsArr.push(newSet)
+        setLessonId(null)
+        setStartTime(renderedDate)
+        setEndTime(renderedDate)
+        if (res.data.data !== null) {
+          const startStr = res.data.data[0].start
+          const endStr = res.data.data[0].end
+          const startObj = new Date(startStr)
+          const endObj = new Date(endStr)
+          setStartTime(startObj)
+          setEndTime(endObj)
+          res.data.data[0].sessions.map(data => {
+            let newSession = {}
+            newSession.part = data.part
+            newSession.field = data.field
+            
+            let setsArr = []
+  
+            data.sets.map(data_ => {
+              let newSet = {}
+              newSet.set = data_.set
+              newSet.weight = data_.weight
+              newSet.minutes = data_.minutes
+              newSet.rep = data_.rep
+  
+              setsArr.push(newSet)
+            })  
+            newSession.sets = setsArr
+  
+            sessionsArr.push(newSession)
           })
-
-          newSession.sets = setsArr
-
-          sessionsArr.push(newSession)
-        })
-        console.log(sessionsArr)
+          setLessonId(res.data.data[0]._id)
+        }
         setSessions(sessionsArr)
         setIsSearched(true)
       })
@@ -181,20 +189,22 @@ export default IndividualSession = () => {
   const [show, setShow] = useState(false)
   const [startTime, setStartTime] = useState(new Date())
   const [endTime, setEndTime] = useState(new Date())
+  const [isStart, setIsStart] = useState(true)
 
   const onChangeStartTime = (event, selectedDate) => {
-    const currentTime = selectedDate
-    setShow(false)
-    setEndTime(currentTime)
-  }
-
-  const onChangeEndTime = (event, selectedDate) => {
     const currentTime = selectedDate
     setShow(false)
     setStartTime(currentTime)
   }
 
-  const handelSetShow = () => {
+  const onChangeEndTime = (event, selectedDate) => {
+    const currentTime = selectedDate
+    setShow(false)
+    setEndTime(currentTime)
+  }
+
+  const handelSetShow = (type) => {
+    setIsStart(type)
     if (!show){
       setShow(true)
     }
@@ -205,16 +215,68 @@ export default IndividualSession = () => {
     let time = new Date(timeString.timeString)
     let minute = (time.getMinutes() / 10 < 1) ? '0'+String(time.getMinutes()) : String(time.getMinutes())
     let hour = time.getHours()
+    
+    const styles = StyleSheet.create ({
+      renderTimeContainer: {
+        paddingRight: Spacing.SCALE_8,
+        paddingLeft: Spacing.SCALE_8,
+        flexDirection:'row', 
+        alignItems:'center', 
+        marginTop: Spacing.SCALE_4, 
+        backgroundColor:Colors.GRAY_LIGHT,
+        justifyContent: 'center',
+        borderRadius: 10,
+      }
+    })
+
     return (
-      <View style={{paddingRight: Spacing.SCALE_8, flexDirection:'row', alignItems:'center'}}>
-        <Text style={{fontSize: Typography.FONT_SIZE_16}}>
-          {hour}:
-        </Text>
-        <Text style={{fontSize: Typography.FONT_SIZE_16}}>
-          {minute}
+      <View style={styles.renderTimeContainer}>
+        <Text style={{fontSize: Typography.FONT_SIZE_16, justifyContent: 'center', alignSelf:'center', color: Colors.PRIMARY}}>
+          {hour}:{minute}
         </Text>
       </View>
     )
+  }
+
+  const onSaveSessionhandler = () => {
+
+    if(lessonId) {
+      axios.delete(`/trainee/${traineeId}/lesson/${lessonId}`)
+        .then(res => {
+          console.log(res.data.data)
+        })
+        .catch(error => {
+          console.log(error.response.request._response)
+        })
+    }
+    
+    let wholeLesson = {}
+    wholeLesson.start = startTime
+    wholeLesson.end = endTime
+    wholeLesson.traineeId = traineeId
+    wholeLesson.session = sessions
+
+    axios.post('/trainee/lesson', wholeLesson)
+      .then(res => {
+        console.log(res.data)
+      })
+      .catch(error => {
+        console.log(error.response)
+      })
+
+  }
+
+  const [showCal, setShowCal] = useState(false)
+
+  const onDateSelectorClickHandler = () => {
+    setShowCal(true)
+  }
+
+  const onDateSelectHandler = (event, selectedDate) => {
+    const currentDate = selectedDate
+    setShowCal(false)
+    setRenderedDate(currentDate)
+    setIsSearched(false)
   }
 
   return (
@@ -222,58 +284,48 @@ export default IndividualSession = () => {
     <View style={styles.whiteBox}>
       <View style={styles.titleContainer}>
         <Text style={styles.title}>Session</Text>
-        <Text style={styles.title}>{renderedDate.getFullYear()}년 {renderedDate.getMonth() + 1}월 {renderedDate.getDate()}일</Text>
-      </View>
-      <View style={styles.timePickerContainer}>
-        {/*
-            <UnderLinedTextInput
-              width={Spacing.SCALE_100}
-              placeholder={'시작시간'}
-              value={startTime}
-              onChangeText={setStartTime}
-              autoCapitalize={false}
-            />
-            <Text>
-              -
-            </Text>
-            <UnderLinedTextInput
-              width={Spacing.SCALE_100}
-              placeholder={'종료시간'}
-              value={endTime}
-              onChangeText={setEndTime}
-              autoCapitalize={false}
-            />
-        */}
         {
-          (Platform.OS === 'ios') && (
-            <View style={styles.timePickerContainer}>
+          Platform.OS === 'ios' && (
+            <View>
               <DateTimePicker
-                style={{width: Spacing.SCALE_100,}}
+                style={{width: Spacing.SCALE_80, flex:1}}
                 testID="dateTimePicker"
-                value={startTime}
-                mode={'time'}
+                value={renderedDate}
+                mode={'date'}
                 is24Hour={true}
-                display="default"
-                onChange={(event, selectedDate) => onChangeStartTime(event, selectedDate)}
-              />
-              <DateTimePicker
-                style={{width: Spacing.SCALE_100,}}
-                testID="dateTimePicker"
-                value={endTime}
-                mode={'time'}
-                is24Hour={true}
-                display="default"
-                onChange={(event, selectedDate) => onChangeEndTime(event, selectedDate)}
+                display="defalut"
+                onChange={(event, selectedDate) => onDateSelectHandler(event, selectedDate)}
               />
             </View>
           )
         }
         {
-          (Platform.OS !== 'ios') && (
-            show ? (
-              <View>
+          Platform.OS !== 'ios' && (
+            <TouchableOpacity onPressOut={onDateSelectorClickHandler}>
+              <Text style={styles.title}>{renderedDate.getFullYear()}년 {renderedDate.getMonth() + 1}월 {renderedDate.getDate()}일</Text>
+              {showCal && (
                 <DateTimePicker
-                  style={{width: Spacing.SCALE_100,}}
+                  style={{width: Spacing.SCALE_80,}}
+                  testID="dateTimePicker"
+                  value={renderedDate}
+                  mode={'date'}
+                  is24Hour={true}
+                  display="compact"
+                  onChange={(event, selectedDate) => onDateSelectHandler(event, selectedDate)}
+                />
+              )}
+            </TouchableOpacity>
+          )
+        }
+      </View>
+      <View style={styles.timePickerContainer}>
+        {
+          (Platform.OS === 'ios') && (
+            <View style={styles.timePickerContainer}>
+              <View style={{flexDirection: 'row', alignItems:'center', justifyContent:'flex-end', marginRight: Spacing.SCALE_8}}>
+                <Text style={{marginRight: Spacing.SCALE_4}}>시작시간</Text>
+                <DateTimePicker
+                  style={{width: Spacing.SCALE_80,}}
                   testID="dateTimePicker"
                   value={startTime}
                   mode={'time'}
@@ -281,9 +333,11 @@ export default IndividualSession = () => {
                   display="default"
                   onChange={(event, selectedDate) => onChangeStartTime(event, selectedDate)}
                 />
-                <Text>~</Text>
+              </View>
+              <View style={{flexDirection: 'row', alignItems:'center', justifyContent:'flex-end'}}>
+                <Text style={{marginRight: Spacing.SCALE_4}}>종료시간</Text>
                 <DateTimePicker
-                  style={{width: Spacing.SCALE_100,}}
+                  style={{width: Spacing.SCALE_80,}}
                   testID="dateTimePicker"
                   value={endTime}
                   mode={'time'}
@@ -292,24 +346,62 @@ export default IndividualSession = () => {
                   onChange={(event, selectedDate) => onChangeEndTime(event, selectedDate)}
                 />
               </View>
+            </View>
+          )
+        }
+        {
+          (Platform.OS !== 'ios') && (
+            show ? (
+              <View>
+                {
+                  isStart ? (
+                    <DateTimePicker
+                      style={{width: Spacing.SCALE_100,}}
+                      testID="dateTimePicker"
+                      value={startTime}
+                      mode={'time'}
+                      is24Hour={true}
+                      display="default"
+                      onChange={(event, selectedDate) => onChangeStartTime(event, selectedDate)}
+                    />
+                  ) : (
+                    <DateTimePicker
+                      style={{width: Spacing.SCALE_100,}}
+                      testID="dateTimePicker"
+                      value={endTime}
+                      mode={'time'}
+                      is24Hour={true}
+                      display="default"
+                      onChange={(event, selectedDate) => onChangeEndTime(event, selectedDate)}
+                    />
+                  )
+                }
+              </View>
           )
             :
           (
-            <TouchableOpacity onPressOut={() => handelSetShow()}>
-              {startTime ? (
-                <View style={styles.timePickerContainer}>
-                  <RenderTime
-                    timeString={startTime}
-                  />
-                  <RenderTime
-                    timeString={endTime}
-                  />
-                </View>
-              ) : (
-                <Text>시작시간</Text>
-              )  
-              }
-            </TouchableOpacity>
+            <View style={{flexDirection: 'row', justifyContent:'flex-end', alignItems:'center'}}>
+              {startTime && (
+                <TouchableOpacity onPressOut={() => handelSetShow(true)}>
+                  <View style={{flexDirection: 'row', alignItems:'center', justifyContent:'flex-end', marginRight: Spacing.SCALE_8}}>
+                    <Text style={{marginRight: Spacing.SCALE_4}}>시작시간</Text>
+                    <RenderTime
+                      timeString={startTime}
+                    />
+                  </View>
+                </TouchableOpacity>
+              )}
+              {endTime && (
+                <TouchableOpacity onPressOut={() => handelSetShow(false)}>
+                  <View style={{flexDirection: 'row', alignItems:'center', justifyContent:'flex-end'}}>
+                    <Text style={{marginRight: Spacing.SCALE_4}}>종료시간</Text>
+                    <RenderTime
+                      timeString={endTime}
+                    />
+                  </View>
+                </TouchableOpacity>
+              )}
+            </View>
           )
           )
         }
@@ -394,6 +486,12 @@ export default IndividualSession = () => {
         }
         </View>
       </ScrollView>
+      <View style={{marginBottom: Spacing.SCALE_8, marginTop: Spacing.SCALE_8}}>
+        <GreenButton
+          content={'저장하기'}
+          onClick={onSaveSessionhandler}
+        /> 
+      </View>
     </View>
   </View>
   )
