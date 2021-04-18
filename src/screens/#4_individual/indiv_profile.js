@@ -1,45 +1,84 @@
-import React, { useState, Component } from 'react'
+import React, { useState, useEffect } from 'react'
 import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView, Dimensions } from 'react-native';
 import { Spacing, Colors, Typography } from '../../styles';
 import Icon from 'react-native-vector-icons/Ionicons';
 import axios from '../../axios/api';
 
 
-const indiv_profile = ({navigation, Component}) => {
+const indiv_profile = ({navigation}) => {
 
-  const [loginText, setLoginText] = useState('');
-  const [singupText, setSignupText] = useState('');
-  let memdata;
+  const [isLoading, setIsLoading] = useState('');
+  const [gotData, setGotData] = useState(false);
+  const [DATAFromDB, setDATAFromDB] = useState([]);
+  const [InbodyDATAFromDB, setInbodyDATAFromDB] = useState([]);
+
+  //const _id = '607991633f0da34aa063c3a9'; // moong
+  //const _id = '607991803f0da34aa063c3aa'; // nowkim
+  const _id = '606d59072a64c40bc62c91d5'; // jimin
+
+  const [FormerID, setFormerID] = useState(_id);
 
   const getApiTest = () => {
-    axios.get('/trainee')
-    .then(res => console.log(res.data.data[0]))
-  };
-
-  const getApiData = () => {
-    axios.get('/trainee')
+    axios.get(`/trainee/${_id}/inbody/latest`)
     .then(res => {
-      memdata = res.data.data[0].name;
-      console.log(memdata);
+      console.log(res.data)
     })
-
+    .catch(err => console.log('this is error for inbody ' +err))
   };
 
 
-  return (
+  useEffect(() => {
+    
+    if (!gotData || FormerID !== _id) {
+      axios.get(`/trainee/${_id}`)
+      .then(res => {
+        //console.log(res.data.data)
+        let memData = {};
+        
+          memData._id = res.data.data._id
+          memData.address = res.data.data.address
+          memData.age = res.data.data.age
+          memData.exbodyAfter = res.data.data.exbodyAfter
+          memData.height = res.data.data.height
+          memData.name = res.data.data.name
+          memData.phoneNumber = res.data.data.phoneNumber
+
+          setDATAFromDB(memData)
+      })
+      .catch(err => console.log(err))
+      
+      axios.get(`/trainee/${_id}/inbody/latest`)
+      .then(res => {
+        //console.log(res.data.data)
+        let meminbodyData = {};
+        meminbodyData.weight = res.data.data.weight
+        meminbodyData.bmi = res.data.data.bmi
+        meminbodyData.skeletalMuscle = res.data.data.skeletalMuscle
+        meminbodyData.fat = res.data.data.fat
+        meminbodyData.data = res.data.data
+
+        setInbodyDATAFromDB(meminbodyData)
+      })
+      .catch(err => console.log('this is error for inbody ' +err))
+    };
+    setGotData(true)
+    setIsLoading(false)
+    setFormerID(_id)
+  });
+
+  return ( isLoading ? <Text>Loading...</Text> :
   <SafeAreaView style = {styles.container}>
     <ScrollView>
     <View style = {styles.profilecontainer}>
       <View style = {styles.nameandediticon}>
         <Text style = {styles.name}>
-          {getApiTest}
-          {console.log(JSON.stringify(memdata)+'asdf')}
-          {JSON.stringify(memdata)} 회원님
-          {console.log(JSON.stringify(memdata)+'0000')}
+
+          
+          {DATAFromDB.name} 회원님
         </Text>
 
         <TouchableOpacity
-          onPressOut={getApiData}>
+          onPressOut={getApiTest}>
         <Text>API Test</Text>
       </TouchableOpacity>
 
@@ -56,16 +95,16 @@ const indiv_profile = ({navigation, Component}) => {
       </View>
       <View style = {styles.infobox}>
         <Text style = {styles.infotext}>
-          H.P: 010-1234-5678
+          H.P: {DATAFromDB.phoneNumber}
         </Text>
         <Text style = {styles.infotext}>
-          주소: 경기도 ㅇㅇ시 ㅇㅇ구 123번지
+          주소: {DATAFromDB.address}
         </Text>
         <Text style = {styles.infotext}>
-          나이: 24세
+          나이: {DATAFromDB.age}세
         </Text>
         <Text style = {styles.infotext}>
-          키: 175cm
+          키: {DATAFromDB.height}cm
         </Text>
       </View>
     </View>
@@ -76,10 +115,17 @@ const indiv_profile = ({navigation, Component}) => {
         <Text style = {styles.exbodytext}>
           EXBODY
         </Text>
-        <Image 
-          style = {styles.exbodyimage}
-          source={require('../../assets/exbody_temp0.jpeg')}
-        />
+          {DATAFromDB.exbodyAfter === undefined ? 
+            <Image //null이면
+              style = {styles.exbodyimage} 
+              source = {require('../../assets/exbody_temp0.jpeg')}
+            />
+            :<Image //null이 아니면
+              style = {styles.exbodyimage}
+              source={{uri:`${DATAFromDB.exbodyAfter}`}}/>
+          }
+          
+        
       </View>
       <View style = {styles.wbmfcontainer}>
         <View style = {{alignSelf: 'flex-end'}}>
@@ -87,34 +133,46 @@ const indiv_profile = ({navigation, Component}) => {
             name = 'add-circle'
             color = {Colors.Black}
             size = {Spacing.SCALE_32}
-            onPress = {()=>navigation.navigate('Change_Add')}
+            onPress = {()=>navigation.navigate('Change_Add', {_id: _id})}
           />
         </View>
         <View style = {styles.linecontainer}>
           <View style = {styles.wbmfinfo}>
             <Text style = {styles.wbmftext}>몸무게</Text>
-            <Text style = {styles.wbmftext}>??kg</Text>
+            {InbodyDATAFromDB.data === undefined ? 
+            <Text style = {styles.wbmftext}>??kg</Text> :
+            <Text style = {styles.wbmftext}>{InbodyDATAFromDB.weight}kg</Text>
+            }
           </View>
           <View style = {styles.wbmfinfo}>
             <Text style = {styles.wbmftext}>BMI</Text>
-            <Text style = {styles.wbmftext}>??kg/m²</Text>
+            {InbodyDATAFromDB.data === undefined ? 
+            <Text style = {styles.wbmftext}>??kg/m²</Text> :
+            <Text style = {styles.wbmftext}>{InbodyDATAFromDB.bmi}kg/m²</Text>
+            }
           </View>
         </View>
 
         <View style = {styles.linecontainer}>
           <View style = {styles.wbmfinfo}>
             <Text style = {styles.wbmftext}>골격근</Text>
-            <Text style = {styles.wbmftext}>??kg</Text>
+            {InbodyDATAFromDB.data === undefined ? 
+            <Text style = {styles.wbmftext}>??kg</Text> :
+            <Text style = {styles.wbmftext}>{InbodyDATAFromDB.skeletalMuscle}kg</Text>
+            }
           </View>
           <View style = {styles.wbmfinfo}>
             <Text style = {styles.wbmftext}>체지방</Text>
-            <Text style = {styles.wbmftext}>??kg</Text>
+            {InbodyDATAFromDB.data === undefined ? 
+            <Text style = {styles.wbmftext}>??kg</Text> :
+            <Text style = {styles.wbmftext}>{InbodyDATAFromDB.fat}kg</Text>
+            }
             </View>
         </View>
       </View>
         <TouchableOpacity 
           style = {styles.greenbuttoncontainer}
-          onPress = {()=> navigation.navigate('Change_View')}>
+          onPress = {()=> navigation.navigate('Change_View') }>
         <View>
           <Text style = {styles.greenbutton}>
             변화보기
