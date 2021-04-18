@@ -65,7 +65,8 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.WHITE,
     width: '98%',
     alignItems: 'center',
-    borderRadius: 15,
+    borderRadius: 20,
+    marginBottom: 0,
   },
   headcontainer:{
     alignItems: 'center',
