@@ -23,7 +23,7 @@ export default class MyDatePicker extends Component {
         iconSource={require('../assets/calendar.png')}
         customStyles={{
           dateIcon: {
-            position: 'right',
+            position: 'relative',
             left: Spacing.SCALE_12,
             marginLeft: 0,
             marginRight: Spacing.SCALE_12,

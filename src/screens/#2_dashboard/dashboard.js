@@ -1,19 +1,97 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { FlatList, StyleSheet, Text, Image, View, TouchableOpacity, Dimensions } from 'react-native';
 import { Colors, Spacing } from '../../styles';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { SafeAreaView } from 'react-navigation';
 import { useNavigation } from '@react-navigation/native'
+import axios from '../../axios/api';
 
 const Dash_dash = () => {
-const navigation = useNavigation();
-return (
+  
+  const navigation = useNavigation();
+  const [isLoading, setIsLoading] = useState('');
+  const [traineeDidMount, settraineeDidMount] = useState(false);
+  const [TraineeListFromDB, setTraineeListFromDB] = useState([]);
+
+  const getApiTest = () => {
+    axios.get(`/trainee`)
+    .then(res => {
+      console.log('-----------------')
+      console.log(res.data.data[0])
+    })
+    .catch(err => console.log('this is error for inbody ' +err))
+  };
+  
+  
+  useEffect(()=>{
+
+
+  //아래 고객명단 함수
+    if(!traineeDidMount) {
+      axios.get('/trainee')
+      .then(res => {
+        res.data.data.map(tmp=>{
+          let newTrainee = {}
+          newTrainee._id = tmp._id
+          newTrainee.name = tmp.name
+          
+          setTraineeListFromDB(prevArray => [...prevArray, newTrainee])
+        })
+      }).catch(err => console.log(err[0]))
+      settraineeDidMount(true)
+      setIsLoading(false) 
+    };
+      
+  });
+  //--------------------------
+  const fakedate = '20210415';
+  let todaystr = '';
+  const today = new Date()
+  const koreaday = ['일','월','화','수','목','금','토']
+  
+  const [selectedDatePick,setSelectedDatePick] = useState({
+      year: today.getFullYear(),
+      month: today.getMonth() + 1,
+      date: today.getDate(),
+      day: today.getDay()
+  })
+  
+  let strmonth = selectedDatePick.month
+  let strdate = selectedDatePick.date
+  
+  if(strmonth < 10){
+    strmonth = '0'+ strmonth.toString()
+  } else {
+    strmonth = strmonth.toString()
+  }
+  if(strdate < 10){
+    strdate = '0'+ strdate.toString()
+  } else {
+    strdate = strdate.toString()
+  }
+  
+  todaystr = selectedDatePick.year.toString() + strmonth + strdate
+  //--------------------
+
+
+
+
+
+
+
+
+
+return ( isLoading ? <Text>Loading...</Text> : 
 <View style={styles.container}>
   <View style={styles.main}>    
       
     <View style={styles.upper}>
       <View style={{flexDirection: "row", width: '90%', justifyContent: 'space-between'}}>
-        <Text style={styles.listupleft}>3월 20일 (토)</Text>
+        <Text style={styles.listupleft}>{selectedDatePick.month}월 {selectedDatePick.date}일 ({koreaday[selectedDatePick.day]})</Text>
+        <TouchableOpacity
+          onPressOut={getApiTest}>
+        <Text>API Test</Text>
+      </TouchableOpacity>
         <Text style={styles.listright}>TODAY</Text>
       </View>
 
@@ -73,7 +151,7 @@ return (
           />
         </View>
       </View>
-      <Mem_List/>
+      <Mem_List DATA = {TraineeListFromDB}/>
     </View>
   </View>
 </View>
@@ -81,17 +159,18 @@ return (
 }
 
 //아래 회원 리스트 구현 함수
-//--------------------
+
 const Item = ({ name }) => (
   <View style = {styles.list}>
     <View style = {styles.circle}/>
-    <Text style = {styles.memlist}>{name}</Text>
+    <Text style = {styles.memlist}>{name} 회원님</Text>
   </View>
 );
 
-const Mem_List = () => {
+const Mem_List = ({DATA}) => {
   const navigation = useNavigation();
   const renderItem = ({ item }) => (
+    console.log(DATA),
     <TouchableOpacity 
       onPress={() => navigation.navigate('Indiv', {screen: 'indiv_profile'})}
     >
@@ -101,13 +180,13 @@ const Mem_List = () => {
 
   return (
       <View style = {{flex:1}}>
-      <View></View>
+      <View>{console.log(DATA)}</View>
       <FlatList data={DATA} renderItem={renderItem} keyExtractor={item => item.id} />
     
       </View>
   );
 }
-//--------------------
+
 
 const styles = StyleSheet.create({
     container:{

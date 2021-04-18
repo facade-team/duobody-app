@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, Text, Dimensions, TouchableOpacity } from 'react-native';
 import { Colors, Spacing, Typography } from '../../styles';
-import MyDatePicker from '../../components/DatePicker';
 import UnderLinedTextInputBig from '../../components/UnderlinedTextInputBig';
+import axios from '../../axios/api';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import getDateString from '../../utils/getDateString';
+
 
 
 const change_add = ({navigation}) => {
@@ -10,55 +13,106 @@ const change_add = ({navigation}) => {
   const [BMIText, setBMIText] = useState('');
   const [muscleText, setMuscleText] = useState('');
   const [fatText, setFatText] = useState('');
+  const [DATAFromDB, setDATAFromDB] = useState([]);
+  const [gotData, setGotData] = useState(false);
+  const [pickedDate, setPickedDate] = useState('2021-04-18');
+  const [CalDate, setCalDate] = useState(new Date(pickedDate))
+
+  const onChangePickedDate = (event, selectedDate) => {
+    const currentDate = selectedDate;
+    setPickedDate(currentDate);
+  };
+
+  const _id = '607991633f0da34aa063c3a9'; // moong
+  //const _id = '607991803f0da34aa063c3aa'; // nowkim
+  //const _id = '606d59072a64c40bc62c91d5'; // jimin
+
+  const [FormerID, setFormerID] = useState(_id);
+
+  const getApiTest = () => {
+    axios.get(`/trainee/${_id}/inbody/latest`)
+    .then(res => {
+      console.log(res.data)
+    })
+    .catch(err => console.log('this is error from inbody ' +err))
+  };
+
+  useEffect(()=>{
+    if(!gotData || FormerID !== _id){
+      axios.get(`/trainee/${_id}`)
+      .then(res =>{
+        let memData = {};
+        memData._id = res.data.data._id
+        memData.name = res.data.data.name
+        setDATAFromDB(memData)
+      })
+      .catch(err => console.log(err))
+    }
+    setGotData(true);
+    setFormerID(_id);
+  });
+
+
 return (
   <View style = {styles.container}>
     <View style = {styles.maincontainer}>
       <View style = {styles.name}>
         <Text style = {styles.nametext}>
-          ㅇㅇㅇ 회원님
+          {DATAFromDB.name} 회원님
         </Text>
+        <TouchableOpacity
+          onPressOut={getApiTest}>
+        <Text>API Test</Text>
+      </TouchableOpacity>
       </View>
       
       <View style = {styles.dayselect}>
-        <MyDatePicker/>
+        <DateTimePicker
+          style = {{width: Spacing.SCALE_80}}
+          testID="dateTimePicker"
+          value={CalDate}
+          mode={'date'}
+          display="default"
+          onChange={onChangePickedDate}
+        />
       </View>
 
       <View style = {styles.wbmfcontainer}>
         <View style = {styles.infoinput}>
           <View style = {styles.individual}>
-            <UnderLinedTextInputBig placeholder={'몸무게'} value = {weightText} onChangeText={setWeightText}/>
+            <UnderLinedTextInputBig placeholder={'몸무게: ??kg'} value = {weightText} onChangeText={setWeightText}/>
           </View>
           <View style = {styles.individual}>
-            <UnderLinedTextInputBig placeholder={'BMI'} value = {BMIText} onChangeText={setBMIText}/>
+            <UnderLinedTextInputBig placeholder={'BMI: ??kg/m²'} value = {BMIText} onChangeText={setBMIText}/>
           </View>
           <View style = {styles.individual}>
-            <UnderLinedTextInputBig placeholder={'골격근'} value = {muscleText} onChangeText={setMuscleText}/>
+            <UnderLinedTextInputBig placeholder={'골격근: ??kg'} value = {muscleText} onChangeText={setMuscleText}/>
           </View>
           <View style = {styles.individual}>
-            <UnderLinedTextInputBig placeholder={'체지방'} value = {fatText} onChangeText={setFatText}/>
+            <UnderLinedTextInputBig placeholder={'체지방: ??kg'} value = {fatText} onChangeText={setFatText}/>
           </View>
         </View>
       </View>
 
       <TouchableOpacity 
-          style = {styles.addexbody}
-          onPress = {()=> navigation.navigate('Change_View')}>
+        style = {styles.addexbody}
+        onPress = {()=> navigation.navigate('Change_View')}>
         <View>
           <Text style = {styles.greenbutton}>
             Ex-Body 추가
           </Text>
         </View>
-        </TouchableOpacity>
+      </TouchableOpacity>
 
-        <TouchableOpacity 
-          style = {styles.addexbody_2}
-          onPress = {()=> navigation.goBack()}>
+      <TouchableOpacity 
+        style = {styles.addexbody_2}
+        onPress = {()=> navigation.goBack()}>
         <View>
           <Text style = {styles.greenbutton}>
             확인
           </Text>
         </View>
-        </TouchableOpacity>
+      </TouchableOpacity>
     </View>
   </View>
 )}
