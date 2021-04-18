@@ -1,43 +1,54 @@
-import React from 'react';
+import axios from 'axios';
+import React, {useState, useEffect} from 'react';
 import { SafeAreaView, View, FlatList, StyleSheet, Text, StatusBar, TouchableOpacity, Alert } from 'react-native';
 import { Colors } from '../../styles';
 
-const DATA = [
-  {
-    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-    title: '김oo 고객님',
-    submessenger: '안녕하세요 김oo 고객님! 오늘 운동 루틴은 어쩌구저쩌구 이러쿵 저러쿵입니다 오늘 13시 00분에 어디에서 뵐게요~~'
-  },
-  {
-    id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-    title: 'Second Item',
-    submessenger: '안녕하세요 김oo 고객님! 오늘 운동 루틴은 어쩌구저쩌구 이러쿵 저러쿵입니다 오늘 13시 00분에 어디에서 뵐게요~~'
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d72',
-    title: 'Third Item',
-    submessenger: '안녕하세요 김oo 고객님! 오늘 운동 루틴은 어쩌구저쩌구 이러쿵 저러쿵입니다 오늘 13시 00분에 어디에서 뵐게요~~'
-  }
-];
-
 const Item = ({ title, submessenger }) => (
   <View style={styles.item}>
-    <Text style={styles.title}>{title}</Text>
-    <Text numberOfLines={1} ellipsizeMode='tail' style={styles.submessenger}>{submessenger}</Text>
+    <Text style={styles.title}>{title} 회원님</Text>
+    <Text numberOfLines={1} ellipsizeMode='tail' style={styles.submessenger}>'안녕하세요 고객님! 오늘 운동 루틴은 어쩌구저쩌구 이러쿵 저러쿵입니다 오늘 13시 00분에 어디에서 뵐게요~~'</Text>
   </View>
 );
 
 const Dash_Msg = ( {navigation} ) => {
+
   const renderItem = ({ item }) => (
-    <TouchableOpacity onPress={() => navigation.navigate('Indiv', { screen: 'indiv_msg'})}>
-      <Item title={item.title} submessenger={item.submessenger}/>
+    <TouchableOpacity onPressOut={() => {
+        // 회원 채팅방 누를 때 채팅방 생성
+        // 채팅방 생성 api - body에 trainee id 넣고 post
+
+        // 회원별 채팅방으로 이동
+        navigation.navigate('Indiv', { screen: 'indiv_msg'})
+      }}>
+      <Item title={item.name} submessenger={item.submessenger}/>
     </TouchableOpacity>
   );
+
+  const [trainee,setTrainee] = useState([])
+  const [didMount,setDidMount] = useState(false)
+
+  useEffect(()=>{
+    //trainee 불러오기
+    if(!didMount){
+      axios.get('/trainee').then((res)=>{
+        res.data.data.map(d=>{
+          let newTrainee = {}
+          newTrainee._id = d._id
+          newTrainee.name = d.name
+
+          setTrainee(prevArray => [...prevArray, newTrainee])
+        })
+      }).catch(error => {
+        console.log(error)
+      })
+      setDidMount(true)
+    }
+  })
 
   return (
     <SafeAreaView style={styles.container}>
       <View style = {styles.maincontainer}>
-        <FlatList data={DATA} renderItem={renderItem} keyExtractor={item => item.id} />
+        <FlatList data={trainee} renderItem={renderItem} keyExtractor={item => trainee._id} />
       </View>
     </SafeAreaView>
   );
