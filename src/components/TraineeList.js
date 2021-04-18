@@ -38,7 +38,10 @@ const TraineeList = ({setSelectedTrainee, DATA}) => {
   const renderItem = ({ item }) => (
     <TouchableOpacity onPressOut={() => {
       // console.log("찍히냐?")
-      setSelectedTrainee(item.name)
+      setSelectedTrainee({
+        name: item.name,
+        _id: item._id
+      })
       }}>
       <Item name={item.name}/>
     </TouchableOpacity>

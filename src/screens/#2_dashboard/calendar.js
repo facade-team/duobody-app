@@ -8,7 +8,8 @@ import { FontAwesome } from '@expo/vector-icons'
 import DateTimePicker from '@react-native-community/datetimepicker';
 import TraineeList from '../../components/TraineeList';
 import { Colors } from '../../styles';
-import axios from 'axios';
+import axios from '../../axios/api';
+import { error } from 'react-native-gifted-chat/lib/utils';
 
 const Item = ({ name, worktime }) => (
     <View style={styles.content}>
@@ -24,6 +25,18 @@ const Dash_cal = () => {
 
     const [traineeDidMount,setTraineeDidMount] = useState(false)
     const [TraineeListFromDB, setTraineeListFromDB] = useState([])
+
+    const convertTimeStamp = (ttt) => {
+        let result = new Date(
+            selectedDatePick.year,
+            selectedDatePick.month - 1,
+            selectedDatePick.date,
+            ttt.hour,
+            ttt.minute
+            )
+
+        return result.getTime()
+    }
 
     useEffect(()=>{
         //trainee 불러오기
@@ -59,15 +72,16 @@ const Dash_cal = () => {
         }
         urlstring = selectedDatePick.year.toString() + stringmonth + stringdate
         
-        //get으로 가져온 새로운 데이터
-        let newData = {}
+        //해당하는 날짜에 있는 일정
 
         if (gotDataFlag !== urlstring) {
             setDATA([])
             axios.get(`/trainer/lesson/date/${urlstring}`)
                 .then((res) => {
-                    console.log(res.data.data[0].name)
+                    // console.log(res.data.data[0])
                     res.data.data.map(d=>{
+                        let newData = {}
+
                         newData._id = d._id
                         newData.name = d.name
                         newData.worktime = d.time
@@ -83,22 +97,35 @@ const Dash_cal = () => {
     // local storage에 데이터 저장하는 함수
     const saveDataLocalStorage = () => {
         //ID
-        const randomid = Math.random().toString(36).substr(2,11);
+        const _id = selectedTrainee._id
         //NAME
         const newname = temp
         //WORKTIME
         const fullTime = startTime.startTime + ' - ' +  endTime.endTime
 
         const newData = {
-            _id: randomid,
+            _id: _id,
             name: newname,
             worktime: fullTime
         }
-
+        
         //DATA에 push   
         setDATA(prevArray => [...prevArray, newData])
+
+        // timestamp 만들기
+        const st = convertTimeStamp(startTime)
+        const et = convertTimeStamp(endTime)
+        
         //새로 업데이트 된 DATA를 push
-        //axios.post()
+        axios.post('/trainee/lesson',{
+                traineeId: newData._id,
+                start: st,
+                end: et
+            })
+            .then((res)=> {
+                console.log(res.data)
+            })
+            .catch(error=>console.log(error))
 
     }
 
@@ -114,11 +141,14 @@ const Dash_cal = () => {
 
     const [DATA,setDATA] = useState([])
 
-    const [selectedTrainee, setSelectedTrainee] = useState('')
+    const [selectedTrainee, setSelectedTrainee] = useState({
+        name: '',
+        _id:''
+    })
     const [temp, setTemp] = useState('')
 
     const setTrainee = () => {
-        setTemp(selectedTrainee)
+        setTemp(selectedTrainee.name)
     }
 
     
@@ -129,10 +159,14 @@ const Dash_cal = () => {
     const [temptime, setTempTime] = useState('')
 
     const [startTime, setStartTime] = useState({
-        startTime: "시작시간"
+        startTime: "시작시간",
+        hour: 0,
+        minute: 0
     })
     const [endTime, setEndTime] = useState({
-        endTime: "종료시간"
+        endTime: "종료시간",
+        hour: 0,
+        minute: 0
     })
     
     const setStartTimeData = (currentDate) => {
@@ -144,7 +178,9 @@ const Dash_cal = () => {
         let res = {}
         res = hours + ' : ' + minutes
         setStartTime({
-          startTime: res
+          startTime: res,
+          hour: temp.getHours(),
+          minute: temp.getMinutes()
         })
         res = {}
     }
@@ -157,7 +193,9 @@ const Dash_cal = () => {
         let res = {}
         res = hours + ' : ' + minutes
         setEndTime({
-          endTime: res
+          endTime: res,
+          hour: temp.getHours(),
+          minute: temp.getMinutes()
         })
         res = {}
     }

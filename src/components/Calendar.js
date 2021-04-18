@@ -41,7 +41,7 @@ const CalendarView = ({setSelectedDatePick}) => {
             setMarkedDates(newMarked)
 
             const tempo = new Date(day.dateString).getDay()
-            //console.log(tempo)
+            //console.log(day)
             //day object 넘겨주기
             setSelectedDatePick({
               year: day.year,
