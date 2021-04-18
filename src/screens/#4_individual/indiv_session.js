@@ -9,7 +9,10 @@ import AddFieldIOS from '../../components/AddFieldIOS';
 import AddFieldAndroid from '../../components/AddFieldAndroid';
 import axios from '../../axios/api';
 import getDateStringWithNumber from '../../utils/getDateStringWithNumber'
-import SetsInputWithMinutes from '../../components/SetsInputWithMinutes';
+import SetsInputWithMinutes from '../../components/SetsInputWithMinutes'
+import DateTimePicker from '@react-native-community/datetimepicker';
+import UnderLinedTextInput from '../../components/UnderlinedTextInput';
+
 
 const styles = StyleSheet.create({
   container: {
@@ -20,6 +23,11 @@ const styles = StyleSheet.create({
   titleContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    paddingBottom: Spacing.SCALE_12,
+  },
+  timePickerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
     paddingBottom: Spacing.SCALE_12,
   },
   title: {
@@ -170,12 +178,141 @@ export default IndividualSession = () => {
     // 한번 조회 했으면 toggle on
   })
 
+  const [show, setShow] = useState(false)
+  const [startTime, setStartTime] = useState(new Date())
+  const [endTime, setEndTime] = useState(new Date())
+
+  const onChangeStartTime = (event, selectedDate) => {
+    const currentTime = selectedDate
+    setShow(false)
+    setEndTime(currentTime)
+  }
+
+  const onChangeEndTime = (event, selectedDate) => {
+    const currentTime = selectedDate
+    setShow(false)
+    setStartTime(currentTime)
+  }
+
+  const handelSetShow = () => {
+    if (!show){
+      setShow(true)
+    }
+  }
+
+  const RenderTime = (timeString) => {
+    console.log(timeString.timeString)
+    let time = new Date(timeString.timeString)
+    let minute = (time.getMinutes() / 10 < 1) ? '0'+String(time.getMinutes()) : String(time.getMinutes())
+    let hour = time.getHours()
+    return (
+      <View style={{paddingRight: Spacing.SCALE_8, flexDirection:'row', alignItems:'center'}}>
+        <Text style={{fontSize: Typography.FONT_SIZE_16}}>
+          {hour}:
+        </Text>
+        <Text style={{fontSize: Typography.FONT_SIZE_16}}>
+          {minute}
+        </Text>
+      </View>
+    )
+  }
+
   return (
   <View style={styles.container}>
     <View style={styles.whiteBox}>
       <View style={styles.titleContainer}>
         <Text style={styles.title}>Session</Text>
         <Text style={styles.title}>{renderedDate.getFullYear()}년 {renderedDate.getMonth() + 1}월 {renderedDate.getDate()}일</Text>
+      </View>
+      <View style={styles.timePickerContainer}>
+        {/*
+            <UnderLinedTextInput
+              width={Spacing.SCALE_100}
+              placeholder={'시작시간'}
+              value={startTime}
+              onChangeText={setStartTime}
+              autoCapitalize={false}
+            />
+            <Text>
+              -
+            </Text>
+            <UnderLinedTextInput
+              width={Spacing.SCALE_100}
+              placeholder={'종료시간'}
+              value={endTime}
+              onChangeText={setEndTime}
+              autoCapitalize={false}
+            />
+        */}
+        {
+          (Platform.OS === 'ios') && (
+            <View style={styles.timePickerContainer}>
+              <DateTimePicker
+                style={{width: Spacing.SCALE_100,}}
+                testID="dateTimePicker"
+                value={startTime}
+                mode={'time'}
+                is24Hour={true}
+                display="default"
+                onChange={(event, selectedDate) => onChangeStartTime(event, selectedDate)}
+              />
+              <DateTimePicker
+                style={{width: Spacing.SCALE_100,}}
+                testID="dateTimePicker"
+                value={endTime}
+                mode={'time'}
+                is24Hour={true}
+                display="default"
+                onChange={(event, selectedDate) => onChangeEndTime(event, selectedDate)}
+              />
+            </View>
+          )
+        }
+        {
+          (Platform.OS !== 'ios') && (
+            show ? (
+              <View>
+                <DateTimePicker
+                  style={{width: Spacing.SCALE_100,}}
+                  testID="dateTimePicker"
+                  value={startTime}
+                  mode={'time'}
+                  is24Hour={true}
+                  display="default"
+                  onChange={(event, selectedDate) => onChangeStartTime(event, selectedDate)}
+                />
+                <Text>~</Text>
+                <DateTimePicker
+                  style={{width: Spacing.SCALE_100,}}
+                  testID="dateTimePicker"
+                  value={endTime}
+                  mode={'time'}
+                  is24Hour={true}
+                  display="default"
+                  onChange={(event, selectedDate) => onChangeEndTime(event, selectedDate)}
+                />
+              </View>
+          )
+            :
+          (
+            <TouchableOpacity onPressOut={() => handelSetShow()}>
+              {startTime ? (
+                <View style={styles.timePickerContainer}>
+                  <RenderTime
+                    timeString={startTime}
+                  />
+                  <RenderTime
+                    timeString={endTime}
+                  />
+                </View>
+              ) : (
+                <Text>시작시간</Text>
+              )  
+              }
+            </TouchableOpacity>
+          )
+          )
+        }
       </View>
       <ScrollView>
         <View>
