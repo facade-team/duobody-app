@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Platform, Dimensions } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Platform, Dimensions, Alert } from 'react-native';
 import { Spacing, Typography, Colors } from '../../styles';
 import SetsInput from '../../components/SetsInput';
 import AddSetButton from '../../components/AddSetButton';
@@ -258,7 +258,7 @@ export default IndividualSession = () => {
 
     axios.post('/trainee/lesson', wholeLesson)
       .then(res => {
-        console.log(res.data)
+        Alert.alert('저장이 완료되었습니다')
       })
       .catch(error => {
         console.log(error.response)
