@@ -1,5 +1,4 @@
-import * as React from 'react';
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, SafeAreaView, Text, View, FlatList, TouchableOpacity, Platform } from 'react-native';
 import CalendarView from '../../components/Calendar';
 import CircleButton from '../../components/CircleButton'
@@ -9,7 +8,7 @@ import { FontAwesome } from '@expo/vector-icons'
 import DateTimePicker from '@react-native-community/datetimepicker';
 import TraineeList from '../../components/TraineeList';
 import { Colors } from '../../styles';
-
+import axios from 'axios';
 
 const Item = ({ name, worktime }) => (
     <View style={styles.content}>
@@ -19,6 +18,67 @@ const Item = ({ name, worktime }) => (
 );
 
 const Dash_cal = () => {
+
+    let urlstring = ''
+    const [gotDataFlag, setGotDataFlag] = useState(urlstring)
+
+    const [traineeDidMount,setTraineeDidMount] = useState(false)
+    const [TraineeListFromDB, setTraineeListFromDB] = useState([])
+
+    useEffect(()=>{
+        //trainee 불러오기
+        if(!traineeDidMount){
+            axios.get('/trainee').then((res)=>{
+                res.data.data.map(d=>{
+                    let newTrainee = {}
+                    newTrainee._id = d._id
+                    newTrainee.name = d.name
+
+                    setTraineeListFromDB(prevArray => [...prevArray, newTrainee])
+                })
+                
+            }).catch(error => {
+                console.log(error)
+            })
+            setTraineeDidMount(true)
+        }
+
+
+        //해당 날짜 일정 불러오기 - url 형식에 맞게 날짜 string으로 변경
+        let stringmonth = selectedDatePick.month
+        let stringdate = selectedDatePick.date
+        if(stringmonth < 10){
+            stringmonth = '0' + stringmonth.toString()
+        }else{
+            stringmonth = stringmonth.toString()
+        }
+        if(stringdate < 10){
+            stringdate = '0' + stringdate.toString()
+        }else{
+            stringdate = stringdate.toString()
+        }
+        urlstring = selectedDatePick.year.toString() + stringmonth + stringdate
+        
+        //get으로 가져온 새로운 데이터
+        let newData = {}
+
+        if (gotDataFlag !== urlstring) {
+            setDATA([])
+            axios.get(`/trainer/lesson/date/${urlstring}`)
+                .then((res) => {
+                    console.log(res.data.data[0].name)
+                    res.data.data.map(d=>{
+                        newData._id = d._id
+                        newData.name = d.name
+                        newData.worktime = d.time
+    
+                        setDATA(prevArray => [...prevArray, newData])
+                    })
+                })
+                .catch(error => console.log(error))
+            setGotDataFlag(urlstring)
+        }
+    })
     
     // local storage에 데이터 저장하는 함수
     const saveDataLocalStorage = () => {
@@ -37,36 +97,22 @@ const Dash_cal = () => {
 
         //DATA에 push   
         setDATA(prevArray => [...prevArray, newData])
+        //새로 업데이트 된 DATA를 push
+        //axios.post()
 
     }
 
     const today = new Date()
     const koreaday = ['일','월','화','수','목','금','토']
   
-    const [selectedDate,setSelectedDate] = useState({
+    const [selectedDatePick,setSelectedDatePick] = useState({
         year: today.getFullYear(),
         month: today.getMonth() + 1,
         date: today.getDate(),
         day: today.getDay()
     })
 
-    const [DATA,setDATA] = useState([
-        {
-            _id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-            name: '김승우',
-            worktime: '10 : 00 - 11 : 00'
-        },
-        {
-            _id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-            name: '최이현',
-            worktime: '13 : 00 - 14 : 00'
-        },
-        {
-            _id: '58694a0f-3da1-471f-bd96-145571e29d72',
-            name: '김문기',
-            worktime: '15 : 00 - 16 : 00'
-        }
-    ])
+    const [DATA,setDATA] = useState([])
 
     const [selectedTrainee, setSelectedTrainee] = useState('')
     const [temp, setTemp] = useState('')
@@ -116,7 +162,6 @@ const Dash_cal = () => {
         res = {}
     }
     const onIosStart = (event, selectedDate) => {
-        // console.log("selectedDate : " + selectedDate)
         const currentDate = selectedDate || start;
         
         setShow(Platform.OS === 'ios')
@@ -125,7 +170,6 @@ const Dash_cal = () => {
         setTempTime(currentDate);
     }
     const onIosEnd = (event, selectedDate) => {
-        // console.log("selectedDate : " + selectedDate)
         const currentDate = selectedDate || end;
         
         setShow(Platform.OS === 'ios')
@@ -153,7 +197,6 @@ const Dash_cal = () => {
         setStartTimeData(currentDate);
     }
     const onAndroidEnd = (event, selectedDate) => {
-        // console.log("selectedDAte : " + selectedDate)
         const currentDate = selectedDate || end;
         
         setShowSecond()
@@ -175,6 +218,7 @@ const Dash_cal = () => {
 
             <TraineeList
                 setSelectedTrainee={setSelectedTrainee}
+                DATA = {TraineeListFromDB}
             />
 
             <View style={styles.confirm}>
@@ -272,6 +316,7 @@ const Dash_cal = () => {
                     onPressOut={() => {
                             sheetRef.current.snapTo(1)
                             saveDataLocalStorage()
+                            //save DAta to db
                         }
                     }>
                     <FontAwesome name="check" size={25} color="black" />
@@ -281,7 +326,7 @@ const Dash_cal = () => {
                 <Text style={styles.texttitle}> 일정 추가하기 </Text>
             </View>
             <View style={styles.textContainer}>
-                <Text style={styles.textContent}> {selectedDate.month}월 {selectedDate.date}일 {koreaday[selectedDate.day]}요일</Text>
+                <Text style={styles.textContent}> {selectedDatePick.month}월 {selectedDatePick.date}일 {koreaday[selectedDatePick.day]}요일</Text>
             </View>
 
             <View style={styles.horizontalLine} />
@@ -369,7 +414,7 @@ const Dash_cal = () => {
                 <View style = {styles.maincontainer}>
                 <View style={{flex:1, marginTop: 12}}>
                     <CalendarView 
-                        setSelectedDate={setSelectedDate}
+                        setSelectedDatePick={setSelectedDatePick}
                     />
                 </View>
                 </View>
@@ -381,11 +426,12 @@ const Dash_cal = () => {
                         <CircleButton content={'+'} />
                     </TouchableOpacity>
                     <View style={styles.container}>
-                        {selectedDate.date !== today.getDate() ? 
+                        {//data 서버에서 가져오고 해당 날짜에 대한 일정이 있는지 체크
+                            DATA.length === 0 ? 
                         <View>
                             <Text style={{color:'#AAAAAA'}}>이날의 일정이 없습니다</Text>
                         </View>
-                        :<FlatList data={DATA} renderItem={renderItem} keyExtractor={item => item._id} />}
+                            :<FlatList data={DATA} renderItem={renderItem} keyExtractor={item => item._id} />}
                     </View>
                 </View>
                 </View>

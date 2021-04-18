@@ -16,7 +16,7 @@ LocaleConfig.defaultLocale = 'fr';
 // 날짜를 눌렀을 때 이벤트 추가해야 됨
 //const DateObject = new Date().toISOString().slice(0, 10)
 
-const CalendarView = ({setSelectedDate}) => {
+const CalendarView = ({setSelectedDatePick}) => {
     // let curr = console.log(String(currentDate))
     const [markedDates, setMarkedDates] = useState({})
 
@@ -43,7 +43,7 @@ const CalendarView = ({setSelectedDate}) => {
             const tempo = new Date(day.dateString).getDay()
             //console.log(tempo)
             //day object 넘겨주기
-            setSelectedDate({
+            setSelectedDatePick({
               year: day.year,
               month: day.month,
               date: day.day,
