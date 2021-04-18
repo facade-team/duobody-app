@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { FlatList, StyleSheet, Text, Image, View, TouchableOpacity, Dimensions } from 'react-native';
 import { Colors, Spacing } from '../../styles';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { SafeAreaView } from 'react-navigation';
 import { useNavigation } from '@react-navigation/native'
 
+
 const Dash_dash = () => {
+
 const navigation = useNavigation();
 return (
 <View style={styles.container}>

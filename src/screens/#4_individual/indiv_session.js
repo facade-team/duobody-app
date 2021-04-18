@@ -138,15 +138,11 @@ export default IndividualSession = () => {
       .then(res => {
         let sessionsArr = []
         setLessonId(null)
-        setStartTime(renderedDate)
-        setEndTime(renderedDate)
+        if(res.data.data === null){
+          setStartTime(renderedDate)
+          setEndTime(renderedDate)
+        }
         if (res.data.data !== null) {
-          const startStr = res.data.data[0].start
-          const endStr = res.data.data[0].end
-          const startObj = new Date(startStr)
-          const endObj = new Date(endStr)
-          setStartTime(startObj)
-          setEndTime(endObj)
           res.data.data[0].sessions.map(data => {
             let newSession = {}
             newSession.part = data.part
@@ -167,6 +163,13 @@ export default IndividualSession = () => {
   
             sessionsArr.push(newSession)
           })
+          const startStr = res.data.data[0].start
+          const endStr = res.data.data[0].end
+          const startObj = new Date(startStr)
+          const endObj = new Date(endStr)
+          console.log(`object is : ${endObj}`)
+          setStartTime(startObj)
+          setEndTime(endObj)
           setLessonId(res.data.data[0]._id)
         }
         setSessions(sessionsArr)

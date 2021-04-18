@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Image, StyleSheet } from 'react-native';
 
@@ -21,7 +21,6 @@ import indiv_msg from '../screens/#4_individual/indiv_msg';
 import indiv_etc from '../screens/#4_individual/indiv_etc';
 import change_add from '../screens/#5_profile/change_add';
 import change_view from '../screens/#5_profile/change_view';
-
 
 function TopLogo() {
     return (
@@ -406,19 +405,20 @@ const ChangeViewStackScreen = ({navigation}) => (
 
 const Drawer = createDrawerNavigator();
 
-const Navigation = () => (
-    <NavigationContainer>
-        <Drawer.Navigator
-        screenOptions= {{ gestureEnabled: true}}>
-            <Drawer.Screen name = "Dash" component={Footer_dash} />
-            <Drawer.Screen name = "Indiv" component = {Footer_indiv} />
-            <Drawer.Screen name = "Mem_Add" component = {MemAddStackScreen} />
-            <Drawer.Screen name = "Mem_Edit" component = {MemEditStackScreen} />
-            <Drawer.Screen name = "Mem_Search" component = {MemSearchStackScreen} />
-            <Drawer.Screen name = "Change_Add" component = {ChangeAddStackScreen} />
-            <Drawer.Screen name = "Change_View" component = {ChangeViewStackScreen} />
-        </Drawer.Navigator>
-    </NavigationContainer>
-)
+const Navigation = () => {
+  return (
+      <NavigationContainer>
+          <Drawer.Navigator
+          screenOptions= {{ gestureEnabled: true}}>
+              <Drawer.Screen name = "Dash" component={Footer_dash} />
+              <Drawer.Screen name = "Indiv" component = {Footer_indiv} />
+              <Drawer.Screen name = "Mem_Add" component = {MemAddStackScreen} />
+              <Drawer.Screen name = "Mem_Edit" component = {MemEditStackScreen} />
+              <Drawer.Screen name = "Mem_Search" component = {MemSearchStackScreen} />
+              <Drawer.Screen name = "Change_Add" component = {ChangeAddStackScreen} />
+              <Drawer.Screen name = "Change_View" component = {ChangeViewStackScreen} />
+          </Drawer.Navigator>
+      </NavigationContainer>
+)}
 
 export default Navigation;
