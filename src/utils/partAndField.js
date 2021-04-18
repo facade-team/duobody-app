@@ -37,7 +37,7 @@ export default [
       },
       {
         id: 8,
-        field: '덤베 풀오버',
+        field: '덤벨 풀오버',
       },
       {
         id: 9,

@@ -7,8 +7,7 @@ import DeleteSetButton from './DeleteSetButton';
 export default ({
   index, 
   setNumber, 
-  dbWeight, 
-  dbRep, 
+  dbMinutes,
   dimensions, 
   sessions, 
   setSessions,
@@ -78,7 +77,18 @@ export default ({
           newSessions[dimensions[0]].sets[dimensions[1]].weight = sumWeightVal
           setSessions(newSessions)
         }
-      } 
+      }
+      if (type === 'minute') {
+        const num = parseFloat(number)
+        const minutesValNum = parseFloat(minutesVal)
+        if (+num + +minutesValNum >= 0) {
+          const sumMinutesVal = String(num+minutesValNum)
+          setMinutesVal(sumMinutesVal)
+          const newSessions = [...sessions]
+          newSessions[dimensions[0]].sets[dimensions[1]].minutes = sumMinutesVal
+          setSessions(newSessions)
+        }
+      }
     }
 
     return (
@@ -90,12 +100,12 @@ export default ({
     )
   }
 
-  const WeightInput = ({weightVal, setWeightVal}) => {
-    const handleWeight = (text) => {
+  const MinutesInput = ({minutesVal, setMinutesVal}) => {
+    const handleMinutes = (text) => {
       if (text >= 0) {
-        setWeightVal(text)
+        setMinutesVal(text)
         const newSessions = [...sessions]
-        newSessions[dimensions[0]].sets[dimensions[1]].weight = text
+        newSessions[dimensions[0]].sets[dimensions[1]].minutes = text
         setSessions(newSessions)
       }
       else {
@@ -108,63 +118,29 @@ export default ({
         <View style={setsStyles.textInputBox}>
           <TextInput
             autoCorrect={ false }
-            value={weightVal} 
-            onChangeText={(text) => handleWeight(text)}
+            value={minutesVal} 
+            onChangeText={(text) => handleMinutes(text)}
             keyboardType={'number-pad'}
           />
-          <Text>kg</Text>
+          <Text>분</Text>
         </View>
-        <RoundButton number={'+5'} type={'weight'} />
-        <RoundButton number={'-5'} type={'weight'} />
+        <RoundButton number={'+1'} type={'minute'} />
+        <RoundButton number={'-1'} type={'minute'} />
       </View>
     )
   }
 
-  const RepsInput = ({repsVal, setRepVal}) => {
-    
-    const handleReps = (text) => {
-      if (text > 0) {
-        setRepVal(text)
-        const newSessions = [...sessions]
-        newSessions[dimensions[0]].sets[dimensions[1]].rep = text
-        setSessions(newSessions)
-      }
-      else {
-        Alert.alert('올바른 숫자를 입력해주세요')
-      }
-    }
-
-    return (
-      <View style={btnStyles.btnContainer}>
-        <View style={setsStyles.textInputBox}>
-          <TextInput
-            autoCorrect={ false }
-            value={repsVal}
-            onChangeText={(text) => handleReps(text)}
-            keyboardType={'number-pad'}
-          />
-          <Text>회</Text>
-        </View>
-        <RoundButton number={'+1'} type={'rep'} />
-        <RoundButton number={'-1'} type={'rep'} />
-      </View>
-    )
-  }
-
-  const [weightVal, setWeightVal] = useState(dbWeight)
-  const [repVal, setRepVal] = useState(dbRep)
+  const [minutesVal, setMinutesVal] = useState(dbMinutes)
 
   useEffect(() => {
-    setWeightVal(dbWeight)
-    setRepVal(dbRep)
+    setMinutesVal(dbMinutes)
   })
 
   return (
     <View style={setsStyles.container} >
       <View style={setsStyles.setBox}>
         <Text>{index+1}세트</Text>
-        <WeightInput weightVal={weightVal} setWeightVal={setWeightVal} />
-        <RepsInput repsVal={repVal} setRepVal={setRepVal} />
+        <MinutesInput minutesVal={minutesVal} setMinutesVal={setMinutesVal} />
         <DeleteSetButton dimensions={dimensions} sessions={sessions} setSessions={setSessions} />
       </View>
     </View>

@@ -35,19 +35,19 @@ export default ({dimensions, sessions, setSessions}) => {
     // console.log(dimensions)
     //console.log('sessions: ' + JSON.stringify(sessions))
     const newSessions = [...sessions]
-    const setsNum = newSessions[dimensions[0]].set.length - 1
-    const prevWeight = newSessions[dimensions[0]].set[setsNum].weight
-    const prevRep = newSessions[dimensions[0]].set[setsNum].rep
-    const prevSetNumber = newSessions[dimensions[0]].set[setsNum].setNumber
+    const setsNum = newSessions[dimensions[0]].sets.length - 1
+    const prevWeight = newSessions[dimensions[0]].sets[setsNum].weight
+    const prevRep = newSessions[dimensions[0]].sets[setsNum].rep
+    const prevMinutes = newSessions[dimensions[0]].sets[setsNum].minutes
 
     const newSessionOne = {
-      id: setsNum + 1,
-      setNumber: setsNum + 1,
+      set: setsNum + 1,
       weight: prevWeight,
       rep: prevRep,
+      minutes: prevMinutes,
     }
 
-    newSessions[dimensions[0]].set.push(newSessionOne)
+    newSessions[dimensions[0]].sets.push(newSessionOne)
     setSessions(newSessions)
   }
 

@@ -36,7 +36,7 @@ export default ({addSession, index}) => {
   const [selectedPart, setSelectedPart] = useState('운동을 선택하세요');
   const addNewFields = () => {
     if (selectedPart !== '운동을 선택하세요') {
-      addSession(partAndField[index].part, selectedPart)
+      addSession(partAndField[index].part, selectedPart, index)
     }
     else {
       Alert.alert('운동을 선택한 후 추가해주세요')
