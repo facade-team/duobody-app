@@ -8,7 +8,6 @@ const Container = styled.View`
 `;
 
 const TextInput = styled.TextInput`
-  width: ${Spacing.SCALE_200};
   padding-bottom: ${Spacing.SCALE_8};
   background-color: ${Colors.WHITE};
   border-bottom-color: ${Colors.GRAY};
@@ -23,9 +22,11 @@ const UnderLinedTextInput = ({
   onChangeText,
   secureTextEntry = false,
   autoCapitalize,
+  width = Spacing.SCALE_200,
 }) => (
   <Container>
     <TextInput
+      width={width}
       autoCapitalize='none'
       placeholder={placeholder}
       value={value}
