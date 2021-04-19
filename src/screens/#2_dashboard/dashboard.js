@@ -171,16 +171,6 @@ const Item = ({ name }) => (
 
 const Mem_List = ({DATA}) => {
   const navigation = useNavigation();
-<<<<<<< HEAD
-  const renderItem = ({ item }) => (
-    //console.log(DATA),
-    <TouchableOpacity 
-      onPress={() => navigation.navigate('Indiv', {screen: 'indiv_profile'})}
-    >
-      <Item name = {item.name} />
-    </TouchableOpacity>
-  );
-=======
   const renderItem = ({ item }) => {
 
     const onPressOutHandler = async () => {
@@ -196,7 +186,6 @@ const Mem_List = ({DATA}) => {
       </TouchableOpacity>
     )
   }
->>>>>>> f5ad656261aa89a9d0dde745635c77ba364a1079
 
   return (
       <View style = {{flex:1}}>
