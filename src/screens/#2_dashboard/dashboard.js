@@ -5,6 +5,8 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { SafeAreaView } from 'react-navigation';
 import { useNavigation } from '@react-navigation/native'
 import axios from '../../axios/api';
+import AsyncStorage from '@react-native-community/async-storage';
+
 
 const Dash_dash = () => {
   
@@ -169,6 +171,7 @@ const Item = ({ name }) => (
 
 const Mem_List = ({DATA}) => {
   const navigation = useNavigation();
+<<<<<<< HEAD
   const renderItem = ({ item }) => (
     //console.log(DATA),
     <TouchableOpacity 
@@ -177,6 +180,23 @@ const Mem_List = ({DATA}) => {
       <Item name = {item.name} />
     </TouchableOpacity>
   );
+=======
+  const renderItem = ({ item }) => {
+
+    const onPressOutHandler = async () => {
+      await AsyncStorage.setItem('traineeId', item._id)
+      navigation.navigate('Indiv', {screen: 'indiv_profile'})
+    }
+
+    return (
+      <TouchableOpacity 
+        onPress={() => onPressOutHandler()}
+      >
+        <Item name = {item.name} />
+      </TouchableOpacity>
+    )
+  }
+>>>>>>> f5ad656261aa89a9d0dde745635c77ba364a1079
 
   return (
       <View style = {{flex:1}}>

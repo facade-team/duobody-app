@@ -13,8 +13,8 @@ const indiv_profile = ({navigation}) => {
   const [InbodyDATAFromDB, setInbodyDATAFromDB] = useState([]);
 
   //const _id = '607991633f0da34aa063c3a9'; // moong
-  //const _id = '607991803f0da34aa063c3aa'; // nowkim
-  const _id = '606d59072a64c40bc62c91d5'; // jimin
+  const _id = '607991803f0da34aa063c3aa'; // nowkim
+  //const _id = '606d59072a64c40bc62c91d5'; // jimin
 
   const [FormerID, setFormerID] = useState(_id);
 

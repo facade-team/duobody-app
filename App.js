@@ -8,6 +8,7 @@ import axios from './src/axios/api'
 
 
 
+
 const App = () => {
   useEffect(() => {
     setTimeout(async () => {
@@ -85,11 +86,21 @@ const authContextValue = useMemo(() => ({
     }
     dispatch({type: 'LOGOUT'})
     }
+  ,
+  setTraineeIdGlobal: async (traineeId) => {
+    try {
+      await AsyncStorage.setItem('traineeId', traineeId)
+    } catch (err) {
+      console.log(err)
+    }
+    //dispatch({type: 'SET_TRAINEE_ID_GLOBAL', traineeId})
+  }
   }), [])
 
   const initialAuthState = {
     isLoading: true,
     token: null,
+    traineeId: null,
   }
 
   const AuthReducer = (prevState, action) => {
@@ -112,11 +123,15 @@ const authContextValue = useMemo(() => ({
           token: null,
           isLoading: false,
         }
+      case 'SET_TRAINEE_ID_GLOBAL':
+        return {
+          ...prevState,
+          traineeId: action.traineeId,
+        }
     }
   }
 
   const [authState, dispatch] = useReducer(AuthReducer, initialAuthState)
-
 
   if (authState.isLoading) {
     return (
@@ -128,6 +143,7 @@ const authContextValue = useMemo(() => ({
 
   const NavController = () => {
     const isLoggedIn = authState.token
+    console.log(`this is id: ${authState.traineeId}`)
     return isLoggedIn !== null ? <Navigation /> : <Auth_Nav />
   }
 
