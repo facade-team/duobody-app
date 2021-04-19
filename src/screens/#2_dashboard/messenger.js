@@ -14,18 +14,6 @@ const Dash_Msg = ( {navigation} ) => {
 
   const renderItem = ({ item, submessenger }) => (
     <TouchableOpacity onPressOut={() => {
-        // 회원 채팅방 누를 때 채팅방 생성
-        // 채팅방 생성 api - body에 trainee id 넣고 post
-        //console.log(item)
-        axios.post('/messenger',{
-          traineeId: item.traineeId._id
-        }).then((res)=>{
-          console.log(res.data)
-          //해당 채팅방 id가 res로 날아오는데 이걸 저장해서 넘겨줘야 함
-        }).catch(error => {
-          console.log(error)
-        })
-
         // 회원별 채팅방으로 이동
         navigation.navigate('Indiv', {screen: 'indiv_msg'})
       }}>
@@ -35,15 +23,28 @@ const Dash_Msg = ( {navigation} ) => {
 
   const [didMount,setDidMount] = useState(false)
   const [chatRoom,setChatroom] = useState([])
-  //const [isRoom, setIsRoom] = useState(false)
-  const [trainee,setTrainee] = useState([])
 
   useEffect(()=>{
     if(!didMount){
       //모든 trainee 조회
       axios.get('/trainee').then((res)=>{
         //받은 res에 chatRoomId가 없으면 채팅방 자체가 렌더링이 안됨.
-        console.log(res.data.data)
+        res.data.data.map(d=>{
+          //console.log(d)
+          if(d.chatRoomId === undefined){
+            // chatroom을 하나 만들어주자.
+            axios.post('/messenger',{
+              traineeId: d._id
+            }).then((res)=>{
+              //res에 온 채팅방으로 초기 메시지 보내기
+              axios.post(`/messenger/${res.data.data._id}`,{
+                content: '환영합니다!'
+              })
+            }).catch(error=>{
+              console.log(error)
+            })
+          }
+        })
       }).catch(error => {
         console.log(error)
       })
@@ -51,6 +52,7 @@ const Dash_Msg = ( {navigation} ) => {
       //생성되어 있는 트레이너의 모든 채팅방 조회
       axios.get('/messenger').then((res)=>{
         res.data.data.chatRoomIds.map(d=>{
+          console.log(d)
           let newRoom = {
             _id: d._id,
             messages: {
