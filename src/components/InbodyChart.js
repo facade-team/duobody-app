@@ -74,18 +74,18 @@ export default ({data, idx}) => {
   ]
 
   const chartValues = [
-    '체지방', 'BMI', '골격근', '몸무게'
+    '몸무게', 'BMI', '골격근', '체지방'
   ]
 
 
   return (
-    <View style={{flexDirection: 'row', alignItems: 'center'}}>
-      <View style={{height: 180, width: Spacing.SCALE_48, justifyContent: 'center', alignItems: 'center', borderRightWidth: 0.3, borderColor: Colors.GRAY,}}>
+    <View style={{flexDirection: 'row', alignItems: 'center', paddingBottom: (idx === 3) ? Spacing.SCALE_20 : 0}}>
+      <View style={{height: 180, width: Spacing.SCALE_48, justifyContent: 'center', alignItems: 'center', borderRightWidth: 0.5, borderColor: Colors.GRAY, }}>
         <Text style={{fontSize: Typography.FONT_SIZE_16,}}>{chartValues[idx]}</Text>
       </View>
       <LineChart
         data={data}
-        width={Dimensions.get("window").width*(data.labels.length / 5)} // from react-native
+        width={Dimensions.get("window").width*(data.labels.length / 3.5)} // from react-native
         height={180}
         yAxisLabel=""
         yAxisSuffix="kg"
