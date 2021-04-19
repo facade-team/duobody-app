@@ -19,12 +19,10 @@ const Dash_Msg = ( {navigation} ) => {
         //console.log(item)
         axios.post('/messenger',{
           traineeId: item._id
-        })
-        .then((res)=>{
-          //console.log(res.data)
+        }).then((res)=>{
+          console.log(res.data)
           //해당 채팅방 id가 res로 날아오는데 이걸 저장해서 넘겨줘야 함
-        })
-        .catch(error => {
+        }).catch(error => {
           console.log(error)
         })
 
@@ -37,10 +35,12 @@ const Dash_Msg = ( {navigation} ) => {
 
   const [trainee,setTrainee] = useState([])
   const [didMount,setDidMount] = useState(false)
+  const [msg,setMsg] = useState([])
+
 
   useEffect(()=>{
-    //trainee 불러오기
     if(!didMount){
+      //trainee 불러오기
       axios.get('/trainee').then((res)=>{
         res.data.data.map(d=>{
           let newTrainee = {}
@@ -52,6 +52,14 @@ const Dash_Msg = ( {navigation} ) => {
       }).catch(error => {
         console.log(error)
       })
+
+      // 채팅방의 가장 마지막 대화내용 가져오기 - 트레이너의 모든 채팅방 정보 가져오기
+      // axios.get('/messenger').then((res)=>{
+      //   console.log(res.data.data)
+      // }).catch((error)=>{
+      //   console.log(error)
+      // })
+      
       setDidMount(true)
     }
   })
