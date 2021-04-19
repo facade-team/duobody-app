@@ -61,13 +61,16 @@ const styles = StyleSheet.create({
 
 function Change_view() {
 
+  const [existStart, setExistStart] = useState('')
+  const [existEnd, setExistEnd] = useState('')
+
   const [traineeId, setTraineeId] = useState('')
   const [isSearched, setIsSearched] = useState(false)
   const [isDataUpdated, setIsDataUpdated] = useState(true)
+  const [traineeName, setTraineeName] = useState('')
 
   const callGetLatestInbodyAPI = async () => {
     //
-    console.log(`id is : ${traineeId}`)
     await axios.get(`/trainee/${traineeId}/inbody/latest`)
       .then( async (res) => {
         if (res.data.data) {
@@ -75,13 +78,15 @@ function Change_view() {
           const endDateObj = new Date(endDateStr)
           setEndDate(endDateStr)
           setCalEndDate(endDateObj)
+          setExistEnd(endDateStr)
         }
         else {
-          Alert.alert('데이터가 없습니다')
+          //Alert.alert('조회 가능한 데이터가 없습니다')
         }        
       })
       .catch((error) => {
-        console.log(error.response)
+        //console.log(error.response)
+        //Alert.alert('조회 가능한 데이터가 없습니다')
       })
   }
 
@@ -93,13 +98,12 @@ function Change_view() {
           console.log('exbody가 없어요')
         }
         else {
-          console.log(res.data.data)
           setExbody(res.data.data)
         }
       })
       .catch((err) => {
         //
-        console.log(err.response)
+        //console.log(err.response)
       })
   }
 
@@ -111,23 +115,33 @@ function Change_view() {
     await axios.get(`/trainee/${traineeId}/inbody/date/20210101/${endDateStrWithNumber}`)
       .then((res) => {
         //
-        setApiData(res.data.data)
-        const startDateStr = getDateString(res.data.data[0].date)
-        const startDateObj = new Date(startDateStr)
-        setStartDate(startDateStr)
-        setCalStartDate(startDateObj)
-        // onDatePickHandler(startDateStr, endDateStr)
-        console.log('두번째 api 호출 완료')
-        setIsSearched(true)
-        setIsDataUpdated(false)
+        if (res.data.data) {
+          setTraineeName(res.data.data.name)
+          setApiData(res.data.data.inbody)
+          const startDateStr = getDateString(res.data.data.inbody[0].date)
+          const startDateObj = new Date(startDateStr)
+          setStartDate(startDateStr)
+          setCalStartDate(startDateObj)
+          setExistStart(startDateStr)
+          setIsSearched(true)
+          setIsDataUpdated(false)
+          setNoData(false)
+        }
+        else {
+          setIsSearched(true)
+          setIsDataUpdated(false)
+        }
       })
       .catch((err) => {
         //
-        console.log(err.response)
+        //console.log(err.response)
+        setIsSearched(true)
+        setIsDataUpdated(false)
       })
   }
 
   const [apiData, setApiData] = useState([])
+  const [noData, setNoData] = useState(true)
 
   const [startDate, setStartDate] = useState('2021-01-01')
   const [endDate, setEndDate] = useState('2021-12-31')
@@ -222,8 +236,8 @@ function Change_view() {
     setSkeletalMuscleGraph(prevSkeletalMuscle)
   }
 
-  const [calStartDate, setCalStartDate] = useState(new Date(startDate))
-  const [calEndDate, setCalEndDate] = useState(new Date(endDate))
+  const [calStartDate, setCalStartDate] = useState(new Date('2021-01-01'))
+  const [calEndDate, setCalEndDate] = useState(new Date('2021-12-31'))
 
   const onChangeStartDate = (event, selectedDate) => {
     const currentDate = selectedDate
@@ -234,6 +248,10 @@ function Change_view() {
     }
     else {
       Alert.alert('잘못된 날짜 범위 입니다')
+      let prevDate = startDate
+      let prevCalDate = calStartDate
+      setStartDate(prevDate)
+      setCalStartDate(prevCalDate)
     }
   };
 
@@ -246,6 +264,10 @@ function Change_view() {
     }
     else {
       Alert.alert('잘못된 날짜 범위 입니다')
+      let prevDate = endDate
+      let prevCalDate = calEndDate
+      setEndDate(prevDate)
+      setCalEndDate(prevCalDate)
     }
   };
 
@@ -320,9 +342,7 @@ function Change_view() {
     })
   )
 
-  useEffect(() => {
-    //console.log(`isSearched ${isSearched}`)
-    
+  useEffect(() => {    
       if (!isSearched) {
         if (traineeId !== '') {
           callGetLatestInbodyAPI()
@@ -341,7 +361,7 @@ function Change_view() {
     <SafeAreaView style={styles.mainContainer}>
       <View style={styles.whiteBox} >
         <ScrollView>
-          <Text style={styles.title}>김승우 고객님 변화보기</Text>
+          <Text style={styles.title}>{traineeName} 고객님 변화보기</Text>
           <View>
             <View style={styles.subTitleContainer}>
               <Text style={styles.subTitle}>Exbody</Text>
@@ -385,15 +405,35 @@ function Change_view() {
                 contentOffset={{x: 0, y: 0}}
                 showsHorizontalScrollIndicator={false}
               >
-                <View>
-                  {(weightGraph === null) ? null : <View style={{width: Dimensions.get("window").width*(weightGraph.labels.length / 3.5), height:0.5, backgroundColor:Colors.GRAY}}></View>}
-                  {(weightGraph === null) ? null : <InbodyChart data={weightGraph} idx={0} />}
-                  {(BMIGraph === null) ? null : <InbodyChart data={BMIGraph} idx={1} />}
-                  {(fatGraph === null) ? null : <InbodyChart data={fatGraph} idx={2} />}
-                  {(skeletalMuscleGraph === null) ? null : <InbodyChart data={skeletalMuscleGraph} idx={3} />}
-                </View>
+                  {!noData && weightGraph && weightGraph.labels.length !== 0 && (
+                    <View>
+                      {(weightGraph === null) ? null : <View style={{width: Dimensions.get("window").width*(weightGraph.labels.length / 3.5), height:0.5, backgroundColor:Colors.GRAY}}></View>}
+                      {(weightGraph === null) ? null : <InbodyChart data={weightGraph} idx={0} />}
+                      {(BMIGraph === null) ? null : <InbodyChart data={BMIGraph} idx={1} />}
+                      {(fatGraph === null) ? null : <InbodyChart data={fatGraph} idx={2} />}
+                      {(skeletalMuscleGraph === null) ? null : <InbodyChart data={skeletalMuscleGraph} idx={3} />}
+                    </View>
+                  )
+                  }
               </ScrollView>
             </View>
+            {
+              !noData && weightGraph && weightGraph.labels.length === 0 && (
+              <View style={{flex:1, justifyContent:'center', alignItems: 'center'}}>
+                <Text>조건에 맞는 데이터가 없어요!</Text>
+                <View>
+                  <Text>첫 날짜 : {existStart} / 최근 날짜 : {existEnd}</Text>
+                </View>
+              </View>
+              )
+            }
+            {
+              noData && weightGraph && weightGraph.labels.length === 0 && (
+              <View style={{flex:1, justifyContent:'center', alignItems: 'center'}}>
+                <Text>데이터가 없어요!</Text>
+              </View>
+              )
+            }
           </View>
         </ScrollView>
       </View>
