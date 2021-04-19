@@ -1,10 +1,9 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect } from 'react'
 import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView, Dimensions } from 'react-native';
 import { Spacing, Colors, Typography } from '../../styles';
 import Icon from 'react-native-vector-icons/Ionicons';
 import axios from '../../axios/api';
-import AsyncStorage from '@react-native-community/async-storage';
-import { useIsFocused, useFocusEffect } from '@react-navigation/native';
+
 
 const indiv_profile = ({navigation}) => {
 
@@ -14,10 +13,10 @@ const indiv_profile = ({navigation}) => {
   const [InbodyDATAFromDB, setInbodyDATAFromDB] = useState([]);
 
   //const _id = '607991633f0da34aa063c3a9'; // moong
-  //const _id = '607991803f0da34aa063c3aa'; // nowkim
-  const _id = '606d59072a64c40bc62c91d5'; // jimin
+  const _id = '607991803f0da34aa063c3aa'; // nowkim
+  //const _id = '606d59072a64c40bc62c91d5'; // jimin
 
-  const [FormerID, setFormerID] = useState(null);
+  const [FormerID, setFormerID] = useState(_id);
 
   const getApiTest = () => {
     axios.get(`/trainee/${_id}/inbody/latest`)
@@ -27,45 +26,11 @@ const indiv_profile = ({navigation}) => {
     .catch(err => console.log('this is error for inbody ' +err))
   };
 
-  const getTraineeId = async () => {
-    const id = await AsyncStorage.getItem('traineeId')
-    setFormerID(id)
-    console.log(`current Id is ${id}`)
-  }
-
-  const isFocused = useIsFocused()
-
-  useFocusEffect(
-    useCallback(() => {
-      let isActive = true;
-
-      const fetchId = async () => {
-        try {
-          const id = await AsyncStorage.getItem('traineeId')
-
-          if (isActive) {
-            setFormerID(id)
-          }
-        } catch (e) {
-          console.log(e)
-        }
-      }
-
-      fetchId()
-      return () => {
-        isActive = false
-      }
-    }, [FormerID])
-  )
 
   useEffect(() => {
-    //if (isFocused) {
-    //  console.log('focused!')
-    //  getTraineeId()
-   // }
-
-    if (!gotData && FormerID) {
-      axios.get(`/trainee/${FormerID}`)
+    
+    if (!gotData || FormerID !== _id) {
+      axios.get(`/trainee/${_id}`)
       .then(res => {
         //console.log(res.data.data)
         let memData = {};
@@ -99,7 +64,7 @@ const indiv_profile = ({navigation}) => {
     setGotData(true)
     setIsLoading(false)
     setFormerID(_id)
-  }, [isFocused]);
+  });
 
   return ( isLoading ? <Text>Loading...</Text> :
   <SafeAreaView style = {styles.container}>
