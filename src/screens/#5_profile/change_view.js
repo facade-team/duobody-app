@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, useCallback } from 'react';
-import { View, Text, Image, StyleSheet, Dimensions, ScrollView, SafeAreaView, TouchableOpacity, Button, Alert} from 'react-native';
+import { View, Text, Image, StyleSheet, Dimensions, ScrollView, SafeAreaView, TouchableOpacity, Button, Alert, Platform} from 'react-native';
 import { Spacing, Typography, Colors } from '../../styles';
 import InbodyChart from '../../components/InbodyChart';
 import getDateString from '../../utils/getDateString';
@@ -242,32 +242,36 @@ function Change_view() {
   const onChangeStartDate = (event, selectedDate) => {
     const currentDate = selectedDate
     if(getDateString(currentDate) <= endDate) {
-      setStartDate(getDateString(currentDate))
+      setShow(false)
       setCalStartDate(currentDate)
+      setStartDate(getDateString(currentDate))
       onDatePickHandler(currentDate, null)
     }
     else {
       Alert.alert('잘못된 날짜 범위 입니다')
       let prevDate = startDate
       let prevCalDate = calStartDate
-      setStartDate(prevDate)
+      setShow(false)
       setCalStartDate(prevCalDate)
+      setStartDate(prevDate)
     }
   };
 
   const onChangeEndDate = (event, selectedDate) => {
     const currentDate = selectedDate
     if(startDate <= getDateString(currentDate)) {
-      setEndDate(getDateStringWithNumber(currentDate))
+      setShow(false)
       setCalEndDate(currentDate)
+      setEndDate(getDateStringWithNumber(currentDate))
       onDatePickHandler(null, currentDate)
     }
     else {
       Alert.alert('잘못된 날짜 범위 입니다')
       let prevDate = endDate
       let prevCalDate = calEndDate
-      setEndDate(prevDate)
+      setShow(false)
       setCalEndDate(prevCalDate)
+      setEndDate(prevDate)
     }
   };
 
@@ -327,7 +331,7 @@ function Change_view() {
           if (isActive && (id !== traineeId)) {
             setTraineeId(id)
             setIsSearched(false)
-            setIsFocused(true)
+            //setIsFocused(true)
           }
         } catch (err) {
           console.log(err)
@@ -350,11 +354,46 @@ function Change_view() {
           callGetInbodyByDateRangeAPI()
         }
       }
-
       if(!isDataUpdated) {
         updateData()
       }
   },)
+
+  const RenderDate = (dateStr) => {
+    const styles = StyleSheet.create ({
+      renderTimeContainer: {
+        paddingRight: Spacing.SCALE_8,
+        paddingLeft: Spacing.SCALE_8,
+        flexDirection:'row', 
+        alignItems:'center', 
+        marginTop: Spacing.SCALE_4, 
+        backgroundColor:Colors.GRAY_LIGHT,
+        justifyContent: 'center',
+        borderRadius: 10,
+      }
+    })
+
+    console.log(dateStr)
+    return (
+      <View style={styles.renderTimeContainer}>
+        <Text style={{fontSize: Typography.FONT_SIZE_16, justifyContent: 'center', alignSelf:'center', color: Colors.PRIMARY}}>
+          {dateStr.dateStr}
+        </Text>
+      </View>
+    )
+  }
+
+  const [show, setShow] = useState(false)
+  const [isStart, setIsStart] = useState(true)
+
+
+  const handelSetShow = (type) => {
+    console.log('handleSetShow')
+    setIsStart(type)
+    if (!show){
+      setShow(true)
+    }
+  }
 
   return (
     !isSearched ? <Text>Loading...</Text> :
@@ -379,24 +418,74 @@ function Change_view() {
           </View>
           <View style={styles.subTitleContainer}>
             <Text style={styles.subTitle}>Graph</Text>
-            <View>
-              <DateTimePicker
-                style={{width: Spacing.SCALE_100,}}
-                testID="dateTimePicker"
-                value={calStartDate}
-                mode={'date'}
-                display="default"
-                onChange={onChangeStartDate}
-              />
-              <DateTimePicker
-                style={{width: Spacing.SCALE_100,}}
-                testID="dateTimePicker1"
-                value={calEndDate}
-                mode={'date'}
-                display="default"
-                onChange={onChangeEndDate}
-              />
-            </View>
+            {
+              Platform.OS === 'ios' && (
+                <View>
+                  <DateTimePicker
+                    style={{width: Spacing.SCALE_100,}}
+                    testID="dateTimePicker"
+                    value={calStartDate}
+                    mode={'date'}
+                    display="default"
+                    onChange={onChangeStartDate}
+                  />
+                  <DateTimePicker
+                    style={{width: Spacing.SCALE_100,}}
+                    testID="dateTimePicker1"
+                    value={calEndDate}
+                    mode={'date'}
+                    display="default"
+                    onChange={onChangeEndDate}
+                  />
+                </View>
+              )
+            }
+            {
+              (Platform.OS !== 'ios') && (
+                show ? (
+                  <View>
+                    {
+                      isStart ? (
+                        <DateTimePicker
+                          style={{width: Spacing.SCALE_100,}}
+                          testID="dateTimePicker"
+                          value={calStartDate}
+                          mode={'date'}
+                          display="default"
+                          onChange={(event, selectedDate) => onChangeStartDate(event, selectedDate)}
+                        />
+                      ) : (
+                        <DateTimePicker
+                          style={{width: Spacing.SCALE_100,}}
+                          testID="dateTimePicker1"
+                          value={calEndDate}
+                          mode={'date'}
+                          display="default"
+                          onChange={(event, selectedDate) => onChangeEndDate(event, selectedDate)}
+                        />
+                      )
+                    }
+                  </View>
+                ) : (
+                  <View style={{flexDirection: 'row', justifyContent:'flex-end', alignItems:'center'}}>
+                    {calStartDate && (
+                      <TouchableOpacity onPressOut={() => handelSetShow(true)}>
+                        <View style={{flexDirection: 'row', alignItems:'center', justifyContent:'flex-end', marginRight: Spacing.SCALE_8}}>
+                          <RenderDate dateStr={startDate} />
+                        </View>
+                      </TouchableOpacity>
+                    )}
+                    {calEndDate && (
+                      <TouchableOpacity onPressOut={() => handelSetShow(false)}>
+                        <View style={{flexDirection: 'row', alignItems:'center', justifyContent:'flex-end', marginRight: Spacing.SCALE_8}}>
+                          <RenderDate dateStr={endDate} />
+                        </View>
+                      </TouchableOpacity>
+                    )}
+                  </View>
+                )
+              )
+            }
           </View>
           <View style={styles.graphContainer}>
             <View>
