@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from '../../axios/api';
 import React, {useState, useEffect} from 'react';
 import { SafeAreaView, View, FlatList, StyleSheet, Text, StatusBar, TouchableOpacity, Alert } from 'react-native';
 import { Colors } from '../../styles';
@@ -16,9 +16,20 @@ const Dash_Msg = ( {navigation} ) => {
     <TouchableOpacity onPressOut={() => {
         // 회원 채팅방 누를 때 채팅방 생성
         // 채팅방 생성 api - body에 trainee id 넣고 post
+        //console.log(item)
+        axios.post('/messenger',{
+          traineeId: item._id
+        })
+        .then((res)=>{
+          //console.log(res.data)
+          //해당 채팅방 id가 res로 날아오는데 이걸 저장해서 넘겨줘야 함
+        })
+        .catch(error => {
+          console.log(error)
+        })
 
         // 회원별 채팅방으로 이동
-        navigation.navigate('Indiv', { screen: 'indiv_msg'})
+        navigation.navigate('Indiv', {screen: 'indiv_msg'})
       }}>
       <Item title={item.name} submessenger={item.submessenger}/>
     </TouchableOpacity>

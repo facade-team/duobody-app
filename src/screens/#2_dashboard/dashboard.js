@@ -16,8 +16,8 @@ const Dash_dash = () => {
   const getApiTest = () => {
     axios.get(`/trainee`)
     .then(res => {
-      console.log('-----------------')
-      console.log(res.data.data[0])
+      //console.log('-----------------')
+      //console.log(res.data.data[0])
     })
     .catch(err => console.log('this is error for inbody ' +err))
   };
@@ -170,7 +170,7 @@ const Item = ({ name }) => (
 const Mem_List = ({DATA}) => {
   const navigation = useNavigation();
   const renderItem = ({ item }) => (
-    console.log(DATA),
+    //console.log(DATA),
     <TouchableOpacity 
       onPress={() => navigation.navigate('Indiv', {screen: 'indiv_profile'})}
     >
@@ -180,7 +180,7 @@ const Mem_List = ({DATA}) => {
 
   return (
       <View style = {{flex:1}}>
-      <View>{console.log(DATA)}</View>
+      <View></View>
       <FlatList data={DATA} renderItem={renderItem} keyExtractor={item => item.id} />
     
       </View>

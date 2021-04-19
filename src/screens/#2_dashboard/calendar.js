@@ -42,6 +42,7 @@ const Dash_cal = () => {
         //trainee 불러오기
         if(!traineeDidMount){
             axios.get('/trainee').then((res)=>{
+                console.log(res.data.data)
                 res.data.data.map(d=>{
                     let newTrainee = {}
                     newTrainee._id = d._id
