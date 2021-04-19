@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Platform, Dimensions, Alert } from 'react-native';
 import { Spacing, Typography, Colors } from '../../styles';
 import SetsInput from '../../components/SetsInput';
@@ -13,6 +13,9 @@ import SetsInputWithMinutes from '../../components/SetsInputWithMinutes'
 import DateTimePicker from '@react-native-community/datetimepicker';
 import UnderLinedTextInput from '../../components/UnderlinedTextInput';
 import GreenButton from '../../components/GreenButton';
+import { AuthContext } from '../../services/AuthContext';
+import AsyncStorage from '@react-native-community/async-storage';
+import { useFocusEffect } from '@react-navigation/native';
 
 const styles = StyleSheet.create({
   container: {
@@ -126,11 +129,13 @@ export default IndividualSession = () => {
   const [isSearched, setIsSearched] = useState(false)
   const [lessonId, setLessonId] = useState(null)
   const [lesson, setLesson] = useState(null)
-  const [traineeId, setTraineeId] = useState('607991803f0da34aa063c3aa')
+  const [traineeId, setTraineeId] = useState('')
 
+  // const { setTraineeIdGlobal } = useContext(AuthContext);
   const getDate = () => {
     const date = getDateStringWithNumber(renderedDate)
     setRenderedStringDate(date)
+    // setTraineeIdGlobal(traineeId)
   }
 
   const callGetLessonByDateAPI = () => {
@@ -167,7 +172,6 @@ export default IndividualSession = () => {
           const endStr = res.data.data[0].end
           const startObj = new Date(startStr)
           const endObj = new Date(endStr)
-          console.log(`object is : ${endObj}`)
           setStartTime(startObj)
           setEndTime(endObj)
           setLessonId(res.data.data[0]._id)
@@ -180,13 +184,38 @@ export default IndividualSession = () => {
       })
   }
 
+  useFocusEffect(
+    useCallback(() => {
+      let isActive = true
+
+      const getTraineeId = async () => {
+        try {
+          const id = await AsyncStorage.getItem('traineeId')
+          
+          if (isActive && (id !== traineeId)) {
+            setTraineeId(id)
+            setIsSearched(false)
+            console.log(`this is id: ${id}`)
+          }
+        } catch (err) {
+          console.log(err)
+        }
+      }
+
+      getTraineeId()
+
+      return () => {
+        isActive = false
+      }
+    })
+  )
+
   useEffect(() => {
-    // 오늘 날짜로 api 조회
+    // api 조회
     if (!isSearched) {
       getDate()
       callGetLessonByDateAPI()
     }
-    // 한번 조회 했으면 toggle on
   })
 
   const [show, setShow] = useState(false)
@@ -214,7 +243,6 @@ export default IndividualSession = () => {
   }
 
   const RenderTime = (timeString) => {
-    console.log(timeString.timeString)
     let time = new Date(timeString.timeString)
     let minute = (time.getMinutes() / 10 < 1) ? '0'+String(time.getMinutes()) : String(time.getMinutes())
     let hour = time.getHours()
@@ -246,7 +274,7 @@ export default IndividualSession = () => {
     if(lessonId) {
       axios.delete(`/trainee/${traineeId}/lesson/${lessonId}`)
         .then(res => {
-          console.log(res.data.data)
+          //
         })
         .catch(error => {
           console.log(error.response.request._response)
@@ -411,7 +439,10 @@ export default IndividualSession = () => {
       </View>
       <ScrollView>
         <View>
-        {isSearched && 
+        {!isSearched ? 
+        <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
+          <Text>Loading...</Text>
+        </View> :
           partAndField.map((data__, index__) => (
             <View key={index__}>
               <PartTitle data__={data__} index__={index__} />

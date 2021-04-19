@@ -87,8 +87,13 @@ const authContextValue = useMemo(() => ({
     dispatch({type: 'LOGOUT'})
     }
   ,
-  setTraineeId: (traineeId) => {
-    dispatch({type: 'SET_TRAINEE_ID', traineeId})
+  setTraineeIdGlobal: async (traineeId) => {
+    try {
+      await AsyncStorage.setItem('traineeId', traineeId)
+    } catch (err) {
+      console.log(err)
+    }
+    //dispatch({type: 'SET_TRAINEE_ID_GLOBAL', traineeId})
   }
   }), [])
 
@@ -118,15 +123,13 @@ const authContextValue = useMemo(() => ({
           token: null,
           isLoading: false,
         }
-      case 'SET_TRAINEE_ID':
+      case 'SET_TRAINEE_ID_GLOBAL':
         return {
           ...prevState,
           traineeId: action.traineeId,
         }
     }
   }
-
-  //console.log(`this is id: ${authState.traineeId}`)
 
   const [authState, dispatch] = useReducer(AuthReducer, initialAuthState)
 
@@ -140,6 +143,7 @@ const authContextValue = useMemo(() => ({
 
   const NavController = () => {
     const isLoggedIn = authState.token
+    console.log(`this is id: ${authState.traineeId}`)
     return isLoggedIn !== null ? <Navigation /> : <Auth_Nav />
   }
 
