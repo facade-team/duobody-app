@@ -6,9 +6,6 @@ import Auth_Nav from './src/navigation/auth_nav';
 import { AuthContext } from './src/services/AuthContext';
 import axios from './src/axios/api'
 
-
-
-
 const App = () => {
   useEffect(() => {
     setTimeout(async () => {

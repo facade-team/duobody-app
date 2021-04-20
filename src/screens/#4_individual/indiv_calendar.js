@@ -1,8 +1,11 @@
 import React, {useState, useEffect} from 'react';
-import { View, Text, SafeAreaView, StyleSheet } from 'react-native';
-import { Colors } from '../../styles';
+import { View, Text, SafeAreaView, StyleSheet, ScrollView } from 'react-native';
+import { Colors, Spacing, Typography } from '../../styles';
 import CalendarView from '../../components/Calendar';
 import axios from '../../axios/api';
+import partAndField from '../../utils/partAndField';
+import SetsView from '../../components/SetsView';
+import SetsIViewWithMinutes from '../../components/SetsIViewWithMinutes';
 
 function Indiv_calendar({ navigation }) {
 
@@ -21,7 +24,7 @@ function Indiv_calendar({ navigation }) {
     date: today.getDate(),
     day: today.getDay()
   })
-  const [trainee_id,setTrainee_id] = useState('607991633f0da34aa063c3a9')
+  const [trainee_id,setTrainee_id] = useState('607991803f0da34aa063c3aa')
 
   // 해당 날짜의 lesson data
   const [lesson,setLesson] = useState({})
@@ -52,7 +55,7 @@ function Indiv_calendar({ navigation }) {
     //모든 lesson 날짜 조회하기 - 처음 한 번만
     if(!didMount){
       // trainee의 모든 lesson 가져와서 달력에 점찍기 구현해야됨
-
+      callGetLessonDatesByMonthAPI()
       setDidMount(true)
     }
 
@@ -69,7 +72,7 @@ function Indiv_calendar({ navigation }) {
           // 해당 date lesson 있음
           setSelectedNull(true)
           
-          console.log(res.data.data[0])
+          //console.log(res.data.data[0])
 
           let newData = {}
           let startDate = new Date(res.data.data[0].start)
@@ -81,6 +84,16 @@ function Indiv_calendar({ navigation }) {
           newData.sessions = res.data.data[0].sessions
 
           setLesson(newData)
+
+          let partToggleArr = [false, false, false, false, false, false, false]
+          res.data.data[0].sessions.map((data) => {
+            partAndField.map((data_,index_) => {
+              if (data_.part === data.part) {
+                partToggleArr[index_] = true
+              }
+            })
+          })
+          setPartToggle(partToggleArr)
         }
       })
       .catch(error => {
@@ -88,8 +101,44 @@ function Indiv_calendar({ navigation }) {
       })
       setGotDataFlag(urlstring)
     }
-    
   })
+
+  // 요 아래는 승우가 만든 컴포넌트, state, function ^^
+  const [partToggle, setPartToggle] = useState([false, false, false, false, false, false, false])
+  const [dotDates, setDotDates] = useState([])
+
+  const callGetLessonDatesByMonthAPI = async () => {
+    await axios.get(`/trainee/${trainee_id}/lesson/date`)
+      .then((res) => {
+        setDotDates(res.data.data)
+      })
+      .catch((err) => {
+        console.log(err.response)
+      })
+  }
+
+  const isEmpty = (param) => {
+    return Object.keys(param).length === 0 && param.constructor === Object
+    }
+
+  const PartTitle = ({data__, index__}) => {
+
+    const styles = StyleSheet.create({
+      container: {
+        marginBottom: Spacing.SCALE_8,
+      },
+      textStyle: {
+        fontSize: Typography.FONT_SIZE_20,
+        color: Colors.BLACK,
+      }
+    })
+
+    return (
+      <View style={styles.container}>
+        <Text key={index__} style={styles.textStyle} >-{data__.part}</Text>
+      </View>
+    )
+  }
 
   return (
     <SafeAreaView style={styles.wrap}>
@@ -97,33 +146,80 @@ function Indiv_calendar({ navigation }) {
       <View style={{flex:1}}>
         <CalendarView
           setSelectedDatePick={setSelectedDatePick}
+          dotDates={dotDates}
         />
       </View>
       </View>
-      <View style={{flex: 1, marginHorizontal: 5, borderWidth: 0.5,backgroundColor: Colors.WHITE}}>
+      <View style={styles.whiteBox}>
         <View style={styles.container}>
-          {
-            lesson.start === '' ?
-            <Text>{selectedDatePick.year}년 {selectedDatePick.month}월 {selectedDatePick.date}일</Text> :
-            <>
+          <View style={{flex:1, flexDirection: 'row', justifyContent: 'space-around'}}>
             <Text>{selectedDatePick.year}년 {selectedDatePick.month}월 {selectedDatePick.date}일</Text>
-            <Text>{lesson.start} - {lesson.end}</Text>
-            </>
-          }
+            {
+              lesson && lesson.start && (
+                <Text>{lesson.start} - {lesson.end}</Text>
+              )
+            }
+          </View>
         </View>
         <View style={{flex:6, borderTopWidth:0.5, marginBottom: 5,}}>
           {
-            selectedNull === true ?
+            selectedNull === true && lesson && lesson.sessions && (
             <View>
-              
+              <ScrollView>
+                {
+                  partAndField.map((data__, index__) => 
+                    (partToggle[index__]) && (
+                      <View style={{margin: Spacing.SCALE_8}}>
+                        <PartTitle data__={data__} index__={index__} />
+                        {
+                          lesson.sessions.map((data_, index_) => 
+                            (data_.part === data__.part) && (
+                              <View style={{marginBottom: Spacing.SCALE_20, marginLeft: Spacing.SCALE_4}}>
+                                <View style={{margin: Spacing.SCALE_4,}}>
+                                  <Text key={index_} style={{fontSize: Typography.FONT_SIZE_16}}>{data_.field}</Text>
+                                </View>
+                                {
+                                  data_.sets.map((data, index) => 
+                                    (data_.part !== '유산소') && (data_.field !== '플랭크')? 
+                                    <SetsView index={index} dbWeight={data.weight} dbRep={data.rep} />
+                                    :
+                                    <SetsIViewWithMinutes index={index} dbMinutes={data.minutes} />
+                                  )
+                                }
+                              </View>
+                            )
+                          )
+                        }
+                      </View>
+                    )
+                  )
+                }
+              </ScrollView>
             </View>
-            :
-            <Text>lesson 없음</Text>
+            )
+          }
+          {
+            selectedNull === true && lesson && lesson.sessions && lesson.sessions.length === 0 && (
+              <View style={{flex:1, justifyContent: 'center', alignItems: 'center'}}>
+                <Text>운동 스케줄을 등록해주세요!</Text>
+              </View>
+            )
+          }
+          {
+            (selectedNull === false) && 
+            <View style={{flex:1, justifyContent: 'center', alignItems: 'center'}}>
+              <Text>등록된 레슨이 없어요!</Text>
+            </View>
+          }
+          {
+            (selectedNull === true && isEmpty(lesson)) && 
+            <View style={{flex:1, justifyContent: 'center', alignItems: 'center'}}>
+              <Text>조회중...</Text>
+            </View>
           }
         </View>
       </View>
     </SafeAreaView>
- 
   );
 }
 
@@ -143,7 +239,17 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'center',
     margin: 5,
-},
+  },
+  whiteBox: {
+    backgroundColor: Colors.WHITE,
+    borderRadius: 20,
+    borderColor: Colors.WHITE,
+    paddingLeft: Spacing.SCALE_4,
+    paddingRight: Spacing.SCALE_4,
+    margin: Spacing.SCALE_8,
+    borderWidth: 1,
+    flex:1,
+  }
 });
 
 export default Indiv_calendar;

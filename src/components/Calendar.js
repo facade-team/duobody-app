@@ -1,4 +1,4 @@
-import React, {Component, useState} from 'react';
+import React, {Component, useEffect, useState} from 'react';
 import {View} from 'react-native';
 import {Calendar} from 'react-native-calendars';
 import {LocaleConfig} from 'react-native-calendars';
@@ -19,6 +19,22 @@ LocaleConfig.defaultLocale = 'fr';
 const CalendarView = ({setSelectedDatePick}) => {
     // let curr = console.log(String(currentDate))
     const [markedDates, setMarkedDates] = useState({})
+    const [dotFlag, setDotFlag] = useState(false)
+
+    /*
+    useEffect(() => {
+      if (!dotFlag) {
+        if (dotDates.length !== 0) {
+          let newDotDates = {}
+          dotDates.map((data) =>{
+            newDotDates[data.date] = {marked: true, dotColor: Colors.PRIMARY}
+          })
+          setMarkedDates(newDotDates)
+        }
+        setDotFlag(true)
+      }
+    })
+    */
 
     return (
       <View style={{ flex: 1, paddingTop: 5,}}>
@@ -37,7 +53,14 @@ const CalendarView = ({setSelectedDatePick}) => {
             const temp = day.dateString
             
             let newMarked = {}
-            newMarked[temp] = {selected: true, selectedColor: Colors.PRIMARY}
+            newMarked[temp] = {selected: true, selectedColor: Colors.PRIMARY, marked: true}
+
+            /*
+            let prevMarkedDates = markedDates
+            console.log('this is marked dates')
+            console.log(prevMarkedDates)
+            prevMarkedDates[temp] = {selected: true, selectedColor: Colors.PRIMARY, marked: true}
+            */
             setMarkedDates(newMarked)
 
             const tempo = new Date(day.dateString).getDay()
