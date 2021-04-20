@@ -55,7 +55,7 @@ function Indiv_calendar({ navigation }) {
     //모든 lesson 날짜 조회하기 - 처음 한 번만
     if(!didMount){
       // trainee의 모든 lesson 가져와서 달력에 점찍기 구현해야됨
-
+      callGetLessonDatesByMonthAPI()
       setDidMount(true)
     }
 
@@ -101,12 +101,21 @@ function Indiv_calendar({ navigation }) {
       })
       setGotDataFlag(urlstring)
     }
-
-    console.log(lesson)
   })
 
   // 요 아래는 승우가 만든 컴포넌트, state, function ^^
   const [partToggle, setPartToggle] = useState([false, false, false, false, false, false, false])
+  const [dotDates, setDotDates] = useState([])
+
+  const callGetLessonDatesByMonthAPI = async () => {
+    await axios.get(`/trainee/${trainee_id}/lesson/date`)
+      .then((res) => {
+        setDotDates(res.data.data)
+      })
+      .catch((err) => {
+        console.log(err.response)
+      })
+  }
 
   const isEmpty = (param) => {
     return Object.keys(param).length === 0 && param.constructor === Object
@@ -137,6 +146,7 @@ function Indiv_calendar({ navigation }) {
       <View style={{flex:1}}>
         <CalendarView
           setSelectedDatePick={setSelectedDatePick}
+          dotDates={dotDates}
         />
       </View>
       </View>
