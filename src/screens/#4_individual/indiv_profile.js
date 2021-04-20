@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView, Dimensions } from 'react-native';
 import { Spacing, Colors, Typography } from '../../styles';
 import Icon from 'react-native-vector-icons/Ionicons';
 import axios from '../../axios/api';
-
+import { useFocusEffect } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const indiv_profile = ({navigation}) => {
 
@@ -11,30 +12,63 @@ const indiv_profile = ({navigation}) => {
   const [gotData, setGotData] = useState(false);
   const [DATAFromDB, setDATAFromDB] = useState([]);
   const [InbodyDATAFromDB, setInbodyDATAFromDB] = useState([]);
+  const [_id, set_id] = useState('');
+  const [NoInbodyData, setNoInbodyData] = useState(true);
+  const [IsSearched, setIsSearched] = useState(true);
+  const [addbtnpressed, setaddbtnpressed] = useState(false);
 
   //const _id = '607991633f0da34aa063c3a9'; // moong
-  const _id = '607991803f0da34aa063c3aa'; // nowkim
+  //const _id = '607991803f0da34aa063c3aa'; // nowkim
   //const _id = '606d59072a64c40bc62c91d5'; // jimin
 
   const [FormerID, setFormerID] = useState(_id);
 
   const getApiTest = () => {
-    axios.get(`/trainee/${_id}/inbody/latest`)
+    axios.get(`/trainee/${_id}`)
     .then(res => {
       console.log(res.data)
     })
     .catch(err => console.log('this is error for inbody ' +err))
   };
 
+  useFocusEffect(
+    useCallback(() => {
+      let isActive = true
+      const getTraineeId = async () => {
+        try {
+          const id = await AsyncStorage.getItem('traineeId')
+          
+          if (isActive && (id !== _id)) {
+            set_id(id)
+            setIsSearched(false)
+
+            console.log(`this is id for indiv_profile: ${id}`)
+          }
+        } catch (err) {
+          console.log(err)
+        }
+      }
+      getTraineeId()
+
+      return () => {
+        isActive = false
+      }
+    })
+  )
+
+
 
   useEffect(() => {
+    if(!IsSearched){
     
     if (!gotData || FormerID !== _id) {
-      axios.get(`/trainee/${_id}`)
-      .then(res => {
-        //console.log(res.data.data)
-        let memData = {};
-        
+      console.log(`passed id : ${_id}`)
+      {
+        console.log('\\\\\\'+_id)
+        axios.get(`/trainee/${_id}`)
+        .then(res => {
+          //console.log(res.data.data)
+          let memData = {};
           memData._id = res.data.data._id
           memData.address = res.data.data.address
           memData.age = res.data.data.age
@@ -44,27 +78,37 @@ const indiv_profile = ({navigation}) => {
           memData.phoneNumber = res.data.data.phoneNumber
 
           setDATAFromDB(memData)
-      })
-      .catch(err => console.log(err))
+        })
+        .catch(err => console.log(err))}
       
-      axios.get(`/trainee/${_id}/inbody/latest`)
-      .then(res => {
-        //console.log(res.data.data)
-        let meminbodyData = {};
-        meminbodyData.weight = res.data.data.weight
-        meminbodyData.bmi = res.data.data.bmi
-        meminbodyData.skeletalMuscle = res.data.data.skeletalMuscle
-        meminbodyData.fat = res.data.data.fat
-        meminbodyData.data = res.data.data
+      {
+        console.log('//////'+_id)
+        axios.get(`/trainee/${_id}/inbody/latest`)
+        .then(res => {
+          //console.log(res.data.data)
+          let meminbodyData = {};
+          meminbodyData.weight = res.data.data.weight
+          meminbodyData.bmi = res.data.data.bmi
+          meminbodyData.skeletalMuscle = res.data.data.skeletalMuscle
+          meminbodyData.fat = res.data.data.fat
+          meminbodyData.data = res.data.data
 
-        setInbodyDATAFromDB(meminbodyData)
-      })
-      .catch(err => console.log('this is error for inbody ' +err))
+          setInbodyDATAFromDB(meminbodyData)
+          setNoInbodyData(false)
+          setIsSearched(true)
+        })
+        .catch(err => {
+          console.log(err.response.data.msg)
+          console.log('와 안찍히노'+_id)
+          setNoInbodyData(true)
+        })
+    }
     };
     setGotData(true)
     setIsLoading(false)
     setFormerID(_id)
-  });
+  }
+});
 
   return ( isLoading ? <Text>Loading...</Text> :
   <SafeAreaView style = {styles.container}>
@@ -133,20 +177,22 @@ const indiv_profile = ({navigation}) => {
             name = 'add-circle'
             color = {Colors.Black}
             size = {Spacing.SCALE_32}
-            onPress = {()=>navigation.navigate('Change_Add', {_id: _id})}
+            onPress = {
+              ()=>navigation.navigate('Change_Add')
+            }
           />
         </View>
         <View style = {styles.linecontainer}>
           <View style = {styles.wbmfinfo}>
             <Text style = {styles.wbmftext}>몸무게</Text>
-            {InbodyDATAFromDB.data === undefined ? 
+            {NoInbodyData === true ? 
             <Text style = {styles.wbmftext}>??kg</Text> :
             <Text style = {styles.wbmftext}>{InbodyDATAFromDB.weight}kg</Text>
             }
           </View>
           <View style = {styles.wbmfinfo}>
             <Text style = {styles.wbmftext}>BMI</Text>
-            {InbodyDATAFromDB.data === undefined ? 
+            {NoInbodyData === true ? 
             <Text style = {styles.wbmftext}>??kg/m²</Text> :
             <Text style = {styles.wbmftext}>{InbodyDATAFromDB.bmi}kg/m²</Text>
             }
@@ -156,14 +202,14 @@ const indiv_profile = ({navigation}) => {
         <View style = {styles.linecontainer}>
           <View style = {styles.wbmfinfo}>
             <Text style = {styles.wbmftext}>골격근</Text>
-            {InbodyDATAFromDB.data === undefined ? 
+            {NoInbodyData === true ? 
             <Text style = {styles.wbmftext}>??kg</Text> :
             <Text style = {styles.wbmftext}>{InbodyDATAFromDB.skeletalMuscle}kg</Text>
             }
           </View>
           <View style = {styles.wbmfinfo}>
             <Text style = {styles.wbmftext}>체지방</Text>
-            {InbodyDATAFromDB.data === undefined ? 
+            {NoInbodyData === true ? 
             <Text style = {styles.wbmftext}>??kg</Text> :
             <Text style = {styles.wbmftext}>{InbodyDATAFromDB.fat}kg</Text>
             }
