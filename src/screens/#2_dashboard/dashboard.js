@@ -3,7 +3,7 @@ import { FlatList, StyleSheet, Text, Image, View, TouchableOpacity, Dimensions }
 import { Colors, Spacing } from '../../styles';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { SafeAreaView } from 'react-navigation';
-import { useNavigation } from '@react-navigation/native'
+import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import axios from '../../axios/api';
 import AsyncStorage from '@react-native-community/async-storage';
 
@@ -11,27 +11,31 @@ import AsyncStorage from '@react-native-community/async-storage';
 const Dash_dash = () => {
   
   const navigation = useNavigation();
-  const [isLoading, setIsLoading] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
   const [traineeDidMount, settraineeDidMount] = useState(false);
   const [TraineeListFromDB, setTraineeListFromDB] = useState([]);
 
   const getApiTest = () => {
     axios.get(`/trainee`)
     .then(res => {
-      console.log('-----------------')
       console.log(res.data.data[0])
     })
     .catch(err => console.log('this is error for inbody ' +err))
   };
   
   
+useFocusEffect(()=>{
+
+})
+
   useEffect(()=>{
-
-
   //아래 고객명단 함수
     if(!traineeDidMount) {
+      console.log('traineeDidMount: '+traineeDidMount)
+      setTraineeListFromDB([]);
       axios.get('/trainee')
       .then(res => {
+        console.log('got the data!')
         res.data.data.map(tmp=>{
           let newTrainee = {}
           newTrainee._id = tmp._id
@@ -75,7 +79,10 @@ const Dash_dash = () => {
   todaystr = selectedDatePick.year.toString() + strmonth + strdate
   //--------------------
 
-
+  const AddControler = () => {
+    settraineeDidMount(false)
+    navigation.navigate('Mem_Add')
+  }
 
 
 
@@ -149,7 +156,7 @@ return ( isLoading ? <Text>Loading...</Text> :
             name = "add-circle" 
             color = {Colors.BLACK} 
             size = {Spacing.SCALE_24}
-            onPress = {() => navigation.navigate('Mem_Add')}
+            onPress = {AddControler}
           />
         </View>
       </View>
@@ -189,8 +196,8 @@ const Mem_List = ({DATA}) => {
 
   return (
       <View style = {{flex:1}}>
-      <View>{console.log(DATA)}</View>
-      <FlatList data={DATA} renderItem={renderItem} keyExtractor={item => item.id} />
+      <View></View>
+      <FlatList data={DATA} renderItem={renderItem} keyExtractor={item => item._id} />
     
       </View>
   );
@@ -302,54 +309,3 @@ const styles = StyleSheet.create({
 
 export default Dash_dash;
 
-
-const DATA = [
-  {
-      id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-      name: '김ㅇㅇ 회원님',
-  },
-  {
-      id: 'efoacbea-c1b1-46c2-aed5-3ad53abb28ba',
-      name: '박ㅇㅇ 회원님',
-  },
-  {
-      id: 'obnacbea-c1b1-46c2-aed5-3ad53abb28ba',
-      name: '주ㅇㅇ 회원님',
-  },
-  {
-      id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-      name: '이ㅇㅇ 회원님',
-  },
-  {
-      id: '120ncbea-c1b1-46c2-aed5-3ad53abb28ba',
-      name: '황ㅇㅇ 회원님',
-  },
-  {
-      id: '1pviebea-c1b1-46c2-aed5-3ad53abb28ba',
-      name: '엄ㅇㅇ 회원님',
-  },
-  {
-      id: 'nxaacbea-c1b1-46c2-aed5-3ad53abb28ba',
-      name: '최ㅇㅇ 회원님',
-  },
-  {
-      id: '58694a0f-3da1-471f-bd96-145571e29d72',
-      name: '최ㅇㅇ 회원님',
-  },
-  {
-      id: 'qp7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-      name: '신ㅇㅇ 회원님',
-  },
-  {
-      id: '00eacbea-c1b1-46c2-aed5-3ad53abb28ba',
-      name: '수ㅇㅇ 회원님',
-  },
-  {
-      id: '30racbea-c1b1-46c2-aed5-3ad53abb28ba',
-      name: '지ㅇㅇ 회원님',
-  },
-  {
-      id: '22kacbea-c1b1-46c2-aed5-3ad53abb28ba',
-      name: '구ㅇㅇ 회원님',
-  },
-];
