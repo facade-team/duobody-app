@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, Text, Dimensions, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState, useCallback } from 'react';
+import { View, StyleSheet, Text, Dimensions, Alert, TouchableOpacity } from 'react-native';
 import { Colors, Spacing, Typography } from '../../styles';
 import UnderLinedTextInputBig from '../../components/UnderlinedTextInputBig';
 import axios from '../../axios/api';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import getDateStringWithNumber from '../../utils/getDateStringWithNumber';
+import { useFocusEffect } from '@react-navigation/native'
 
 
 const change_add = ({navigation}) => {
@@ -13,64 +15,140 @@ const change_add = ({navigation}) => {
   const [muscleText, setMuscleText] = useState('');
   const [fatText, setFatText] = useState('');
   const [DATAFromDB, setDATAFromDB] = useState([]);
-  const [gotData, setGotData] = useState(false);
+  const [set, setset] = useState(false);
   const [pickedDate, setPickedDate] = useState('2021-04-10');
   const [CalDate, setCalDate] = useState(new Date(pickedDate))
   const [InbodyFromDB, setInbodyFromDB] = useState([]);
+  const [NoDataFlag, setNoDataFlag] = useState(true);
+  const [_id, set_id] = useState('');
+  const [isSearched, setIsSearched] = useState(false);
 
   const onChangePickedDate = (event, selectedDate) => {
     const currentDate = selectedDate;
     setCalDate(currentDate);
     setPickedDate(currentDate);
+    setWeightText('')
+    setBMIText('')
+    setMuscleText('')
+    setFatText('')
   };
 
   const datestr = getDateStringWithNumber(new Date(pickedDate));
   
-  //const _id = '607991633f0da34aa063c3a9'; // moong
-  const _id = '607991803f0da34aa063c3aa'; // nowkim
-  //const _id = '606d59072a64c40bc62c91d5'; // jimin
-
   const [FormerID, setFormerID] = useState(_id);
   const [FormerDate, setFormerDate] = useState('20210410');
 
   const getApiTest = () => {
-    axios.get(`/trainee/${_id}/inbody/date/${datestr}`)
+    axios.get(`/trainee/${_id}`)
     .then(res => {
       console.log(res.data.data)
     })
-    .catch(err => console.log('this is error from inbody ' +err))
+    .catch(err => console.log('this is errr from '+err))
   };
 
+  useFocusEffect(
+    useCallback(() => {
+
+      let isActive = true
+
+      const getTraineeId = async () => {
+        try {
+          const id = await AsyncStorage.getItem('traineeId')
+          
+          if (isActive && (id !== _id)) {
+            set_id(id)
+            setIsSearched(false)
+            console.log(`this is id for change_add: ${id}`)
+          }
+        } catch (err) {
+          console.log(err)
+        }
+      }
+
+      getTraineeId()
+
+      return () => {
+        isActive = false
+      }
+    })
+  )
+
+
   useEffect(()=>{
-    if(!gotData || FormerID !== _id){
+    //트레이니 아이디로 이름 가져오기
+    if(!set || FormerID !== _id){
       axios.get(`/trainee/${_id}`)
       .then(res =>{
         let memData = {};
         memData._id = res.data.data._id
         memData.name = res.data.data.name
         setDATAFromDB(memData)
+        console.log('찍히나 : '+memData.name)
       })
-      .catch(err => console.log(err))
+      .catch(err => {
+        console.log(err)
+      })
     }
-    setGotData(true);
+    setset(true);
     setFormerID(_id);
 
+    //날짜를 지정하여 inbody 조회
     if(FormerDate !== datestr){
+      console.log('!!!!+'+datestr+'!!!!')
       axios.get(`trainee/${_id}/inbody/date/${datestr}`)
       .then(res => {
-        res.data.data.map(tmp=>{
+        console.log('asdf'+datestr)
           let newinbody = {};
-          newinbody.bmi = tmp.bmi
-          newinbody.fat = tmp.fat
-          newinbody.skeletalMuscle = tmp.skeletalMuscle
-          newinbody.weight = tmp.weight
 
-          setInbodyFromDB(prevArray => [...prevArray, newinbody])
-        })
-      }).catch(err => console.log(err))
+          newinbody.bmi = res.data.data.bmi
+          newinbody.fat = res.data.data.fat
+          newinbody.skeletalMuscle = res.data.data.skeletalMuscle
+          newinbody.weight = res.data.data.weight
+          newinbody.inbodyId = res.data.data._id
+          newinbody.date = res.data.data.date
+          newinbody.name = res.data.data.name
+
+          setInbodyFromDB(newinbody)
+          setNoDataFlag(false)
+
+        
+      }).catch(err => {
+        console.log('no date'+datestr)
+        console.log(err)
+        setNoDataFlag(true)
+
+      })
+      setFormerDate(datestr)
     }
   });
 
+
+const SaveControler = () => {
+  let todayInbody = {}
+  //todayInbody._id = InbodyFromDB.inbodyId
+  todayInbody.inbodyId = InbodyFromDB.inbodyId
+  todayInbody.bmi = BMIText
+  todayInbody.date = new Date(InbodyFromDB.date)
+  todayInbody.fat = fatText
+  //todayInbody.name = InbodyFromDB.name
+  todayInbody.skeletalMuscle = muscleText
+  todayInbody.weight = weightText
+
+  axios.put('trainee/inbody',todayInbody)
+  .then(res => {
+    Alert.alert(res.data.msg)
+    navigation.goBack()
+  })
+  .catch(err => {
+    Alert.alert(err.response.data.msg)
+    console.log(err.response)
+
+  })
+}
+
+const exbodyAddControler = () => {
+  let exbodyaddress = ''
+}
 
 return (
   <View style = {styles.container}>
@@ -91,6 +169,7 @@ return (
           testID="dateTimePicker"
           value={CalDate}
           mode={'date'}
+          is24Hour={true}
           display="default"
           onChange={onChangePickedDate}
         />
@@ -100,24 +179,40 @@ return (
       <View style = {styles.wbmfcontainer}>
         <View style = {styles.infoinput}>
           <View style = {styles.individual}>
-            <UnderLinedTextInputBig placeholder={'몸무게: ??kg'} value = {weightText} onChangeText={setWeightText}/>
+          {
+            NoDataFlag === true ? 
+            <UnderLinedTextInputBig placeholder={'몸무게: ??kg'} value = {weightText} onChangeText={setWeightText}/> :
+            <UnderLinedTextInputBig placeholder={'몸무게: '+InbodyFromDB.weight+'kg'} value = {weightText} onChangeText={setWeightText}/>
+          }
           </View>
           <View style = {styles.individual}>
-            <UnderLinedTextInputBig placeholder={'BMI: ??kg/m²'} value = {BMIText} onChangeText={setBMIText}/>
+          {
+            NoDataFlag === true ? 
+            <UnderLinedTextInputBig placeholder={'BMI: ??kg'} value = {BMIText} onChangeText={setBMIText}/> :
+            <UnderLinedTextInputBig placeholder={'BMI: '+InbodyFromDB.bmi+'kg'} value = {BMIText} onChangeText={setBMIText}/>
+          }
           </View>
           <View style = {styles.individual}>
-            <UnderLinedTextInputBig placeholder={'골격근: ??kg'} value = {muscleText} onChangeText={setMuscleText}/>
+          {
+            NoDataFlag === true ? 
+            <UnderLinedTextInputBig placeholder={'골격근: ??kg'} value = {muscleText} onChangeText={setMuscleText}/> :
+            <UnderLinedTextInputBig placeholder={'골격근: '+InbodyFromDB.skeletalMuscle+'kg'} value = {muscleText} onChangeText={setMuscleText}/>
+          }
           </View>
           <View style = {styles.individual}>
-            <UnderLinedTextInputBig placeholder={'체지방: ??kg'} value = {fatText} onChangeText={setFatText}/>
+          {
+            NoDataFlag === true ? 
+            <UnderLinedTextInputBig placeholder={'체지방: ??kg'} value = {fatText} onChangeText={setFatText}/> :
+            <UnderLinedTextInputBig placeholder={'체지방: '+InbodyFromDB.fat+'kg'} value = {fatText} onChangeText={setFatText}/>
+          }
           </View>
-          <Text>{InbodyFromDB.bmi}</Text>
         </View>
       </View>
 
       <TouchableOpacity 
         style = {styles.addexbody}
-        onPress = {()=> navigation.navigate('Change_View')}>
+        onPress = {exbodyAddControler} 
+      >
         <View>
           <Text style = {styles.greenbutton}>
             Ex-Body 추가
@@ -126,8 +221,11 @@ return (
       </TouchableOpacity>
 
       <TouchableOpacity 
-        style = {styles.addexbody_2}
-        onPress = {()=> navigation.goBack()}>
+        style = {styles.confirmbutton}
+        onPress = {
+          //navigation.goBack()
+          SaveControler
+          }>
         <View>
           <Text style = {styles.greenbutton}>
             확인
@@ -182,7 +280,7 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.SCALE_24,
     alignSelf: 'center',
   },
-  addexbody_2:{
+  confirmbutton:{
     backgroundColor: Colors.PRIMARY,
     alignItems: 'center',
     borderRadius: 15,
