@@ -10,6 +10,7 @@ import axios from '../../axios/api'
 import { useFocusEffect } from '@react-navigation/native';
 import AsyncStorage from '@react-native-community/async-storage';
 import getDateStringWithNumber from '../../utils/getDateStringWithNumber'
+import Loader from '../../components/Loader';
 
 const styles = StyleSheet.create({
   mainContainer: {
@@ -53,7 +54,7 @@ const styles = StyleSheet.create({
     borderColor: Colors.WHITE,
     paddingLeft: Spacing.SCALE_12,
     paddingRight: Spacing.SCALE_12,
-    margin: Spacing.SCALE_8,
+    margin: Spacing.SCALE_4,
     borderWidth: 1,
     flex:1,
   }
@@ -372,8 +373,6 @@ function Change_view() {
         borderRadius: 10,
       }
     })
-
-    console.log(dateStr)
     return (
       <View style={styles.renderTimeContainer}>
         <Text style={{fontSize: Typography.FONT_SIZE_16, justifyContent: 'center', alignSelf:'center', color: Colors.PRIMARY}}>
@@ -388,7 +387,6 @@ function Change_view() {
 
 
   const handelSetShow = (type) => {
-    console.log('handleSetShow')
     setIsStart(type)
     if (!show){
       setShow(true)
@@ -396,11 +394,15 @@ function Change_view() {
   }
 
   return (
-    !isSearched ? <Text>Loading...</Text> :
+    !isSearched ? 
+    <View style={{flex:1 ,justifyContent:'center', alignItems: 'center'}}>
+      <Loader />
+    </View>
+    :
     <SafeAreaView style={styles.mainContainer}>
       <View style={styles.whiteBox} >
         <ScrollView>
-          <Text style={styles.title}>{traineeName} 고객님 변화보기</Text>
+          <Text style={styles.title}>{traineeName} 회원님 변화보기</Text>
           <View>
             <View style={styles.subTitleContainer}>
               <Text style={styles.subTitle}>Exbody</Text>
@@ -419,30 +421,23 @@ function Change_view() {
           <View style={styles.subTitleContainer}>
             <Text style={styles.subTitle}>Graph</Text>
             {
-              Platform.OS === 'ios' && (
-                <View>
-                  <DateTimePicker
-                    style={{width: Spacing.SCALE_100,}}
-                    testID="dateTimePicker"
-                    value={calStartDate}
-                    mode={'date'}
-                    display="default"
-                    onChange={onChangeStartDate}
-                  />
-                  <DateTimePicker
-                    style={{width: Spacing.SCALE_100,}}
-                    testID="dateTimePicker1"
-                    value={calEndDate}
-                    mode={'date'}
-                    display="default"
-                    onChange={onChangeEndDate}
-                  />
-                </View>
+              (Platform.OS !== 'ios') && (
+                  <View style={{flexDirection: 'row', justifyContent:'flex-end', alignItems:'center'}}>
+                      <TouchableOpacity onPressOut={() => handelSetShow(true)}>
+                        <View style={{flexDirection: 'row', alignItems:'center', justifyContent:'flex-end', marginRight: Spacing.SCALE_8}}>
+                          <RenderDate dateStr={startDate} />
+                        </View>
+                      </TouchableOpacity>
+                      <TouchableOpacity onPressOut={() => handelSetShow(false)}>
+                        <View style={{flexDirection: 'row', alignItems:'center', justifyContent:'flex-end', marginRight: Spacing.SCALE_8}}>
+                          <RenderDate dateStr={endDate} />
+                        </View>
+                      </TouchableOpacity>
+                  </View>
               )
             }
             {
-              (Platform.OS !== 'ios') && (
-                show ? (
+              (Platform.OS !== 'ios') && show && (
                   <View>
                     {
                       isStart ? (
@@ -466,24 +461,28 @@ function Change_view() {
                       )
                     }
                   </View>
-                ) : (
-                  <View style={{flexDirection: 'row', justifyContent:'flex-end', alignItems:'center'}}>
-                    {calStartDate && (
-                      <TouchableOpacity onPressOut={() => handelSetShow(true)}>
-                        <View style={{flexDirection: 'row', alignItems:'center', justifyContent:'flex-end', marginRight: Spacing.SCALE_8}}>
-                          <RenderDate dateStr={startDate} />
-                        </View>
-                      </TouchableOpacity>
-                    )}
-                    {calEndDate && (
-                      <TouchableOpacity onPressOut={() => handelSetShow(false)}>
-                        <View style={{flexDirection: 'row', alignItems:'center', justifyContent:'flex-end', marginRight: Spacing.SCALE_8}}>
-                          <RenderDate dateStr={endDate} />
-                        </View>
-                      </TouchableOpacity>
-                    )}
-                  </View>
                 )
+            }
+            {
+              Platform.OS === 'ios' && (
+                <View>
+                  <DateTimePicker
+                    style={{width: Spacing.SCALE_100,}}
+                    testID="dateTimePicker"
+                    value={calStartDate}
+                    mode={'date'}
+                    display="default"
+                    onChange={onChangeStartDate}
+                  />
+                  <DateTimePicker
+                    style={{width: Spacing.SCALE_100,}}
+                    testID="dateTimePicker1"
+                    value={calEndDate}
+                    mode={'date'}
+                    display="default"
+                    onChange={onChangeEndDate}
+                  />
+                </View>
               )
             }
           </View>

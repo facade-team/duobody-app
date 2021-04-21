@@ -16,6 +16,7 @@ import GreenButton from '../../components/GreenButton';
 import { AuthContext } from '../../services/AuthContext';
 import AsyncStorage from '@react-native-community/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
+import Loader from '../../components/Loader';
 
 const styles = StyleSheet.create({
   container: {
@@ -44,7 +45,7 @@ const styles = StyleSheet.create({
     borderColor: Colors.WHITE,
     paddingLeft: Spacing.SCALE_12,
     paddingRight: Spacing.SCALE_12,
-    margin: Spacing.SCALE_8,
+    margin: Spacing.SCALE_4,
     borderWidth: 1,
     flex:1,
   }
@@ -441,7 +442,7 @@ export default IndividualSession = () => {
         <View>
         {!isSearched ? 
         <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
-          <Text>Loading...</Text>
+          <Loader />
         </View> :
           partAndField.map((data__, index__) => (
             <View key={index__}>
