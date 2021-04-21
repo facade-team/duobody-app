@@ -38,6 +38,7 @@
     "package.json": "^2.0.1",
     "react": "17.0.1",
     "react-dom": "16.13.1",
+    "react-loader-spinner": "^4.0.0",
     "react-native": "0.64.0",
     "react-native-calendar-picker": "^7.1.1",
     "react-native-calendars": "^1.1254.0",
