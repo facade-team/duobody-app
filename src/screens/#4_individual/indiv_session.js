@@ -192,11 +192,9 @@ export default IndividualSession = () => {
       const getTraineeId = async () => {
         try {
           const id = await AsyncStorage.getItem('traineeId')
-          
           if (isActive && (id !== traineeId)) {
             setTraineeId(id)
             setIsSearched(false)
-            console.log(`this is id: ${id}`)
           }
         } catch (err) {
           console.log(err)

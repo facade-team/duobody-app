@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { View, StyleSheet, Text, Dimensions, Alert, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, Text, Dimensions, Alert, TouchableOpacity, Image, SafeAreaView } from 'react-native';
 import { Colors, Spacing, Typography } from '../../styles';
 import UnderLinedTextInputBig from '../../components/UnderlinedTextInputBig';
 import axios from '../../axios/api';
@@ -8,6 +8,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import getDateStringWithNumber from '../../utils/getDateStringWithNumber';
 import getDateString from '../../utils/getDateString';
 import { useFocusEffect } from '@react-navigation/native'
+
+import * as ImagePicker from 'expo-image-picker';
+import { ScrollView } from 'react-native-gesture-handler';
 
 
 const change_add = ({navigation}) => {
@@ -24,6 +27,72 @@ const change_add = ({navigation}) => {
   const [_id, set_id] = useState('');
   const [isSearched, setIsSearched] = useState(false);
   const [isNewLoad, setisNewLoad] = useState(true);
+  
+
+  // 승우가 짠 부분 start
+  const [image, setImage] = useState(null);
+  const [exbody, setExbody] = useState({
+    exbodyAfter: null,
+    exbodyBefore: null,
+  })
+  
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    console.log(result);
+
+    if (!result.cancelled) {
+      setImage(result.uri);
+    }
+  }
+
+  const callGetExbodyAPI = async (id) => {
+    const isEmpty = (param) => {
+      return Object.keys(param).length === 0;
+    }
+    let newExbody = {}
+
+    await axios.get(`/trainee/exbody/${id}`)
+      .then((res) => {
+        if (!isEmpty(res.data.data)) {
+          if (res.data.data.exbodyAfter) {
+            newExbody.exbodyAfter = res.data.data.exbodyAfter
+          }
+          else {
+            newExbody.exbodyAfter = null
+          }
+          if (res.data.data.exbodyBefore) {
+            newExbody.exbodyBefore = res.data.data.exbodyBefore
+          }
+          else {
+            newExbody.exbodyBefore = null
+          }
+          setExbody(newExbody)
+        }
+        else {
+          newExbody.exbodyAfter = null
+          newExbody.exbodyBefore = null
+          setExbody({
+            exbodyAfter: null,
+            exbodyBefore: null,
+          })
+        }
+        console.log('newExbody below')
+      })
+      .catch((err) => {
+        console.log(err.response)
+      })
+      console.log(newExbody)
+  }
+
+
+  // 승우가 짠 부분 end
+
   const onChangePickedDate = (event, selectedDate) => {
     const currentDate = selectedDate;
     setCalDate(currentDate);
@@ -39,8 +108,8 @@ const change_add = ({navigation}) => {
   const [FormerID, setFormerID] = useState(_id);
   const [FormerDate, setFormerDate] = useState('20210410');
 
-  const getApiTest = () => {
-    axios.get(`/trainee/${_id}`)
+  const getApiTest = async (id) => {
+    await axios.get(`/trainee/${id}`)
     .then(res => {
       console.log(res.data.data)
     })
@@ -54,11 +123,12 @@ const change_add = ({navigation}) => {
       const getTraineeId = async () => {
         try {
           const id = await AsyncStorage.getItem('traineeId')
-          
           if (isActive && (id !== _id)) {
+            setImage(null)
             set_id(id)
             setIsSearched(false)
             console.log(`this is id for change_add: ${id}`)
+            callGetExbodyAPI(id)
           }
         } catch (err) {
           console.log(err)
@@ -84,7 +154,15 @@ const change_add = ({navigation}) => {
 
 
   useEffect(()=>{
-    
+    (async () => {
+      if (Platform.OS !== 'web') {
+        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        console.log(status)
+        if (status !== 'granted') {
+          alert('Sorry, we need camera roll permissions to make this work!');
+        }
+      }
+    })();
     //트레이니 아이디로 이름 가져오기
     if(!set || FormerID !== _id){
       axios.get(`/trainee/${_id}`)
@@ -130,6 +208,8 @@ const change_add = ({navigation}) => {
       })
       setFormerDate(datestr)
     }
+
+    
   });
 
 
@@ -178,90 +258,141 @@ const exbodyAddControler = () => {
   let exbodyaddress = ''
 }
 
+const onSaveExbodyHandler = () => {
+  let form = new FormData()
+  form.append('exbodyImage', image)
+  console.log(exbody)
+  if (exbody.exbodyAfter === null && exbody.exbodyBefore === null) {
+    axios.post(`/trainee/exbody/${_id}/before`, form)
+      .then((res) => {
+        console.log(res.data.data)
+      })
+      .catch((err) => {
+        console.log(err.response)
+      })
+  }
+  else if (exbody.exbodyAfter === null && exbody.exbodyBefore !== null) {
+    axios.post(`/trainee/exbody/${_id}/after`, form)
+      .then((res) => {
+        console.log(res.data.data)
+      })
+      .catch((err) => {
+        console.log(err.response)
+      })
+  }
+  else if (exbody.exbodyAfter !== null && exbody.exbodyBefore !== null) {
+    axios.post(`/trainee/exbody/${_id}/before`, form)
+      .then((res) => {
+        console.log(res.data.data)
+      })
+      .catch((err) => {
+        console.log(err.response)
+      })
+  }
+}
+
 return (
-  <View style = {styles.container}>
+  <SafeAreaView style={styles.container}>
     <View style = {styles.maincontainer}>
-      <View style = {styles.name}>
-        <Text style = {styles.nametext}>
-          {DATAFromDB.name} 회원님
-        </Text>
-        <TouchableOpacity
-          onPressOut={getApiTest}>
-        <Text>API Test</Text>
-      </TouchableOpacity>
-      </View>
-      
-      <View style = {styles.dayselect}>
-        <DateTimePicker
-          style = {{width: Spacing.SCALE_80}}
-          testID="dateTimePicker"
-          value={CalDate}
-          mode={'date'}
-          is24Hour={true}
-          display="default"
-          onChange={onChangePickedDate}
-        />
-
-      </View>
-
-      <View style = {styles.wbmfcontainer}>
-        <View style = {styles.infoinput}>
-          <View style = {styles.individual}>
-          {
-            NoDataFlag === true ? 
-            <UnderLinedTextInputBig placeholder={'몸무게: ??kg'} value = {weightText} onChangeText={setWeightText}/> :
-            <UnderLinedTextInputBig placeholder={'몸무게: '+InbodyFromDB.weight+'kg'} value = {weightText} onChangeText={setWeightText}/>
-          }
+        <ScrollView style = {{flex:1}}>
+          <View style = {styles.name}>
+            <Text style = {styles.nametext}>
+              {DATAFromDB.name} 회원님
+            </Text>
           </View>
-          <View style = {styles.individual}>
-          {
-            NoDataFlag === true ? 
-            <UnderLinedTextInputBig placeholder={'BMI: ??kg'} value = {BMIText} onChangeText={setBMIText}/> :
-            <UnderLinedTextInputBig placeholder={'BMI: '+InbodyFromDB.bmi+'kg'} value = {BMIText} onChangeText={setBMIText}/>
-          }
-          </View>
-          <View style = {styles.individual}>
-          {
-            NoDataFlag === true ? 
-            <UnderLinedTextInputBig placeholder={'골격근: ??kg'} value = {muscleText} onChangeText={setMuscleText}/> :
-            <UnderLinedTextInputBig placeholder={'골격근: '+InbodyFromDB.skeletalMuscle+'kg'} value = {muscleText} onChangeText={setMuscleText}/>
-          }
-          </View>
-          <View style = {styles.individual}>
-          {
-            NoDataFlag === true ? 
-            <UnderLinedTextInputBig placeholder={'체지방: ??kg'} value = {fatText} onChangeText={setFatText}/> :
-            <UnderLinedTextInputBig placeholder={'체지방: '+InbodyFromDB.fat+'kg'} value = {fatText} onChangeText={setFatText}/>
-          }
-          </View>
-        </View>
-      </View>
+          
+          <View style = {styles.dayselect}>
+            <DateTimePicker
+              style = {{width: Spacing.SCALE_100, justifyContent:'center', alignSelf:'center'}}
+              testID="dateTimePicker"
+              value={CalDate}
+              mode={'date'}
+              is24Hour={true}
+              display="default"
+              onChange={onChangePickedDate}
+            />
 
-      <TouchableOpacity 
-        style = {styles.addexbody}
-        onPress = {exbodyAddControler} 
-      >
-        <View>
-          <Text style = {styles.greenbutton}>
-            Ex-Body 추가
-          </Text>
-        </View>
-      </TouchableOpacity>
+            </View>
 
-      <TouchableOpacity 
-        style = {styles.confirmbutton}
-        onPress = {
-          //navigation.goBack()
-          SaveControler
-          }>
-        <View>
-          <Text style = {styles.greenbutton}>
-            확인
-          </Text>
-        </View>
-      </TouchableOpacity>
+          <View style = {styles.wbmfcontainer}>
+            <View style = {styles.infoinput}>
+              <View style = {styles.individual}>
+              {
+                NoDataFlag === true ? 
+                <UnderLinedTextInputBig placeholder={'몸무게: ??kg'} value = {weightText} onChangeText={setWeightText}/> :
+                <UnderLinedTextInputBig placeholder={'몸무게: '+InbodyFromDB.weight+'kg'} value = {weightText} onChangeText={setWeightText}/>
+              }
+              </View>
+              <View style = {styles.individual}>
+              {
+                NoDataFlag === true ? 
+                <UnderLinedTextInputBig placeholder={'BMI: ??kg'} value = {BMIText} onChangeText={setBMIText}/> :
+                <UnderLinedTextInputBig placeholder={'BMI: '+InbodyFromDB.bmi+'kg'} value = {BMIText} onChangeText={setBMIText}/>
+              }
+              </View>
+              <View style = {styles.individual}>
+              {
+                NoDataFlag === true ? 
+                <UnderLinedTextInputBig placeholder={'골격근: ??kg'} value = {muscleText} onChangeText={setMuscleText}/> :
+                <UnderLinedTextInputBig placeholder={'골격근: '+InbodyFromDB.skeletalMuscle+'kg'} value = {muscleText} onChangeText={setMuscleText}/>
+              }
+              </View>
+              <View style = {styles.individual}>
+              {
+                NoDataFlag === true ? 
+                <UnderLinedTextInputBig placeholder={'체지방: ??kg'} value = {fatText} onChangeText={setFatText}/> :
+                <UnderLinedTextInputBig placeholder={'체지방: '+InbodyFromDB.fat+'kg'} value = {fatText} onChangeText={setFatText}/>
+              }
+              </View>
+            </View>
+          </View>
+
+            {image && (
+              <View style={{alignSelf: 'center'}}>
+                <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />
+              </View>
+              )
+            }
+            <View>
+              {
+                image && (
+                <TouchableOpacity 
+                  style = {styles.saveexbody}
+                  onPressOut = {()=> onSaveExbodyHandler()}>
+                  <View>
+                    <Text style = {styles.greenbutton}>
+                      Exbody 저장하기
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+                )
+              }
+              <TouchableOpacity 
+                style = {styles.addexbody}
+                onPressOut = {()=> pickImage()}>
+                <View>
+                  <Text style = {styles.greenbutton}>
+                    Exbody 선택하기
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+
+          <TouchableOpacity 
+            style = {styles.confirmbutton}
+            onPress = {
+              //navigation.goBack()
+              SaveControler
+              }>
+            <View>
+              <Text style = {styles.greenbutton}>
+                확인
+              </Text>
+            </View>
+          </TouchableOpacity>
+        </ScrollView>
     </View>
-  </View>
+  </SafeAreaView>
 )}
 
 
@@ -269,15 +400,15 @@ export default change_add;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 2,
     backgroundColor: Colors.PRIMARY,
-    alignItems: 'center',
+    justifyContent: 'flex-start',
+    flex:1,
   },
   maincontainer: {
-    flex: 2,
     backgroundColor: Colors.WHITE,
     borderRadius: 10,
-    width: '98%',
+    flex: 1,
+    margin: Spacing.SCALE_4,
   },
   name: {
     paddingVertical: Spacing.SCALE_36,
@@ -295,32 +426,43 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   individual:{
-    paddingBottom: Spacing.SCALE_24,
+    paddingBottom: Spacing.SCALE_12,
   },
   addexbody:{
     backgroundColor: Colors.PRIMARY,
     alignItems: 'center',
     borderRadius: 15,
-    width: Spacing.SCALE_200,
-    height: Dimensions.get('window').height * 0.06,
+    width: Spacing.SCALE_150,
     justifyContent: 'center',
     marginTop: Spacing.SCALE_12,
     marginBottom: Spacing.SCALE_24,
+    padding: Spacing.SCALE_8,
+    alignSelf: 'center',
+  },
+  saveexbody : {
+    backgroundColor: Colors.PRIMARY,
+    alignItems: 'center',
+    borderRadius: 15,
+    width: Spacing.SCALE_150,
+    justifyContent: 'center',
+    marginTop: Spacing.SCALE_8,
+    marginBottom: Spacing.SCALE_2,
+    padding: Spacing.SCALE_8,
     alignSelf: 'center',
   },
   confirmbutton:{
     backgroundColor: Colors.PRIMARY,
     alignItems: 'center',
     borderRadius: 15,
-    width: Spacing.SCALE_200,
-    height: Dimensions.get('window').height * 0.06,
+    width: Spacing.SCALE_150,
     justifyContent: 'center',
     marginTop: Spacing.SCALE_32,
     marginBottom: Spacing.SCALE_24,
+    padding: Spacing.SCALE_8,
     alignSelf: 'center',
   },
   greenbutton: {
-    fontSize: Typography.FONT_SIZE_28,
+    fontSize: Typography.FONT_SIZE_14,
     color: Colors.WHITE,
     fontWeight: Typography.FONT_WEIGHT_BOLD,
   }

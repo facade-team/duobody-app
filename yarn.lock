@@ -5871,6 +5871,14 @@ expo-font@^8.4.0, expo-font@~8.4.0:
     fbjs "1.0.0"
     fontfaceobserver "^2.1.0"
 
+expo-image-picker@~9.2.0:
+  version "9.2.1"
+  resolved "https://registry.yarnpkg.com/expo-image-picker/-/expo-image-picker-9.2.1.tgz#113a46bfc8ef9bf675e8700b1bf7b8472f4de516"
+  integrity sha512-IPrBY7+zgxUUZqjtLVfj+PTKMm6lmI48Z9b8BKJhY/gF49g/cDZwWN0mrg+3G3a3ug5TtIr+pektsNWp1V+T1g==
+  dependencies:
+    expo-permissions "~10.0.0"
+    uuid "7.0.2"
+
 expo-keep-awake@~8.4.0:
   version "8.4.0"
   resolved "https://registry.npmjs.org/expo-keep-awake/-/expo-keep-awake-8.4.0.tgz"
@@ -11603,6 +11611,11 @@ react-native-parsed-text@0.0.22:
   dependencies:
     prop-types "^15.7.x"
 
+react-native-permissions@^3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/react-native-permissions/-/react-native-permissions-3.0.2.tgz#df3abb6b71f20bc3c12f7ed95c61187562798d2b"
+  integrity sha512-Uvye5evur8prriN/OxPyYOVoY1DaIh9980OgF9vXTPflQwvmpdygDHBOOmeFMUuMPAc+kNdi++BkV2PJCGvSSQ==
+
 react-native-reanimated@~1.13.0:
   version "1.13.3"
   resolved "https://registry.npmjs.org/react-native-reanimated/-/react-native-reanimated-1.13.3.tgz"
@@ -14010,6 +14023,11 @@ uuid@3.4.0, uuid@^3.1.0, uuid@^3.2.1, uuid@^3.3.2, uuid@^3.4.0:
   version "3.4.0"
   resolved "https://registry.npmjs.org/uuid/-/uuid-3.4.0.tgz"
   integrity sha512-HjSDRw6gZE5JMggctHBcjVak08+KEVhSIiDzFnT9S9aegmp85S/bReBVTb4QTFaRNptJ9kuYaNhnbNEOkbKb/A==
+
+uuid@7.0.2:
+  version "7.0.2"
+  resolved "https://registry.yarnpkg.com/uuid/-/uuid-7.0.2.tgz#7ff5c203467e91f5e0d85cfcbaaf7d2ebbca9be6"
+  integrity sha512-vy9V/+pKG+5ZTYKf+VcphF5Oc6EFiu3W8Nv3P3zIh0EqVI80ZxOzuPfe9EHjkFNvf8+xuTHVeei4Drydlx4zjw==
 
 uuid@^2.0.1:
   version "2.0.3"

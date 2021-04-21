@@ -12,10 +12,10 @@ const styles = StyleSheet.create({
         paddingBottom: Spacing.SCALE_8,
         backgroundColor: Colors.WHITE,
         borderBottomColor : Colors.GRAY,
-        borderBottomWidth: 4,
+        borderBottomWidth: 1,
         color: Colors.BLACK,
         textAlign: 'center',
-        fontSize: Typography.FONT_SIZE_24,
+        fontSize: Typography.FONT_SIZE_16,
         fontWeight: Typography.FONT_WEIGHT_BOLD,
     } 
 })
