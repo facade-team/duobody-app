@@ -113,6 +113,7 @@ const Dash_cal = () => {
         //DATA에 push   
         setDATA(prevArray => [...prevArray, newData])
 
+        console.log()
         // timestamp 만들기
         const st = convertTimeStamp(startTime)
         const et = convertTimeStamp(endTime)
@@ -121,12 +122,13 @@ const Dash_cal = () => {
         axios.post('/trainee/lesson',{
                 traineeId: newData._id,
                 start: st,
-                end: et
+                end: et,
+                session: null,
             })
             .then((res)=> {
                 console.log(res.data)
             })
-            .catch(error=>console.log(error))
+            .catch(error=>console.log(error.response))
 
     }
 
