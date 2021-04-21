@@ -2,6 +2,7 @@ import axios from '../../axios/api';
 import React, {useState, useEffect} from 'react';
 import { SafeAreaView, View, FlatList, StyleSheet, Text, StatusBar, TouchableOpacity, Alert } from 'react-native';
 import { Colors } from '../../styles';
+import AsyncStorage from '@react-native-community/async-storage';
 
 const Item = ({ title, submessenger }) => (
   <View style={styles.item}>
@@ -12,14 +13,20 @@ const Item = ({ title, submessenger }) => (
 
 const Dash_Msg = ( {navigation} ) => {
 
-  const renderItem = ({ item, submessenger }) => (
+  const renderItem = ({ item }) => {
+    const onPressOutHandler = async () => {
+      await AsyncStorage.setItem('chatRoomId', item._id)
+      navigation.navigate('Indiv', {screen: 'indiv_msg'})
+    }
+    return (
     <TouchableOpacity onPressOut={() => {
         // 회원별 채팅방으로 이동
-        navigation.navigate('Indiv', {screen: 'indiv_msg'})
+        onPressOutHandler()
       }}>
       <Item title={item.traineeId.name} submessenger={item.messages.content}/>
     </TouchableOpacity>
-  );
+    )
+  }
 
   const [didMount,setDidMount] = useState(false)
   const [chatRoom,setChatroom] = useState([])
@@ -30,7 +37,6 @@ const Dash_Msg = ( {navigation} ) => {
       axios.get('/trainee').then((res)=>{
         //받은 res에 chatRoomId가 없으면 채팅방 자체가 렌더링이 안됨.
         res.data.data.map(d=>{
-          //console.log(d)
           if(d.chatRoomId === undefined){
             // chatroom을 하나 만들어주자.
             axios.post('/messenger',{
@@ -52,7 +58,6 @@ const Dash_Msg = ( {navigation} ) => {
       //생성되어 있는 트레이너의 모든 채팅방 조회
       axios.get('/messenger').then((res)=>{
         res.data.data.chatRoomIds.map(d=>{
-          console.log(d)
           let newRoom = {
             _id: d._id,
             messages: {
@@ -76,7 +81,7 @@ const Dash_Msg = ( {navigation} ) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style = {styles.maincontainer}>
-        <FlatList data={chatRoom} renderItem={renderItem} keyExtractor={item => chatRoom._id} />
+        <FlatList data={chatRoom} renderItem={renderItem} keyExtractor={item => item._id} />
       </View>
     </SafeAreaView>
   );
