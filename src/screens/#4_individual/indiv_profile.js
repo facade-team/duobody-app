@@ -15,10 +15,8 @@ const indiv_profile = ({navigation}) => {
   const [_id, set_id] = useState('');
   const [NoInbodyData, setNoInbodyData] = useState(true);
   const [IsSearched, setIsSearched] = useState(true);
-  const [addbtnpressed, setaddbtnpressed] = useState(false);
-  const [refreshPage, setrefreshPage] = useState('');
-  const [alreadyinflag, setalreadyinflag] = useState(false)
-  const [FormerID, setFormerID] = useState(_id);
+  const [FormerID, setFormerID] = useState('');
+  const [isNewFlag, setisNewFlag] = useState(true);
 
   const getApiTest = () => {
     axios.get(`/trainee/${_id}`)
@@ -29,94 +27,108 @@ const indiv_profile = ({navigation}) => {
   };
   
 
-  const getTraineeId = async () => {
-    try {
-      const id = await AsyncStorage.getItem('traineeId')
-      
-      if (isActive && (id !== _id)) {
-        set_id(id)
-        setIsSearched(false)
-
-        console.log(`this is id for indiv_profile: ${id}`)
-      }
-    } catch (err) {
-      console.log(err)
-    }
-  }
-
-  const getMemData = () => {
-    console.log(`passed id : ${_id}`)
-    {
-      console.log('\\\\\\'+_id)
-      axios.get(`/trainee/${_id}`)
-      .then(res => {
-        //console.log(res.data.data)
-        let memData = {};
-        memData._id = res.data.data._id
-        memData.address = res.data.data.address
-        memData.age = res.data.data.age
-        memData.exbodyAfter = res.data.data.exbodyAfter
-        memData.height = res.data.data.height
-        memData.name = res.data.data.name
-        memData.phoneNumber = res.data.data.phoneNumber
-        
-        setDATAFromDB(memData)
-      })
-      .catch(err => console.log(err))
-    }
-  }
-  
-  const getMemInbodyData = () => {
-    console.log('//////'+_id)
-    axios.get(`/trainee/${_id}/inbody/latest`)
-    .then(res => {
-      //console.log(res.data.data)
-      let meminbodyData = {};
-      meminbodyData.weight = res.data.data.weight
-      meminbodyData.bmi = res.data.data.bmi
-      meminbodyData.skeletalMuscle = res.data.data.skeletalMuscle
-      meminbodyData.fat = res.data.data.fat
-      meminbodyData.data = res.data.data
-      
-      setInbodyDATAFromDB(meminbodyData)
-      setNoInbodyData(false)
-      setIsSearched(true)
-    })
-    .catch(err => {
-      console.log(err.response.data.msg)
-      console.log('와 안찍히노'+_id)
-      setNoInbodyData(true)
-    })
-  }
   
   useFocusEffect(
     useCallback(() => {
       let isActive = true
+
+      const getTraineeId = async () => {
+        try {
+          const id = await AsyncStorage.getItem('traineeId')
+          if (isActive && (id !== _id)) {
+            set_id(id)
+            setIsSearched(false)
+    
+            console.log(`this is id for indiv_profile: ${id}`)
+          }
+        } catch (err) {
+          console.log(err)
+        }
+      }
+
       getTraineeId()
-
-
+      if(isNewFlag === true){
+        getMemData()
+        getMemInbodyData()
+        setisNewFlag(false)
+      }
+      
       return () => {
         isActive = false
       }
     })
-  )
-
-  useEffect(() => {
-    if(!IsSearched){
-      if (!gotData || FormerID !== _id)
+    )
+    
+    useEffect(() => {
+      if(!IsSearched){
+        setIsLoading(true)
+        if(isNewFlag===false){
+          if (!gotData || FormerID !== _id)
+          {
+            getMemData()
+            getMemInbodyData()
+          }
+        }
+        setGotData(true)
+        setIsLoading(false)
+        setFormerID(_id)     
+      };
+      
+    });
+  
+    const getMemData = () => {
+      console.log(`passed id : ${_id}`)
       {
-        getMemData()
-        getMemInbodyData()
-      }      
-    };
-    setGotData(true)
-    setIsLoading(false)
-    setFormerID(_id)
-  }
-);
-
+        console.log('\\\\\\'+_id)
+        axios.get(`/trainee/${_id}`)
+        .then(res => {
+          //console.log(res.data.data)
+          let memData = {};
+          memData._id = res.data.data._id
+          memData.address = res.data.data.address
+          memData.age = res.data.data.age
+          memData.exbodyAfter = res.data.data.exbodyAfter
+          memData.height = res.data.data.height
+          memData.name = res.data.data.name
+          memData.phoneNumber = res.data.data.phoneNumber
+          
+          setDATAFromDB(memData)
+        })
+        .catch(err => console.log(err))
+      }
+    }
+    
+    const getMemInbodyData = () => {
+      console.log('//////'+_id)
+      axios.get(`/trainee/${_id}/inbody/latest`)
+      .then(res => {
+        //console.log(res.data.data)
+        let meminbodyData = {};
+        meminbodyData.weight = res.data.data.weight
+        meminbodyData.bmi = res.data.data.bmi
+        meminbodyData.skeletalMuscle = res.data.data.skeletalMuscle
+        meminbodyData.fat = res.data.data.fat
+        meminbodyData.data = res.data.data
+        
+        setInbodyDATAFromDB(meminbodyData)
+        setNoInbodyData(false)
+        setIsSearched(true)
+      })
+      .catch(err => {
+        console.log(err.response.data.msg)
+        console.log('와 안찍히노'+_id)
+        setNoInbodyData(true)
+      })
+    }
+    
 const MemEditControler = () => {
+  setisNewFlag(true)
   navigation.navigate('Mem_Edit')
+}
+
+const ChangeAddControler = () => {
+  setisNewFlag(true)
+  navigation.navigate('Change_Add')
 }
 
   return ( isLoading ? <Text>Loading...</Text> : 
@@ -186,9 +198,7 @@ const MemEditControler = () => {
             name = 'add-circle'
             color = {Colors.Black}
             size = {Spacing.SCALE_32}
-            onPress = {
-              ()=>navigation.navigate('Change_Add')
-            }
+            onPress = {ChangeAddControler}
           />
         </View>
         <View style = {styles.linecontainer}>
