@@ -54,11 +54,11 @@ const change_add = ({navigation}) => {
     const isEmpty = (param) => {
       return Object.keys(param).length === 0;
     }
-    let newExbody = {}
-
+    
     await axios.get(`/trainee/exbody/${id}`)
-      .then((res) => {
-        if (!isEmpty(res.data.data)) {
+    .then((res) => {
+      if (!isEmpty(res.data.data)) {
+          let newExbody = {}
           if (res.data.data.exbodyAfter) {
             newExbody.exbodyAfter = res.data.data.exbodyAfter
           }
@@ -261,7 +261,16 @@ const exbodyAddControler = () => {
 const onSaveExbodyHandler = () => {
   let form = new FormData()
   form.append('exbodyImage', image)
+  console.log('exbody below!')
   console.log(exbody)
+  axios.post(`/trainee/exbody/${_id}/before`, form)
+    .then((res) => {
+      console.log(res.data.data)
+    })
+    .catch((err) => {
+      console.log(err.response)
+    })
+  /*
   if (exbody.exbodyAfter === null && exbody.exbodyBefore === null) {
     axios.post(`/trainee/exbody/${_id}/before`, form)
       .then((res) => {
@@ -289,6 +298,8 @@ const onSaveExbodyHandler = () => {
         console.log(err.response)
       })
   }
+  */
+  Alert.alert('Exbody가 저장되었습니다')
 }
 
 return (
@@ -358,7 +369,7 @@ return (
                 image && (
                 <TouchableOpacity 
                   style = {styles.saveexbody}
-                  onPressOut = {()=> onSaveExbodyHandler()}>
+                  onPressOut = {onSaveExbodyHandler}>
                   <View>
                     <Text style = {styles.greenbutton}>
                       Exbody 저장하기
