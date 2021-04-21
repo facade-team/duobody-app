@@ -16,11 +16,8 @@ const indiv_profile = ({navigation}) => {
   const [NoInbodyData, setNoInbodyData] = useState(true);
   const [IsSearched, setIsSearched] = useState(true);
   const [addbtnpressed, setaddbtnpressed] = useState(false);
-
-  //const _id = '607991633f0da34aa063c3a9'; // moong
-  //const _id = '607991803f0da34aa063c3aa'; // nowkim
-  //const _id = '606d59072a64c40bc62c91d5'; // jimin
-
+  const [refreshPage, setrefreshPage] = useState('');
+  const [alreadyinflag, setalreadyinflag] = useState(false)
   const [FormerID, setFormerID] = useState(_id);
 
   const getApiTest = () => {
@@ -30,25 +27,73 @@ const indiv_profile = ({navigation}) => {
     })
     .catch(err => console.log('this is error for inbody ' +err))
   };
+  
 
+  const getTraineeId = async () => {
+    try {
+      const id = await AsyncStorage.getItem('traineeId')
+      
+      if (isActive && (id !== _id)) {
+        set_id(id)
+        setIsSearched(false)
+
+        console.log(`this is id for indiv_profile: ${id}`)
+      }
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  const getMemData = () => {
+    console.log(`passed id : ${_id}`)
+    {
+      console.log('\\\\\\'+_id)
+      axios.get(`/trainee/${_id}`)
+      .then(res => {
+        //console.log(res.data.data)
+        let memData = {};
+        memData._id = res.data.data._id
+        memData.address = res.data.data.address
+        memData.age = res.data.data.age
+        memData.exbodyAfter = res.data.data.exbodyAfter
+        memData.height = res.data.data.height
+        memData.name = res.data.data.name
+        memData.phoneNumber = res.data.data.phoneNumber
+        
+        setDATAFromDB(memData)
+      })
+      .catch(err => console.log(err))
+    }
+  }
+  
+  const getMemInbodyData = () => {
+    console.log('//////'+_id)
+    axios.get(`/trainee/${_id}/inbody/latest`)
+    .then(res => {
+      //console.log(res.data.data)
+      let meminbodyData = {};
+      meminbodyData.weight = res.data.data.weight
+      meminbodyData.bmi = res.data.data.bmi
+      meminbodyData.skeletalMuscle = res.data.data.skeletalMuscle
+      meminbodyData.fat = res.data.data.fat
+      meminbodyData.data = res.data.data
+      
+      setInbodyDATAFromDB(meminbodyData)
+      setNoInbodyData(false)
+      setIsSearched(true)
+    })
+    .catch(err => {
+      console.log(err.response.data.msg)
+      console.log('와 안찍히노'+_id)
+      setNoInbodyData(true)
+    })
+  }
+  
   useFocusEffect(
     useCallback(() => {
       let isActive = true
-      const getTraineeId = async () => {
-        try {
-          const id = await AsyncStorage.getItem('traineeId')
-          
-          if (isActive && (id !== _id)) {
-            set_id(id)
-            setIsSearched(false)
-
-            console.log(`this is id for indiv_profile: ${id}`)
-          }
-        } catch (err) {
-          console.log(err)
-        }
-      }
       getTraineeId()
+
 
       return () => {
         isActive = false
@@ -56,61 +101,25 @@ const indiv_profile = ({navigation}) => {
     })
   )
 
-
-
   useEffect(() => {
     if(!IsSearched){
-    
-    if (!gotData || FormerID !== _id) {
-      console.log(`passed id : ${_id}`)
+      if (!gotData || FormerID !== _id)
       {
-        console.log('\\\\\\'+_id)
-        axios.get(`/trainee/${_id}`)
-        .then(res => {
-          //console.log(res.data.data)
-          let memData = {};
-          memData._id = res.data.data._id
-          memData.address = res.data.data.address
-          memData.age = res.data.data.age
-          memData.exbodyAfter = res.data.data.exbodyAfter
-          memData.height = res.data.data.height
-          memData.name = res.data.data.name
-          memData.phoneNumber = res.data.data.phoneNumber
-
-          setDATAFromDB(memData)
-        })
-        .catch(err => console.log(err))}
-      
-      {
-        console.log('//////'+_id)
-        axios.get(`/trainee/${_id}/inbody/latest`)
-        .then(res => {
-          //console.log(res.data.data)
-          let meminbodyData = {};
-          meminbodyData.weight = res.data.data.weight
-          meminbodyData.bmi = res.data.data.bmi
-          meminbodyData.skeletalMuscle = res.data.data.skeletalMuscle
-          meminbodyData.fat = res.data.data.fat
-          meminbodyData.data = res.data.data
-
-          setInbodyDATAFromDB(meminbodyData)
-          setNoInbodyData(false)
-          setIsSearched(true)
-        })
-        .catch(err => {
-          console.log(err.response.data.msg)
-          console.log('와 안찍히노'+_id)
-          setNoInbodyData(true)
-        })
-    }
+        getMemData()
+        getMemInbodyData()
+      }      
     };
     setGotData(true)
     setIsLoading(false)
     setFormerID(_id)
   }
-});
+);
 
-  return ( isLoading ? <Text>Loading...</Text> :
+const MemEditControler = () => {
+  navigation.navigate('Mem_Edit')
+}
+
+  return ( isLoading ? <Text>Loading...</Text> : 
   <SafeAreaView style = {styles.container}>
     <ScrollView>
     <View style = {styles.profilecontainer}>
@@ -127,7 +136,7 @@ const indiv_profile = ({navigation}) => {
       </TouchableOpacity>
 
         <Icon name='create' size={30} color={Colors.BLACK}
-              onPress={() => navigation.navigate('Mem_Edit')} />
+              onPress={() => MemEditControler()} />
       </View>
       <View style = {styles.goalbox}>
         <Text style = {styles.goaltext}>

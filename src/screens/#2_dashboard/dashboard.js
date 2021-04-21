@@ -31,11 +31,10 @@ useFocusEffect(()=>{
   useEffect(()=>{
   //아래 고객명단 함수
     if(!traineeDidMount) {
-      console.log('traineeDidMount: '+traineeDidMount)
       setTraineeListFromDB([]);
       axios.get('/trainee')
       .then(res => {
-        console.log('got the data!')
+        console.log('got the data! - from dashboard')
         res.data.data.map(tmp=>{
           let newTrainee = {}
           newTrainee._id = tmp._id
@@ -83,10 +82,6 @@ useFocusEffect(()=>{
     settraineeDidMount(false)
     navigation.navigate('Mem_Add')
   }
-
-
-
-
 
 
 
