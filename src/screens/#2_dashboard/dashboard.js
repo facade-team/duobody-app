@@ -40,9 +40,26 @@ useFocusEffect(()=>{
           newTrainee._id = tmp._id
           newTrainee.name = tmp.name
           
+          //chatroom 생성 - 없을시
+          if(tmp.chatRoomId === undefined){
+            axios.post('/messenger',{
+              traineeId:tmp._id
+            }).then((res)=>{
+              //res에 온 채팅방으로 초기 메시지 보내기
+              axios.post(`/messenger/${res.data.data._id}`,{
+                content: '환영합니다!'
+              })
+            }).catch(error=>{
+              console.log(error)
+            })
+          }
+          //chatroomid가 이미 있을 경우
+          newTrainee.chatRoomId = tmp.chatRoomId
+
           setTraineeListFromDB(prevArray => [...prevArray, newTrainee])
         })
       }).catch(err => console.log(err[0]))
+
       settraineeDidMount(true)
       setIsLoading(false) 
     };
@@ -177,6 +194,8 @@ const Mem_List = ({DATA}) => {
 
     const onPressOutHandler = async () => {
       await AsyncStorage.setItem('traineeId', item._id)
+      await AsyncStorage.setItem('chatRoomId', item.chatRoomId)
+      
       navigation.navigate('Indiv', {screen: 'indiv_profile'})
     }
 
