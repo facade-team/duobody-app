@@ -76,21 +76,22 @@ export default ({navigation}) => {
 
   const SubmitControler = () => {
     let MemFixedData = {}
-    MemFixedData.name = Name
-    MemFixedData.phoneNumber = Hp
-    MemFixedData.address = Address
-    MemFixedData.age = Age
-    MemFixedData.height = Height
+    if(Name === ''){MemFixedData.name = DATAFromDB.name}else{MemFixedData.name = Name}
+    if(Hp === ''){MemFixedData.phoneNumber = DATAFromDB.Hp}else{MemFixedData.phoneNumber = Hp}
+    if(Address === ''){MemFixedData.address = DATAFromDB.address}else{MemFixedData.address = Address}
+    if(Age === ''){MemFixedData.age = DATAFromDB.age}else{MemFixedData.age = Age}
+    if(Height === ''){MemFixedData.height = DATAFromDB.height}else{MemFixedData.height = Height}
     MemFixedData.traineeId = _id
 
     axios.put('trainee', MemFixedData)
     .then(res => {
       Alert.alert(res.data.msg)
       navigation.navigate('Indiv')
+      console.log(res.data.data)
     })
     .catch(err=>{
       Alert.alert(err.response.data.msg)
-      console.log(err.response)
+      console.log(err.response.config.data)
     })
   }
 

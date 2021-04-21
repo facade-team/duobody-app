@@ -1,7 +1,9 @@
 import axios from '../../axios/api';
-import React, {useState, useEffect} from 'react';
-import { SafeAreaView, View, FlatList, StyleSheet, Text, StatusBar, TouchableOpacity, Alert } from 'react-native';
+import React, {useState, useEffect, useCallback} from 'react';
+import { SafeAreaView, View, FlatList, StyleSheet, Text, StatusBar, TouchableOpacity } from 'react-native';
 import { Colors } from '../../styles';
+import AsyncStorage from '@react-native-community/async-storage';
+import {useFocusEffect} from '@react-navigation/native'
 
 const Item = ({ title, submessenger }) => (
   <View style={styles.item}>
@@ -12,71 +14,130 @@ const Item = ({ title, submessenger }) => (
 
 const Dash_Msg = ( {navigation} ) => {
 
-  const renderItem = ({ item, submessenger }) => (
+  const renderItem = ({ item }) => {
+    const onPressOutHandler = async () => {
+      await AsyncStorage.setItem('chatRoomId', item._id)
+      setIsNewFlag(true)
+      navigation.navigate('Indiv', {screen: 'indiv_msg'})
+    }
+    return (
     <TouchableOpacity onPressOut={() => {
         // 회원별 채팅방으로 이동
-        navigation.navigate('Indiv', {screen: 'indiv_msg'})
+        onPressOutHandler()
       }}>
       <Item title={item.traineeId.name} submessenger={item.messages.content}/>
     </TouchableOpacity>
-  );
+    )
+  }
 
+  const [isNewFlag,setIsNewFlag] = useState(true)
   const [didMount,setDidMount] = useState(false)
   const [chatRoom,setChatroom] = useState([])
 
-  useEffect(()=>{
-    if(!didMount){
-      //모든 trainee 조회
-      axios.get('/trainee').then((res)=>{
-        //받은 res에 chatRoomId가 없으면 채팅방 자체가 렌더링이 안됨.
-        res.data.data.map(d=>{
-          //console.log(d)
-          if(d.chatRoomId === undefined){
-            // chatroom을 하나 만들어주자.
-            axios.post('/messenger',{
-              traineeId: d._id
-            }).then((res)=>{
-              //res에 온 채팅방으로 초기 메시지 보내기
-              axios.post(`/messenger/${res.data.data._id}`,{
-                content: '환영합니다!'
+  useFocusEffect(
+    useCallback(()=>{
+      if(isNewFlag){
+        //모든 trainee 조회
+        axios.get('/trainee').then((res)=>{
+          //받은 res에 chatRoomId가 없으면 채팅방 자체가 렌더링이 안됨.
+          res.data.data.map(d=>{
+            if(d.chatRoomId === undefined){
+              // chatroom을 하나 만들어주자.
+              axios.post('/messenger',{
+                traineeId: d._id
+              }).then((res)=>{
+                //res에 온 채팅방으로 초기 메시지 보내기
+                axios.post(`/messenger/${res.data.data._id}`,{
+                  content: '환영합니다!'
+                })
+              }).catch(error=>{
+                console.log(error)
               })
-            }).catch(error=>{
-              console.log(error)
-            })
-          }
-        })
-      }).catch(error => {
-        console.log(error)
-      })
-
-      //생성되어 있는 트레이너의 모든 채팅방 조회
-      axios.get('/messenger').then((res)=>{
-        res.data.data.chatRoomIds.map(d=>{
-          console.log(d)
-          let newRoom = {
-            _id: d._id,
-            messages: {
-              _id: d.messages[0]._id,
-              content: d.messages[0].content
-            },
-            traineeId: {
-              _id: d.traineeId._id,
-              name: d.traineeId.name
             }
-          }
-          setChatroom(prevArray => [...prevArray, newRoom])          
+          })
+        }).catch(error => {
+          console.log(error)
         })
-      }).catch((error)=>{
-        console.log(error)
-      })
-      setDidMount(true)
+
+        //생성되어 있는 트레이너의 모든 채팅방 조회
+        axios.get('/messenger').then((res)=>{
+          setChatroom([])
+          res.data.data.chatRoomIds.map(d=>{
+            let newRoom = {
+              _id: d._id,
+              messages: {
+                _id: d.messages[0]._id,
+                content: d.messages[0].content
+              },
+              traineeId: {
+                _id: d.traineeId._id,
+                name: d.traineeId.name
+              }
+            }
+            setChatroom(prevArray => [...prevArray, newRoom])          
+          })
+        }).catch((error)=>{
+          console.log(error)
+        })
+        setDidMount(true)
+      }
+      setIsNewFlag(false)
+    })
+  )
+
+  useEffect(()=>{
+    if(!isNewFlag){
+      if(!didMount){
+        //모든 trainee 조회
+        axios.get('/trainee').then((res)=>{
+          //받은 res에 chatRoomId가 없으면 채팅방 자체가 렌더링이 안됨.
+          res.data.data.map(d=>{
+            if(d.chatRoomId === undefined){
+              // chatroom을 하나 만들어주자.
+              axios.post('/messenger',{
+                traineeId: d._id
+              }).then((res)=>{
+                //res에 온 채팅방으로 초기 메시지 보내기
+                axios.post(`/messenger/${res.data.data._id}`,{
+                  content: '환영합니다!'
+                })
+              }).catch(error=>{
+                console.log(error)
+              })
+            }
+          })
+        }).catch(error => {
+          console.log(error)
+        })
+
+        //생성되어 있는 트레이너의 모든 채팅방 조회
+        axios.get('/messenger').then((res)=>{
+          res.data.data.chatRoomIds.map(d=>{
+            let newRoom = {
+              _id: d._id,
+              messages: {
+                _id: d.messages[0]._id,
+                content: d.messages[0].content
+              },
+              traineeId: {
+                _id: d.traineeId._id,
+                name: d.traineeId.name
+              }
+            }
+            setChatroom(prevArray => [...prevArray, newRoom])          
+          })
+        }).catch((error)=>{
+          console.log(error)
+        })
+        setDidMount(true)
+      }
     }
   })
 
   return (
     <SafeAreaView style={styles.container}>
       <View style = {styles.maincontainer}>
-        <FlatList data={chatRoom} renderItem={renderItem} keyExtractor={item => chatRoom._id} />
+        <FlatList data={chatRoom} renderItem={renderItem} keyExtractor={item => item._id} />
       </View>
     </SafeAreaView>
   );
