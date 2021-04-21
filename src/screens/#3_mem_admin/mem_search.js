@@ -45,6 +45,7 @@ const mem_search= ({navigation}) => {
           <TextInput 
             style ={styles.inputbar}
             placeholder={'search'}
+            value={SearchText}
             onChangeText={setSearchText}>
           </TextInput>
         </View>
