@@ -6,6 +6,7 @@ import axios from '../../axios/api';
 import partAndField from '../../utils/partAndField';
 import SetsView from '../../components/SetsView';
 import SetsIViewWithMinutes from '../../components/SetsIViewWithMinutes';
+import Loader from '../../components/Loader'
 
 function Indiv_calendar({ navigation }) {
 
@@ -142,13 +143,13 @@ function Indiv_calendar({ navigation }) {
 
   return (
     <SafeAreaView style={styles.wrap}>
-      <View style = {styles.upcontainer}>
-      <View style={{flex:1}}>
-        <CalendarView
-          setSelectedDatePick={setSelectedDatePick}
-          dotDates={dotDates}
-        />
-      </View>
+      <View style = {styles.whiteBox}>
+        <View style={{flex:1}}>
+          <CalendarView
+            setSelectedDatePick={setSelectedDatePick}
+            dotDates={dotDates}
+          />
+        </View>
       </View>
       <View style={styles.whiteBox}>
         <View style={styles.container}>
@@ -214,7 +215,7 @@ function Indiv_calendar({ navigation }) {
           {
             (selectedNull === true && isEmpty(lesson)) && 
             <View style={{flex:1, justifyContent: 'center', alignItems: 'center'}}>
-              <Text>조회중...</Text>
+              <Loader />
             </View>
           }
         </View>
@@ -231,7 +232,7 @@ const styles = StyleSheet.create({
   upcontainer:{
     backgroundColor: Colors.WHITE,
     flex: 1,
-    margin: 5,
+    margin: 1,
   },
   container: {
     flexDirection: 'row',
@@ -246,7 +247,7 @@ const styles = StyleSheet.create({
     borderColor: Colors.WHITE,
     paddingLeft: Spacing.SCALE_4,
     paddingRight: Spacing.SCALE_4,
-    margin: Spacing.SCALE_8,
+    margin: Spacing.SCALE_4,
     borderWidth: 1,
     flex:1,
   }
