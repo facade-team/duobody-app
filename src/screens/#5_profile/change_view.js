@@ -92,6 +92,7 @@ function Change_view() {
   }
 
   const callGetExbodyAPI = async () => {
+
     await axios.get(`/trainee/exbody/${traineeId}`)
       .then((res) => {
         //
