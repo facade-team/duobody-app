@@ -8,6 +8,7 @@ import SetsView from '../../components/SetsView';
 import SetsIViewWithMinutes from '../../components/SetsIViewWithMinutes';
 import Loader from '../../components/Loader'
 import { useFocusEffect } from '@react-navigation/native';
+import AsyncStorage from '@react-native-community/async-storage';
 
 function Indiv_calendar({ navigation }) {
 
@@ -15,7 +16,7 @@ function Indiv_calendar({ navigation }) {
 
   let urlstring = ''
   //flag 사용
-  const [didMount,setDidMount] = useState(false)
+  const [didMount,setDidMount] = useState(true)
   const [gotDataFlag, setGotDataFlag] = useState(urlstring)
 
   const today = new Date()
@@ -53,17 +54,19 @@ function Indiv_calendar({ navigation }) {
 
   //trainee의 모든 lesson 날짜 조회 -> lesson id로 조회
 
+  const [gotId, setGotId] = useState(false)
   useFocusEffect(
     useCallback(() => {
       let isActive = true
-
+      console.log('useFocusEffect')
       const getTraineeId = async () => {
         try {
           const id = await AsyncStorage.getItem('traineeId')
-          
           if (isActive && (id !== trainee_id)) {
             setTrainee_id(id)
+            callGetLessonDatesByMonthAPI(id)
             setDidMount(false)
+            setGotId(true)
             console.log(`this is id: ${id}`)
           }
         } catch (err) {
@@ -83,14 +86,15 @@ function Indiv_calendar({ navigation }) {
     //모든 lesson 날짜 조회하기 - 처음 한 번만
     if(!didMount){
       // trainee의 모든 lesson 가져와서 달력에 점찍기 구현해야됨
-      console.log('call api...')
-      callGetLessonDatesByMonthAPI()
+      selectedDateToString()      
+      callGetLessonDatesByMonthAPI(trainee_id)
       setDidMount(true)
     }
 
     // 해당 날짜 일정 불러오기 - url 형식에 맞게 날짜 string으로 변경
     selectedDateToString()
-    if(gotDataFlag !== urlstring) {
+    if(gotDataFlag !== urlstring && gotId) {
+      console.log('call get lesson by date API...')
       setLesson({})
       axios.get(`/trainee/${trainee_id}/lesson/date/${urlstring}`)
       .then((res) => {
@@ -136,8 +140,8 @@ function Indiv_calendar({ navigation }) {
   const [partToggle, setPartToggle] = useState([false, false, false, false, false, false, false])
   const [dotDates, setDotDates] = useState([])
 
-  const callGetLessonDatesByMonthAPI = async () => {
-    await axios.get(`/trainee/${trainee_id}/lesson/date`)
+  const callGetLessonDatesByMonthAPI = (id) => {
+    axios.get(`/trainee/${id}/lesson/date`)
       .then((res) => {
         setDotDates(res.data.data)
       })
