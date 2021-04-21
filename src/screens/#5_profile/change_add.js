@@ -6,6 +6,7 @@ import axios from '../../axios/api';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import getDateStringWithNumber from '../../utils/getDateStringWithNumber';
+import getDateString from '../../utils/getDateString';
 import { useFocusEffect } from '@react-navigation/native'
 
 
@@ -22,7 +23,7 @@ const change_add = ({navigation}) => {
   const [NoDataFlag, setNoDataFlag] = useState(true);
   const [_id, set_id] = useState('');
   const [isSearched, setIsSearched] = useState(false);
-
+  const [isNewLoad, setisNewLoad] = useState(true);
   const onChangePickedDate = (event, selectedDate) => {
     const currentDate = selectedDate;
     setCalDate(currentDate);
@@ -48,7 +49,6 @@ const change_add = ({navigation}) => {
 
   useFocusEffect(
     useCallback(() => {
-
       let isActive = true
 
       const getTraineeId = async () => {
@@ -64,17 +64,27 @@ const change_add = ({navigation}) => {
           console.log(err)
         }
       }
-
+      
       getTraineeId()
+      if(isNewLoad === true){
+        setWeightText('')
+        setBMIText('')
+        setMuscleText('')
+        setFatText('')
+        setisNewLoad(false)
+      }
 
       return () => {
         isActive = false
       }
+
+
     })
   )
 
 
   useEffect(()=>{
+    
     //트레이니 아이디로 이름 가져오기
     if(!set || FormerID !== _id){
       axios.get(`/trainee/${_id}`)
@@ -124,26 +134,44 @@ const change_add = ({navigation}) => {
 
 
 const SaveControler = () => {
-  let todayInbody = {}
-  //todayInbody._id = InbodyFromDB.inbodyId
-  todayInbody.inbodyId = InbodyFromDB.inbodyId
-  todayInbody.bmi = BMIText
-  todayInbody.date = new Date(InbodyFromDB.date)
-  todayInbody.fat = fatText
-  //todayInbody.name = InbodyFromDB.name
-  todayInbody.skeletalMuscle = muscleText
-  todayInbody.weight = weightText
+  if(NoDataFlag===false){///data있는날 => 수정!
+    let todayInbody = {}
+    todayInbody.inbodyId = InbodyFromDB.inbodyId
+    todayInbody.bmi = BMIText
+    todayInbody.date = new Date(InbodyFromDB.date)
+    todayInbody.fat = fatText
+    todayInbody.skeletalMuscle = muscleText
+    todayInbody.weight = weightText
 
-  axios.put('trainee/inbody',todayInbody)
-  .then(res => {
-    Alert.alert(res.data.msg)
-    navigation.goBack()
-  })
-  .catch(err => {
-    Alert.alert(err.response.data.msg)
-    console.log(err.response)
+    axios.put('trainee/inbody',todayInbody)
+    .then(res => {
+      Alert.alert(res.data.msg)
+      setisNewLoad(true)
+      navigation.goBack()
+    })
+    .catch(err => {
+      Alert.alert(err.response.data.msg)
+      console.log(err.response)
+  })} else {
+    let todayInbody = {}
+    todayInbody.traineeId = _id
+    todayInbody.bmi = BMIText
+    todayInbody.fat = fatText
+    todayInbody.skeletalMuscle = muscleText
+    todayInbody.weight = weightText
+    todayInbody.date = new Date(getDateString(pickedDate))
 
-  })
+    axios.post('trainee/inbody', todayInbody)
+    .then(res => {
+      Alert.alert(res.data.msg)
+      setisNewLoad(true)
+      navigation.goBack()
+
+    })
+    .catch(err => {
+      Alert.alert(err.response.data.msg)
+      console.log(err.response)
+  })}
 }
 
 const exbodyAddControler = () => {
