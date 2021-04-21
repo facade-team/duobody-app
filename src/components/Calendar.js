@@ -14,27 +14,27 @@ LocaleConfig.locales['fr'] = {
 LocaleConfig.defaultLocale = 'fr';
 
 // 날짜를 눌렀을 때 이벤트 추가해야 됨
-//const DateObject = new Date().toISOString().slice(0, 10)
-
 const CalendarView = ({setSelectedDatePick}) => {
-    // let curr = console.log(String(currentDate))
-    const [markedDates, setMarkedDates] = useState({})
-    const [dotFlag, setDotFlag] = useState(false)
+    //test
+    const workout = {key:'workout', color: 'green',selectedDotColor: 'blue'};
+    //test
 
-    /*
-    useEffect(() => {
-      if (!dotFlag) {
-        if (dotDates.length !== 0) {
-          let newDotDates = {}
-          dotDates.map((data) =>{
-            newDotDates[data.date] = {marked: true, dotColor: Colors.PRIMARY}
-          })
-          setMarkedDates(newDotDates)
-        }
-        setDotFlag(true)
+    const [markedDates, setMarkedDates] = useState({})
+    const [isMounted,setIsMounted] = useState(false)
+
+    const dots = () => {
+      let dotDate = {}
+      dotDate[new Date('2021-04-17').toDateString()] = {dots: [workout]}
+
+      setMarkedDates(prevState => ({ ...prevState, dotDate}))
+    }
+
+    useEffect(()=>{
+      if(!isMounted){
+        dots()
       }
+      setIsMounted(true)
     })
-    */
 
     return (
       <View style={{ flex: 1, paddingTop: 5,}}>
@@ -53,18 +53,11 @@ const CalendarView = ({setSelectedDatePick}) => {
             const temp = day.dateString
             
             let newMarked = {}
-            newMarked[temp] = {selected: true, selectedColor: Colors.PRIMARY, marked: true}
-
-            /*
-            let prevMarkedDates = markedDates
-            console.log('this is marked dates')
-            console.log(prevMarkedDates)
-            prevMarkedDates[temp] = {selected: true, selectedColor: Colors.PRIMARY, marked: true}
-            */
+            newMarked[temp] = {selected:true, selectedColor: Colors.PRIMARY}
+            //newMarked['2021-04-22'] = {dots: [workout]}
+            //console.log(newMarked)
             setMarkedDates(newMarked)
 
-            const tempo = new Date(day.dateString).getDay()
-            //console.log(day)
             //day object 넘겨주기
             setSelectedDatePick({
               year: day.year,
@@ -74,6 +67,7 @@ const CalendarView = ({setSelectedDatePick}) => {
             })
           }
         }
+        markingType={'multi-dot'}
 
         // Handler which gets executed on day long press. Default = undefined
         // onDayLongPress={(day) => {console.log('selected day', day)}}
