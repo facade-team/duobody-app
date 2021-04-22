@@ -187,10 +187,10 @@ const Dash_dash = () => {
           </View>
         </View>
         {TraineeListFromDB.length !== 0 ? <Mem_List DATA = {TraineeListFromDB}/> : 
-          <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-            <Loader />
-          </View>
-          }
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <Loader />
+        </View>
+        }
       </View>
     </View>
   </View>

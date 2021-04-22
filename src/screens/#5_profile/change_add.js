@@ -26,6 +26,7 @@ const change_add = ({navigation}) => {
   const [NoDataFlag, setNoDataFlag] = useState(true);
   const [_id, set_id] = useState('');
   const [isSearched, setIsSearched] = useState(false);
+  const [isNewLoad, setisNewLoad] = useState(true);
   
 
   // 승우가 짠 부분 start
@@ -92,7 +93,6 @@ const change_add = ({navigation}) => {
 
   // 승우가 짠 부분 end
 
-  const [isNewLoad, setisNewLoad] = useState(true);
   const onChangePickedDate = (event, selectedDate) => {
     const currentDate = selectedDate;
     setCalDate(currentDate);
