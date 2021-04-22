@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { StyleSheet, SafeAreaView, Text, View, FlatList, TouchableOpacity, Platform } from 'react-native';
 import CalendarView from '../../components/Calendar';
 import CircleButton from '../../components/CircleButton'
@@ -10,6 +10,9 @@ import TraineeList from '../../components/TraineeList';
 import { Colors } from '../../styles';
 import axios from '../../axios/api';
 import AsyncStorage from '@react-native-community/async-storage';
+import { useFocusEffect } from '@react-navigation/native';
+import Loader from '../../components/Loader';
+import getDateString from '../../utils/getDateString';
 
 const Item = ({ name, worktime }) => (
     <View style={styles.content}>
@@ -37,6 +40,46 @@ const Dash_cal = ( {navigation} ) => {
 
         return result.getTime()
     }
+    const [dotDatesFromDB, setDotDatesFromDB] = useState(null)
+    const [dotFlag, setDotFlag] = useState(false)
+    const [dotStateFlag, setDotStateFlag] = useState(true)
+
+    useFocusEffect(
+      useCallback(() => {
+        let isActive = true
+        console.log('useFocusEffect')
+        console.log(dotFlag)
+        if (!dotFlag) {
+          callGetAllLessonDatesAPI()
+        }
+
+        return () => {
+          isActive = false
+        }
+      })
+    )
+
+    const callGetAllLessonDatesAPI = async () => {
+      //
+      await axios.get('/trainer/lesson')
+        .then((res) => {
+          if (res.data.data) {
+            const workout = {key:'workout', color: 'red',selectedDotColor: 'blue'}
+            let newObj = {}
+            res.data.data.map((d) => {
+              newObj[d.date] = {dots: [workout]}
+            })
+            setDotDatesFromDB(newObj)
+          }
+          else {
+            setDotDatesFromDB({})
+          }
+          setDotFlag(true)
+        })
+        .catch((err) => {
+          console.log(err.response)
+        })
+    }
 
     useEffect(()=>{
         //모든 trainee 불러오기
@@ -55,6 +98,9 @@ const Dash_cal = ( {navigation} ) => {
             })
             setTraineeDidMount(true)
         }
+
+        console.log(`dot:`)
+        console.log(dotDatesFromDB)
 
 
         //해당 날짜 일정 불러오기 - url 형식에 맞게 날짜 string으로 변경
@@ -102,6 +148,7 @@ const Dash_cal = ( {navigation} ) => {
     
     // local storage에 데이터 저장하는 함수
     const saveDataLocalStorage = () => {
+        setDotStateFlag(false)
         //ID
         const _id = selectedTrainee._id
         //NAME
@@ -121,6 +168,31 @@ const Dash_cal = ( {navigation} ) => {
         // timestamp 만들기
         const st = convertTimeStamp(startTime)
         const et = convertTimeStamp(endTime)
+
+        console.log('ee')
+        const date = getDateString(start)
+        const newObj = {}
+        const workout = {key:'workout', color: 'red',selectedDotColor: 'blue'}
+
+        newObj[date] = {dots: [workout]}
+
+        const mergeObj = (obj1, obj2) => {
+          const newObj = {};
+          for (let att in obj1) { 
+            newObj[att] = obj1[att]; 
+          }
+        
+          for(let att in obj2)  {
+            newObj[att] = obj2[att];
+          }
+          
+          return newObj;
+        }
+
+        const prevDotDates = dotDatesFromDB
+        const newDotDates = mergeObj(prevDotDates, newObj)
+
+
         
         //새로 업데이트 된 DATA를 push
         axios.post('/trainee/lesson',{
@@ -129,6 +201,12 @@ const Dash_cal = ( {navigation} ) => {
                 end: et,
                 session: null,
             })
+            .then((res)=> {
+              setDotDatesFromDB(newDotDates)
+              setDotStateFlag(true)
+                console.log(res.data)
+            })
+            .catch(error=>console.log(error.response))
 
     }
 
@@ -473,9 +551,16 @@ const Dash_cal = ( {navigation} ) => {
             <SafeAreaView style={styles.wrap}>
                 <View style = {styles.maincontainer}>
                 <View style={{flex:1, marginTop: 12}}>
+                  {!dotDatesFromDB && dotStateFlag ?
+                    <View style={{flex:1, justifyContent: 'center', alignItems: 'center'}}>
+                      <Loader />
+                    </View>
+                    :
                     <CalendarView 
                         setSelectedDatePick={setSelectedDatePick}
+                        dotDatesFromDB={dotDatesFromDB}
                     />
+                  }
                 </View>
                 </View>
                 <View style = {styles.downcontainer}>
