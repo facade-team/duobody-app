@@ -9,6 +9,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import TraineeList from '../../components/TraineeList';
 import { Colors } from '../../styles';
 import axios from '../../axios/api';
+import AsyncStorage from '@react-native-community/async-storage';
 
 const Item = ({ name, worktime }) => (
     <View style={styles.content}>
@@ -17,7 +18,7 @@ const Item = ({ name, worktime }) => (
     </View>
 );
 
-const Dash_cal = () => {
+const Dash_cal = ( {navigation} ) => {
 
     let urlstring = ''
     const [gotDataFlag, setGotDataFlag] = useState(urlstring)
@@ -38,7 +39,7 @@ const Dash_cal = () => {
     }
 
     useEffect(()=>{
-        //trainee 불러오기
+        //모든 trainee 불러오기
         if(!traineeDidMount){
             axios.get('/trainee')
             .then((res)=>{
@@ -52,7 +53,6 @@ const Dash_cal = () => {
                 })
                 
             })
-
             setTraineeDidMount(true)
         }
 
@@ -84,6 +84,11 @@ const Dash_cal = () => {
                         newData._id = d._id
                         newData.name = d.name
                         newData.worktime = d.time
+                        //chatroomid 필요
+                        axios.get(`/trainee/${d._id}`)
+                        .then((res)=>{
+                            newData.chatroomId = res.data.data.chatRoomId
+                        })
     
                         setDATA(prevArray => [...prevArray, newData])
                     })
@@ -340,7 +345,26 @@ const Dash_cal = () => {
         </View>
     );
 
-    const renderItem = ({ item }) => <Item name={item.name} worktime={item.worktime} />;
+    const renderItem = ({ item }) => {
+        const onPressOutHandler = async () => {
+            await AsyncStorage.setItem('chatRoomId', item.chatroomId)
+            await AsyncStorage.setItem('traineeId', item._id)
+
+            //flag 세워?
+            //setIsNewFlag(true)
+            navigation.navigate('Indiv', {screen: 'indiv_profile'})
+            
+        }
+    
+        return(
+            <TouchableOpacity onPressOut={()=>{
+                //indiv_profile로 이동
+                onPressOutHandler()
+            }}>
+                <Item name={item.name} worktime={item.worktime} />
+            </TouchableOpacity>
+        )
+    }
 
     const renderContent = () => (
         <View style={styles.bottomsheetcontainer}>
@@ -467,7 +491,10 @@ const Dash_cal = () => {
                                 <View>
                                     <Text style={{color:'#AAAAAA'}}>이날의 일정이 없습니다</Text>
                                 </View>
-                            :<FlatList data={DATA} renderItem={renderItem} keyExtractor={item => item._id} />}
+                            :<View>
+                                <FlatList data={DATA} renderItem={renderItem} keyExtractor={item => item._id} />
+                            </View>
+                        }
                     </View>
                 </View>
                 </View>
