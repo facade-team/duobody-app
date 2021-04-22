@@ -90,7 +90,7 @@ const CalendarView = ({setSelectedDatePick}) => {
               newObj[temp] = {selected:true, selectedColor: Colors.PRIMARY}
             }
             setMarkedDates(newObj)
-            console.log(newObj)
+            //console.log(newObj)
 
 
             //day object 넘겨주기
