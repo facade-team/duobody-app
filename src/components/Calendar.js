@@ -19,14 +19,16 @@ const CalendarView = ({setSelectedDatePick}) => {
     const workout = {key:'workout', color: 'green',selectedDotColor: 'blue'};
     //test
 
-    const [markedDates, setMarkedDates] = useState({})
+    const [markedDates, setMarkedDates] = useState(null)
     const [isMounted,setIsMounted] = useState(false)
 
     const dots = () => {
-      let dotDate = {}
-      dotDate[new Date('2021-04-17').toDateString()] = {dots: [workout]}
-
-      setMarkedDates(prevState => ({ ...prevState, dotDate}))
+      //let prevState = markedDates
+      let temp = {
+        '2021-04-01' : {dots: [workout]},
+        '2021-04-02' : {dots: [workout,workout]},
+      }
+      setMarkedDates(temp)
     }
 
     useEffect(()=>{
@@ -37,6 +39,7 @@ const CalendarView = ({setSelectedDatePick}) => {
     })
 
     return (
+      markedDates && 
       <View style={{ flex: 1, paddingTop: 5,}}>
         <Calendar
         //선택날짜 마킹
@@ -52,11 +55,13 @@ const CalendarView = ({setSelectedDatePick}) => {
             //console.log(day)
             const temp = day.dateString
             
-            let newMarked = {}
-            newMarked[temp] = {selected:true, selectedColor: Colors.PRIMARY}
-            //newMarked['2021-04-22'] = {dots: [workout]}
-            //console.log(newMarked)
-            setMarkedDates(newMarked)
+            //selected:true, selectedColor: Colors.PRIMARY
+            // let newMarked = {}
+            // newMarked[temp] = {selected:true, selectedColor: Colors.PRIMARY}
+            const prevState = markedDates
+            prevState[temp] = {selected:true, selectedColor: Colors.PRIMARY,marked:true}
+            console.log(prevState)
+            setMarkedDates(prevState)
 
             //day object 넘겨주기
             setSelectedDatePick({
