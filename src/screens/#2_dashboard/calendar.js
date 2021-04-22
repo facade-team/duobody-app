@@ -47,8 +47,8 @@ const Dash_cal = ( {navigation} ) => {
     useFocusEffect(
       useCallback(() => {
         let isActive = true
-        console.log('useFocusEffect')
-        console.log(dotFlag)
+        //console.log('useFocusEffect')
+        //console.log(dotFlag)
         if (!dotFlag) {
           callGetAllLessonDatesAPI()
         }
@@ -99,8 +99,8 @@ const Dash_cal = ( {navigation} ) => {
             setTraineeDidMount(true)
         }
 
-        console.log(`dot:`)
-        console.log(dotDatesFromDB)
+        //console.log(`dot:`)
+        //console.log(dotDatesFromDB)
 
 
         //해당 날짜 일정 불러오기 - url 형식에 맞게 날짜 string으로 변경
@@ -232,11 +232,10 @@ const Dash_cal = ( {navigation} ) => {
         setTemp(selectedTrainee.name)
     }
 
-    
     //ios datetimepicker
     const [show,setShow] = useState(false);
-    const [start, setStart] = useState(new Date().setHours(0, 0, 0, 0));
-    const [end, setEnd] = useState(new Date().setHours(0, 0, 0, 0));
+    const [start, setStart] = useState(new Date(1619103600000));
+    const [end, setEnd] = useState(new Date(1619103600000));
     const [temptime, setTempTime] = useState('')
 
     const [startTime, setStartTime] = useState({
