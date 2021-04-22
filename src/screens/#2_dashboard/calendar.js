@@ -9,7 +9,6 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import TraineeList from '../../components/TraineeList';
 import { Colors } from '../../styles';
 import axios from '../../axios/api';
-import { error } from 'react-native-gifted-chat/lib/utils';
 
 const Item = ({ name, worktime }) => (
     <View style={styles.content}>
@@ -42,7 +41,7 @@ const Dash_cal = () => {
         //trainee 불러오기
         if(!traineeDidMount){
             axios.get('/trainee').then((res)=>{
-                console.log(res.data.data)
+                // console.log(res.data.data)
                 res.data.data.map(d=>{
                     let newTrainee = {}
                     newTrainee._id = d._id
@@ -117,6 +116,8 @@ const Dash_cal = () => {
         // timestamp 만들기
         const st = convertTimeStamp(startTime)
         const et = convertTimeStamp(endTime)
+
+        console.log('ee')
         
         //새로 업데이트 된 DATA를 push
         axios.post('/trainee/lesson',{
@@ -468,10 +469,10 @@ const Dash_cal = () => {
                     </TouchableOpacity>
                     <View style={styles.container}>
                         {//data 서버에서 가져오고 해당 날짜에 대한 일정이 있는지 체크
-                            DATA.length === 0 ? 
-                        <View>
-                            <Text style={{color:'#AAAAAA'}}>이날의 일정이 없습니다</Text>
-                        </View>
+                            DATA.length === 0 ?
+                                <View>
+                                    <Text style={{color:'#AAAAAA'}}>이날의 일정이 없습니다</Text>
+                                </View>
                             :<FlatList data={DATA} renderItem={renderItem} keyExtractor={item => item._id} />}
                     </View>
                 </View>
