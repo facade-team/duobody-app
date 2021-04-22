@@ -14,18 +14,14 @@ LocaleConfig.locales['fr'] = {
 LocaleConfig.defaultLocale = 'fr';
 
 // 날짜를 눌렀을 때 이벤트 추가해야 됨
-const CalendarView = ({setSelectedDatePick}) => {
+const CalendarView = ({setSelectedDatePick, dotDatesFromDB}) => {
     //test
-    const workout[] = {key:'workout', color: 'red',selectedDotColor: 'blue'};
+    const workout = {key:'workout', color: 'red',selectedDotColor: 'blue'};
     //test
 
     const [markedDates, setMarkedDates] = useState(null)
     const [isMounted,setIsMounted] = useState(false)
-    const [dotDates, setDotDates] = useState({
-      "2021-04-01": {dots: [workout]},
-      "2021-04-15": {dots: [workout]},
-      "2021-04-22": {dots: [workout]}
-    })
+    const [dotDates, setDotDates] = useState(dotDatesFromDB)
 
     const dots = () => {
       //let dotDate = {}

@@ -63,8 +63,10 @@ function Indiv_calendar({ navigation }) {
         try {
           const id = await AsyncStorage.getItem('traineeId')
           if (isActive && (id !== trainee_id)) {
+            console.log('아이디를 새로 등록하는 과정...')
+            setDotDatesFromDB(null)
+            callGetAllLessonDatesAPI(id)
             setTrainee_id(id)
-            callGetLessonDatesByMonthAPI(id)
             setDidMount(false)
             setGotId(true)
             console.log(`this is id: ${id}`)
@@ -87,7 +89,7 @@ function Indiv_calendar({ navigation }) {
     if(!didMount){
       // trainee의 모든 lesson 가져와서 달력에 점찍기 구현해야됨
       selectedDateToString()      
-      callGetLessonDatesByMonthAPI(trainee_id)
+      callGetAllLessonDatesAPI(trainee_id)
       setDidMount(true)
     }
 
@@ -139,11 +141,23 @@ function Indiv_calendar({ navigation }) {
   // 요 아래는 승우가 만든 컴포넌트, state, function ^^
   const [partToggle, setPartToggle] = useState([false, false, false, false, false, false, false])
   const [dotDates, setDotDates] = useState([])
+  const [dotDatesFromDB, setDotDatesFromDB] = useState(null)
 
-  const callGetLessonDatesByMonthAPI = (id) => {
-    axios.get(`/trainee/${id}/lesson/date`)
+  const callGetAllLessonDatesAPI = async (id) => {
+    console.log('callGetAllLessonDatesAPI ' + id)
+    await axios.get(`/trainee/${id}/lesson/date`)
       .then((res) => {
-        setDotDates(res.data.data)
+        if (res.data.data) {
+          const workout = {key:'workout', color: 'red',selectedDotColor: 'blue'}
+          let newObj = {}
+          res.data.data.map((d) => {
+            newObj[d.date] = {dots: [workout]}
+          })
+          setDotDatesFromDB(newObj)
+        }
+        else {
+          setDotDatesFromDB({})
+        }
       })
       .catch((err) => {
         console.log(err.response)
@@ -177,10 +191,17 @@ function Indiv_calendar({ navigation }) {
     <SafeAreaView style={styles.wrap}>
       <View style = {styles.whiteBox}>
         <View style={{flex:1,}}>
-          <CalendarView
-            setSelectedDatePick={setSelectedDatePick}
-            dotDates={dotDates}
-          />
+          {!dotDatesFromDB ? 
+          <View style={{flex:1, justifyContent: 'center', alignItems: 'center'}}>
+            <Loader />
+          </View>
+          :
+            <CalendarView
+              setSelectedDatePick={setSelectedDatePick}
+              dotDates={dotDates}
+              dotDatesFromDB={dotDatesFromDB}
+            />
+          }
         </View>
       </View>
       <View style={styles.whiteBox}>
