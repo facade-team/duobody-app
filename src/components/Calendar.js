@@ -1,5 +1,5 @@
 import React, {Component, useEffect, useState} from 'react';
-import {View} from 'react-native';
+import {Platform, View} from 'react-native';
 import {Calendar} from 'react-native-calendars';
 import {LocaleConfig} from 'react-native-calendars';
 import { Colors } from '../styles';
@@ -16,17 +16,22 @@ LocaleConfig.defaultLocale = 'fr';
 // 날짜를 눌렀을 때 이벤트 추가해야 됨
 const CalendarView = ({setSelectedDatePick}) => {
     //test
-    const workout = {key:'workout', color: 'green',selectedDotColor: 'blue'};
+    const workout[] = {key:'workout', color: 'red',selectedDotColor: 'blue'};
     //test
 
-    const [markedDates, setMarkedDates] = useState({})
+    const [markedDates, setMarkedDates] = useState(null)
     const [isMounted,setIsMounted] = useState(false)
+    const [dotDates, setDotDates] = useState({
+      "2021-04-01": {dots: [workout]},
+      "2021-04-15": {dots: [workout]},
+      "2021-04-22": {dots: [workout]}
+    })
 
     const dots = () => {
-      let dotDate = {}
-      dotDate[new Date('2021-04-17').toDateString()] = {dots: [workout]}
+      //let dotDate = {}
+      //dotDate[new Date('2021-04-17').toDateString()] = {dots: [workout]}
 
-      setMarkedDates(prevState => ({ ...prevState, dotDate}))
+      setMarkedDates(dotDates)
     }
 
     useEffect(()=>{
@@ -37,6 +42,7 @@ const CalendarView = ({setSelectedDatePick}) => {
     })
 
     return (
+      markedDates && 
       <View style={{ flex: 1, paddingTop: 5,}}>
         <Calendar
         //선택날짜 마킹
@@ -52,11 +58,40 @@ const CalendarView = ({setSelectedDatePick}) => {
             //console.log(day)
             const temp = day.dateString
             
-            let newMarked = {}
-            newMarked[temp] = {selected:true, selectedColor: Colors.PRIMARY}
+            //let newMarked = {}
+            //newMarked[temp] = {selected:true, selectedColor: Colors.PRIMARY, marked: true, dotC}
             //newMarked['2021-04-22'] = {dots: [workout]}
-            //console.log(newMarked)
-            setMarkedDates(newMarked)
+            //console.log('selected date: ' + temp)
+            let prevState = dotDates
+            //prevState[String(temp)] = {dots: [{color: Colors.PRIMARY}]}
+
+            function mergeObj(obj1, obj2) {
+              const newObj = {};
+              for (let att in obj1) { 
+                newObj[att] = obj1[att]; 
+              }
+            
+              for(let att in obj2)  {
+                newObj[att] = obj2[att];
+              }
+              
+              return newObj;
+            }
+
+            const newObj = {}
+            for (let att in prevState) {
+              newObj[att] = prevState[att]
+              if (att === temp) {
+                let newAtt = mergeObj(prevState[att], {selected:true, selectedColor: Colors.PRIMARY})
+                newObj[temp] = newAtt
+              }
+            }
+            if (!newObj[temp]) {
+              newObj[temp] = {selected:true, selectedColor: Colors.PRIMARY}
+            }
+            setMarkedDates(newObj)
+            console.log(newObj)
+
 
             //day object 넘겨주기
             setSelectedDatePick({
