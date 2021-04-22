@@ -15,67 +15,7 @@ const Dash_dash = () => {
   const [traineeDidMount, settraineeDidMount] = useState(false);
   const [TraineeListFromDB, setTraineeListFromDB] = useState([]);
   const [isNewFlag, setisNewFlag] = useState(true)
-
-  const getApiTest = () => {
-    axios.get(`/trainee`)
-    .then(res => {
-      console.log(res.data.data[0])
-    })
-    .catch(err => console.log('this is error for inbody ' +err))
-  };
-  
-  
-  useFocusEffect(
-    useCallback(()=>{
-      if(isNewFlag === true){
-        getTrainee()
-      }
-      setisNewFlag(false)
-    })
-  )
-  const getTrainee = () => {
-    setTraineeListFromDB([]);
-    axios.get('/trainee')
-    .then(res => {
-      console.log('got the data! - from dashboard')
-      res.data.data.map(tmp=>{
-      let newTrainee = {}
-      newTrainee._id = tmp._id
-      newTrainee.name = tmp.name
-
-      //chatroom 생성 - 없을시
-      if(tmp.chatRoomId === undefined){
-        axios.post('/messenger',{
-          traineeId:tmp._id
-        }).then((res)=>{
-          //res에 온 채팅방으로 초기 메시지 보내기
-          axios.post(`/messenger/${res.data.data._id}`,{
-            content: '환영합니다!'
-          })
-        }).catch(error=>{
-          console.log(error)
-        })
-      }
-      //chatroomid가 이미 있을 경우
-      newTrainee.chatRoomId = tmp.chatRoomId
-            
-      setTraineeListFromDB(prevArray => [...prevArray, newTrainee])
-      })
-    }).catch(err => console.log(err[0]))
-    settraineeDidMount(true)
-    setIsLoading(false) 
-  }
-
-
-
-  useEffect(()=>{
-  //아래 고객명단 함수
-  if(isNewFlag === false) {
-    if(!traineeDidMount) {
-    getTrainee()
-    };
-  }
-  });
+  const [trainerLesson, setTrainerLesson] = useState()
 
   let todaystr = '';
   const today = new Date()
@@ -104,6 +44,88 @@ const Dash_dash = () => {
 
   todaystr = selectedDatePick.year.toString() + strmonth + strdate
 
+  
+  useFocusEffect(
+    useCallback(()=>{
+      if(isNewFlag === true){
+        getTrainee()
+      }
+      setisNewFlag(false)
+    })
+  )
+
+  const getTrainee = () => {
+    setTraineeListFromDB([]);
+    //trainee, chatroomid 가져오기
+    axios.get('/trainee')
+    .then(res => {
+      res.data.data.map(tmp=>{
+      let newTrainee = {}
+      newTrainee._id = tmp._id
+      newTrainee.name = tmp.name
+
+      //chatroom 생성 - 없을시
+      if(tmp.chatRoomId === undefined){
+        axios.post('/messenger',{
+          traineeId:tmp._id
+        }).then((res)=>{
+          //res에 온 채팅방으로 초기 메시지 보내기
+          axios.post(`/messenger/${res.data.data._id}`,{
+            content: '환영합니다!'
+          })
+        })
+      }
+      //chatroomid가 이미 있을 경우
+      newTrainee.chatRoomId = tmp.chatRoomId
+
+      // api 세팅
+      setTraineeListFromDB(prevArray => [...prevArray, newTrainee])
+      })
+    })
+
+    //오늘 일정 가져오기
+    setTrainerLesson([])
+    axios.get(`/trainer/lesson/date/20210430`)
+    .then((res)=>{
+      //console.log(res.data)
+      if(res.data.data !== null){
+        //lesson array
+        res.data.data.map(d=>{
+          let newData = {
+            _id: d._id,
+            name: d.name,
+            start: d.start,
+            end: d.end,
+            time: d.time
+          }
+          //console.log(newData)
+          setTrainerLesson(prevArray => [...prevArray, newData])
+        })
+      }else{
+        //no lesson
+        console.log('today no lesson')
+        //오늘은 일정이 없습니다 띄우기
+      }
+    })
+
+    settraineeDidMount(true)
+    setIsLoading(false) 
+  }
+
+  // 오늘날짜 일정 api 가져오고 state에 저장
+  // 상단 시간별로 랜더링 -> flag 설정해서 다른데로 갔을 때 정보 업데이트시 api호출부터 다시해야됨.
+
+
+
+  useEffect(()=>{
+  //아래 고객명단 함수
+  if(isNewFlag === false) {
+    if(!traineeDidMount) {
+    getTrainee()
+    };
+  }
+  });
+
   const AddControler = () => {
     setisNewFlag(true)
     navigation.navigate('Mem_Add')
@@ -122,15 +144,10 @@ const Dash_dash = () => {
       <View style={styles.upper}>
         <View style={{flexDirection: "row", width: '90%', justifyContent: 'space-between'}}>
           <Text style={styles.listupleft}>{selectedDatePick.month}월 {selectedDatePick.date}일 ({koreaday[selectedDatePick.day]})</Text>
-          <TouchableOpacity
-            onPressOut={getApiTest}>
-          <Text>API Test</Text>
-        </TouchableOpacity>
           <Text style={styles.listright}>TODAY</Text>
         </View>
 
         <View style={styles.time}>
-          <View>
             <FlatList
               scrollEnabled={false}
               data={[
@@ -143,8 +160,6 @@ const Dash_dash = () => {
               ]}
               renderItem={({item}) => <Text style={styles.timelist}>{item.time}</Text>}
             />
-          </View>
-          <View>
             <FlatList
               scrollEnabled={false}
               data={[
@@ -157,7 +172,6 @@ const Dash_dash = () => {
               ]}
               renderItem={({item}) => <Text style={styles.timelist}>{item.time}</Text>}
             />
-          </View>          
         </View>
       </View> 
 
@@ -288,7 +302,6 @@ const Dash_dash = () => {
       borderRadius: 50,
       backgroundColor: Colors.GRAY_MEDIUM,
     },
-
     time: {
       flexDirection: "row",
       width: "90%",
