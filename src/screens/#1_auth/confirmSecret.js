@@ -1,15 +1,17 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import styled from 'styled-components'
-import { Text, View } from 'react-native';
+import { Alert, Text, View } from 'react-native';
 import GrayTextButton from '../../components/GrayTextButton';
 import GreenButton from '../../components/GreenButton';
-import { Spacing } from '../../styles';
+import { Spacing, Colors } from '../../styles';
 import UnderLinedTextInput from '../../components/UnderlinedTextInput';
+import { AuthContext } from '../../services/AuthContext';
 
 const Container = styled.View`
   flex: 1;
   justify-content: center;
   align-items: center;
+  background-color: ${Colors.WHITE};
 `
 
 const LogoContainer = styled.View`
@@ -33,7 +35,21 @@ const GuideText = styled.Text`
   margin-bottom: ${Spacing.SCALE_8};
 `
 
-export default () => {
+
+
+export default ({ route, navigation}) => {
+
+  const { trainerId } = route.params
+  const { confirmSecret } = useContext(AuthContext)
+
+  const handleOnCickConfirmSecret = () => {
+    if (secretText === '') {
+      return Alert.alert('인증코드를 입력하세요')
+    }
+    confirmSecret(trainerId, String(secretText))
+    navigation.navigate('Login')
+  }
+
   const [secretText, setSecretText] = useState('');
   return (
   <Container>
@@ -43,10 +59,10 @@ export default () => {
     <AuthContainer>
       <GuideText>이메일 인증코드를 입력하세요</GuideText>
       <UnderLinedTextInput placeholder={'인증코드'}  value={secretText} onChangeText={setSecretText} />
-      <GreenButton content={'회원가입 완료'} />
-      <View style={{alignSelf:'flex-end'}}>
-        <GrayTextButton content='로그인' />
-      </View>
+      <GreenButton
+        content={'회원가입 완료'} 
+        onClick = {handleOnCickConfirmSecret}
+      />
     </AuthContainer>
   </Container>
 )}

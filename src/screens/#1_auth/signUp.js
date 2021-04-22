@@ -1,13 +1,16 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import styled from 'styled-components'
-import { View } from 'react-native';
+import { Alert, View } from 'react-native';
 import GrayTextButton from '../../components/GrayTextButton';
 import GreenButton from '../../components/GreenButton';
 import UnderLinedTextInput from '../../components/UnderlinedTextInput';
-import { Spacing } from '../../styles';
+import { Spacing, Colors } from '../../styles';
+import { AuthContext } from '../../services/AuthContext';
+import axios from '../../axios/api';
 
 const Container = styled.View`
   flex: 1;
+  background-color: ${Colors.WHITE}
   justify-content: center;
   align-items: center;
 `
@@ -27,11 +30,41 @@ const LogoImage = styled.Image`
   height: ${Spacing.SCALE_200};
 `
 
-export default () => {
+export default ({ navigation }) => {
   const [nameText, setNameText] = useState('')
   const [idText, setIdtext] = useState('')
   const [passwordText, setPasswordText] = useState('')
   const [checkPasswordText, setCheckPasswordText] = useState('')
+
+  const { signUp } = useContext(AuthContext)
+
+  const handleOnCickSendSecret = async () => {
+    if (nameText === '') {
+      return Alert.alert('이름을 입력하세요')
+    }
+    else if (idText === '') {
+      return Alert.alert('아이디를 입력하세요')
+    }
+    else if (passwordText === '') {
+      return Alert.alert('비밀번호를 입력하세요')
+    }
+    else if (checkPasswordText === '') {
+      return Alert.alert('비밀번호 확인란을 입력하세요')
+    }
+    else if (checkPasswordText !== passwordText) {
+      return Alert.alert('비밀번호가 틀립니다')
+    }
+    try {
+      signUp(nameText, idText, passwordText)
+      navigation.navigate('Confirm', {
+        trainerId: idText
+      })
+    } catch (e) {
+      console.log(e)
+      Alert.alert('회원가입에 실패했습니다')
+    }
+  }
+
   return (
   <Container>
     <LogoContainer>
@@ -42,9 +75,14 @@ export default () => {
       <UnderLinedTextInput placeholder={'아이디'}  value={idText} onChangeText={setIdtext} />
       <UnderLinedTextInput placeholder={'비밀번호'} value={passwordText} onChangeText={setPasswordText} secureTextEntry={true} />
       <UnderLinedTextInput placeholder={'비밀번호 확인'} value={checkPasswordText} onChangeText={setCheckPasswordText} secureTextEntry={true} />
-      <GreenButton content={'인증코드 발송'} />
+      <GreenButton
+        content={'인증코드 발송'} 
+        onClick = {handleOnCickSendSecret}
+      />
       <View style={{alignSelf:'flex-end'}}>
-        <GrayTextButton content='로그인' />
+        <GrayTextButton
+          content='로그인'
+          onClick = {()=>navigation.goBack()} />
       </View>
     </AuthContainer>
   </Container>

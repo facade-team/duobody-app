@@ -105,3 +105,6 @@ dist
 
 # expo
 .expo/
+
+# BASE URL
+/src/utils/url.js
