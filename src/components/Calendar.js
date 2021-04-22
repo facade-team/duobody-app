@@ -1,5 +1,5 @@
 import React, {Component, useEffect, useState} from 'react';
-import {View} from 'react-native';
+import {Platform, View} from 'react-native';
 import {Calendar} from 'react-native-calendars';
 import {LocaleConfig} from 'react-native-calendars';
 import { Colors } from '../styles';
@@ -14,29 +14,35 @@ LocaleConfig.locales['fr'] = {
 LocaleConfig.defaultLocale = 'fr';
 
 // 날짜를 눌렀을 때 이벤트 추가해야 됨
-//const DateObject = new Date().toISOString().slice(0, 10)
-
 const CalendarView = ({setSelectedDatePick}) => {
-    // let curr = console.log(String(currentDate))
-    const [markedDates, setMarkedDates] = useState({})
-    const [dotFlag, setDotFlag] = useState(false)
+    //test
+    const workout[] = {key:'workout', color: 'red',selectedDotColor: 'blue'};
+    //test
 
-    /*
-    useEffect(() => {
-      if (!dotFlag) {
-        if (dotDates.length !== 0) {
-          let newDotDates = {}
-          dotDates.map((data) =>{
-            newDotDates[data.date] = {marked: true, dotColor: Colors.PRIMARY}
-          })
-          setMarkedDates(newDotDates)
-        }
-        setDotFlag(true)
-      }
+    const [markedDates, setMarkedDates] = useState(null)
+    const [isMounted,setIsMounted] = useState(false)
+    const [dotDates, setDotDates] = useState({
+      "2021-04-01": {dots: [workout]},
+      "2021-04-15": {dots: [workout]},
+      "2021-04-22": {dots: [workout]}
     })
-    */
+
+    const dots = () => {
+      //let dotDate = {}
+      //dotDate[new Date('2021-04-17').toDateString()] = {dots: [workout]}
+
+      setMarkedDates(dotDates)
+    }
+
+    useEffect(()=>{
+      if(!isMounted){
+        dots()
+      }
+      setIsMounted(true)
+    })
 
     return (
+      markedDates && 
       <View style={{ flex: 1, paddingTop: 5,}}>
         <Calendar
         //선택날짜 마킹
@@ -52,19 +58,41 @@ const CalendarView = ({setSelectedDatePick}) => {
             //console.log(day)
             const temp = day.dateString
             
-            let newMarked = {}
-            newMarked[temp] = {selected: true, selectedColor: Colors.PRIMARY, marked: true}
+            //let newMarked = {}
+            //newMarked[temp] = {selected:true, selectedColor: Colors.PRIMARY, marked: true, dotC}
+            //newMarked['2021-04-22'] = {dots: [workout]}
+            //console.log('selected date: ' + temp)
+            let prevState = dotDates
+            //prevState[String(temp)] = {dots: [{color: Colors.PRIMARY}]}
 
-            /*
-            let prevMarkedDates = markedDates
-            console.log('this is marked dates')
-            console.log(prevMarkedDates)
-            prevMarkedDates[temp] = {selected: true, selectedColor: Colors.PRIMARY, marked: true}
-            */
-            setMarkedDates(newMarked)
+            function mergeObj(obj1, obj2) {
+              const newObj = {};
+              for (let att in obj1) { 
+                newObj[att] = obj1[att]; 
+              }
+            
+              for(let att in obj2)  {
+                newObj[att] = obj2[att];
+              }
+              
+              return newObj;
+            }
 
-            const tempo = new Date(day.dateString).getDay()
-            //console.log(day)
+            const newObj = {}
+            for (let att in prevState) {
+              newObj[att] = prevState[att]
+              if (att === temp) {
+                let newAtt = mergeObj(prevState[att], {selected:true, selectedColor: Colors.PRIMARY})
+                newObj[temp] = newAtt
+              }
+            }
+            if (!newObj[temp]) {
+              newObj[temp] = {selected:true, selectedColor: Colors.PRIMARY}
+            }
+            setMarkedDates(newObj)
+            console.log(newObj)
+
+
             //day object 넘겨주기
             setSelectedDatePick({
               year: day.year,
@@ -74,6 +102,7 @@ const CalendarView = ({setSelectedDatePick}) => {
             })
           }
         }
+        markingType={'multi-dot'}
 
         // Handler which gets executed on day long press. Default = undefined
         // onDayLongPress={(day) => {console.log('selected day', day)}}

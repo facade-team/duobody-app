@@ -6,7 +6,7 @@ import { SafeAreaView } from 'react-navigation';
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import axios from '../../axios/api';
 import AsyncStorage from '@react-native-community/async-storage';
-
+import Loader from '../../components/Loader';
 
 const Dash_dash = () => {
   
@@ -185,7 +185,11 @@ const Dash_dash = () => {
             />
           </View>
         </View>
-        <Mem_List DATA = {TraineeListFromDB}/>
+        {TraineeListFromDB.length !== 0 ? <Mem_List DATA = {TraineeListFromDB}/> : 
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <Loader />
+        </View>
+        }
       </View>
     </View>
   </View>

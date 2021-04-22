@@ -23,6 +23,7 @@ const mem_search= ({navigation}) => {
           let newTrainee = {}
           newTrainee._id = tmp._id
           newTrainee.name = tmp.name
+          newTrainee.display = true
 
           setTraineeListFromDB(prevArray => [...prevArray, newTrainee])
         })
@@ -30,13 +31,17 @@ const mem_search= ({navigation}) => {
       settraineeDidMount(true)
       setIsLoading(false)
     };
+
   
   })
 
   const DeleteMem = (id) => {
     //axios.del...
   }
-  
+
+  const filteredList = TraineeListFromDB.filter((data) => {
+    return data.name.toUpperCase().includes(SearchText.toUpperCase())
+  })
 
   return (
   <View style={styles.container}>
@@ -45,17 +50,16 @@ const mem_search= ({navigation}) => {
           <TextInput 
             style ={styles.inputbar}
             placeholder={'search'}
+            value={SearchText}
             onChangeText={setSearchText}>
           </TextInput>
         </View>
     </View>
     <View style = {{flex: 9}}>
-      <Mem_List DATA = {TraineeListFromDB}/>
+      <Mem_List DATA = {filteredList} SearchText={SearchText} navigation={navigation} />
     </View>
   
 </View>
-      
-    
   );
 }
 
@@ -74,7 +78,8 @@ const Item = ({ name }) => (
   </View>
 );
 
-const Mem_List = ({DATA}) => {
+const Mem_List = ({DATA, SearchText, navigation}) => {
+
   const renderItem = ({item}) => {
     const onPressOutHandler = async () => {
       await AsyncStorage.setItem('traineeId', item._id)
@@ -84,16 +89,15 @@ const Mem_List = ({DATA}) => {
     return (
       <TouchableOpacity
         onPress={() => onPressOutHandler()}
-        >
-          <Item name = {item.name}/>
-        </TouchableOpacity>
+      >
+        <Item name = {item.name}/>
+      </TouchableOpacity>
     )
   }
 
   return (
     <View style = {{flex:1}}>
-      <View></View>
-      <FlatList data = {DATA} renderItem={renderItem} keyExtractor = {item => item._id} />
+      <FlatList data = {DATA} renderItem={renderItem} keyExtractor = {item => item._id} extraData={SearchText} />
     </View>
   )
 }
@@ -142,6 +146,7 @@ const styles = StyleSheet.create({
         borderRadius: 25,
         height: Dimensions.get('screen').height * 0.05,
         paddingHorizontal: Spacing.SCALE_16,
+        fontSize: 17
       }
       
 })
