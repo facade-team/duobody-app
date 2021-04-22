@@ -40,7 +40,8 @@ const Dash_cal = () => {
     useEffect(()=>{
         //trainee 불러오기
         if(!traineeDidMount){
-            axios.get('/trainee').then((res)=>{
+            axios.get('/trainee')
+            .then((res)=>{
                 // console.log(res.data.data)
                 res.data.data.map(d=>{
                     let newTrainee = {}
@@ -50,9 +51,8 @@ const Dash_cal = () => {
                     setTraineeListFromDB(prevArray => [...prevArray, newTrainee])
                 })
                 
-            }).catch(error => {
-                console.log(error)
             })
+
             setTraineeDidMount(true)
         }
 
@@ -78,7 +78,6 @@ const Dash_cal = () => {
             setDATA([])
             axios.get(`/trainer/lesson/date/${urlstring}`)
                 .then((res) => {
-                    // console.log(res.data.data[0])
                     res.data.data.map(d=>{
                         let newData = {}
 
@@ -89,7 +88,9 @@ const Dash_cal = () => {
                         setDATA(prevArray => [...prevArray, newData])
                     })
                 })
-                .catch(error => console.log(error))
+                .catch(error => {
+                    // console.log(error)
+                })
             setGotDataFlag(urlstring)
         }
     })
@@ -112,7 +113,6 @@ const Dash_cal = () => {
         //DATA에 push   
         setDATA(prevArray => [...prevArray, newData])
 
-        console.log()
         // timestamp 만들기
         const st = convertTimeStamp(startTime)
         const et = convertTimeStamp(endTime)
@@ -124,10 +124,6 @@ const Dash_cal = () => {
                 end: et,
                 session: null,
             })
-            .then((res)=> {
-                console.log(res.data)
-            })
-            .catch(error=>console.log(error.response))
 
     }
 
