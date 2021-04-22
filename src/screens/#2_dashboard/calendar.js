@@ -116,8 +116,6 @@ const Dash_cal = () => {
         // timestamp 만들기
         const st = convertTimeStamp(startTime)
         const et = convertTimeStamp(endTime)
-
-        console.log('ee')
         
         //새로 업데이트 된 DATA를 push
         axios.post('/trainee/lesson',{
@@ -158,8 +156,8 @@ const Dash_cal = () => {
     
     //ios datetimepicker
     const [show,setShow] = useState(false);
-    const [start, setStart] = useState(new Date());
-    const [end, setEnd] = useState(new Date());
+    const [start, setStart] = useState(new Date().setHours(0, 0, 0, 0));
+    const [end, setEnd] = useState(new Date().setHours(0, 0, 0, 0));
     const [temptime, setTempTime] = useState('')
 
     const [startTime, setStartTime] = useState({
