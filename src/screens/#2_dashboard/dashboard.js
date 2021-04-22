@@ -6,8 +6,7 @@ import { SafeAreaView } from 'react-navigation';
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import axios from '../../axios/api';
 import AsyncStorage from '@react-native-community/async-storage';
-import { Loader } from 'rn-placeholder';
-
+import Loader from '../../components/Loader';
 
 const Dash_dash = () => {
   

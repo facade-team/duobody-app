@@ -100,6 +100,7 @@ function Change_view() {
           console.log('exbody가 없어요')
         }
         else {
+          console.log(res.data.data)
           setExbody(res.data.data)
         }
       })
