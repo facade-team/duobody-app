@@ -70,7 +70,6 @@ const Dash_dash = () => {
 
   useEffect(()=>{
   //아래 고객명단 함수
-  
   if(isNewFlag === false) {
     if(!traineeDidMount) {
     getTrainee()

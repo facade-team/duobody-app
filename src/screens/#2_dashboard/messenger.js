@@ -16,6 +16,8 @@ const Dash_Msg = ( {navigation} ) => {
   const renderItem = ({ item }) => {
     const onPressOutHandler = async () => {
       await AsyncStorage.setItem('chatRoomId', item._id)
+      await AsyncStorage.setItem('traineeId', item.traineeId._id)
+      
       navigation.navigate('Indiv', {screen: 'indiv_msg'})
     }
     return (
