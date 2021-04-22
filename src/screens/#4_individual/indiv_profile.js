@@ -88,10 +88,12 @@ const indiv_profile = ({navigation}) => {
           memData.address = res.data.data.address
           memData.age = res.data.data.age
           memData.exbodyAfter = res.data.data.exbodyAfter
+          memData.exbodyBefore = res.data.data.exbodyBefore
           memData.height = res.data.data.height
           memData.name = res.data.data.name
           memData.phoneNumber = res.data.data.phoneNumber
           
+          console.log(memData)
           setDATAFromDB(memData)
         })
         .catch(err => console.log(err))
@@ -180,14 +182,14 @@ const ChangeAddControler = () => {
         <Text style = {styles.exbodytext}>
           EXBODY
         </Text>
-          {DATAFromDB.exbodyAfter === undefined ? 
+          {DATAFromDB.exbodyBefore === undefined ? 
             <Image //null이면
               style = {styles.exbodyimage} 
-              source = {require('../../assets/exbody_temp0.jpeg')}
+              source = {''}
             />
             :<Image //null이 아니면
               style = {styles.exbodyimage}
-              source={{uri:`${DATAFromDB.exbodyAfter}`}}/>
+              source={DATAFromDB.exbodyAfter ? {uri: `${DATAFromDB.exbodyAfter}`}: {uri:`${DATAFromDB.exbodyBefore}`}}/>
           }
           
         

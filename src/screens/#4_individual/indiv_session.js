@@ -270,29 +270,50 @@ export default IndividualSession = () => {
 
   const onSaveSessionhandler = () => {
 
+    console.log(lessonId)
     if(lessonId) {
+      console.log('delete 메소드 시작')
       axios.delete(`/trainee/${traineeId}/lesson/${lessonId}`)
-        .then(res => {
+        .then(async (res) => {
           //
+          console.log('delete 메소드 성공')
+          let wholeLesson = {}
+          wholeLesson.start = startTime
+          wholeLesson.end = endTime
+          wholeLesson.traineeId = traineeId
+          wholeLesson.session = sessions
+          console.log('post 메소드 시작')
+      
+          axios.post('/trainee/lesson', wholeLesson)
+            .then(res => {
+              console.log('post 메소드 성공')
+              Alert.alert('저장이 완료되었습니다')
+            })
+            .catch(error => {
+              console.log(error.response)
+            })
         })
         .catch(error => {
           console.log(error.response.request._response)
         })
     }
-    
+  else {
     let wholeLesson = {}
-    wholeLesson.start = startTime
-    wholeLesson.end = endTime
-    wholeLesson.traineeId = traineeId
-    wholeLesson.session = sessions
-
+          wholeLesson.start = startTime
+          wholeLesson.end = endTime
+          wholeLesson.traineeId = traineeId
+          wholeLesson.session = sessions
+          console.log('post 메소드 시작')
     axios.post('/trainee/lesson', wholeLesson)
-      .then(res => {
-        Alert.alert('저장이 완료되었습니다')
-      })
-      .catch(error => {
-        console.log(error.response)
-      })
+            .then(res => {
+              console.log('post 메소드 성공')
+              Alert.alert('저장이 완료되었습니다')
+            })
+            .catch(error => {
+              console.log(error.response)
+            })
+  }
+    
 
   }
 
