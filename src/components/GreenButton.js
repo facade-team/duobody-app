@@ -1,5 +1,5 @@
 import React from 'react'
-import {Colors, Spacing, Typography} from '../styles'
+import { Colors, Spacing, Typography } from '../styles'
 
 import styled from 'styled-components'
 
@@ -16,13 +16,12 @@ const ButtonText = styled.Text`
   font-weight: ${Typography.FONT_WEIGHT_BOLD};
 `
 
-const GreenButton = ({content, onClick, width=Spacing.SCALE_200}) => {
-
+const GreenButton = ({ content, onClick, width = Spacing.SCALE_200 }) => {
   const handleOnPressOut = () => {
     onClick()
   }
 
-  return(
+  return (
     <Container onPressOut={() => handleOnPressOut()} width={width}>
       <ButtonText>{content}</ButtonText>
     </Container>

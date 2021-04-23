@@ -140,7 +140,7 @@ const authContextValue = useMemo(() => ({
 
   const NavController = () => {
     const isLoggedIn = authState.token
-    console.log(`this is id: ${authState.traineeId}`)
+    //console.log(`this is id: ${authState.traineeId}`)
     return isLoggedIn !== null ? <Navigation /> : <Auth_Nav />
   }
 

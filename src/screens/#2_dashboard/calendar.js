@@ -47,8 +47,8 @@ const Dash_cal = ( {navigation} ) => {
     useFocusEffect(
       useCallback(() => {
         let isActive = true
-        console.log('useFocusEffect')
-        console.log(dotFlag)
+        //console.log('useFocusEffect')
+        //console.log(dotFlag)
         if (!dotFlag) {
           callGetAllLessonDatesAPI()
         }
@@ -96,11 +96,14 @@ const Dash_cal = ( {navigation} ) => {
                 })
                 
             })
+            .catch((error)=>{
+                console.log(error.message)
+            })
             setTraineeDidMount(true)
         }
 
-        console.log(`dot:`)
-        console.log(dotDatesFromDB)
+        //console.log(`dot:`)
+        //console.log(dotDatesFromDB)
 
 
         //해당 날짜 일정 불러오기 - url 형식에 맞게 날짜 string으로 변경
@@ -125,13 +128,14 @@ const Dash_cal = ( {navigation} ) => {
             axios.get(`/trainer/lesson/date/${urlstring}`)
                 .then((res) => {
                     res.data.data.map(d=>{
+                        console.log
                         let newData = {}
 
-                        newData._id = d._id
+                        newData._id = d.traineeId
                         newData.name = d.name
                         newData.worktime = d.time
                         //chatroomid 필요
-                        axios.get(`/trainee/${d._id}`)
+                        axios.get(`/trainee/${d.traineeId}`)
                         .then((res)=>{
                             newData.chatroomId = res.data.data.chatRoomId
                         })
@@ -139,8 +143,8 @@ const Dash_cal = ( {navigation} ) => {
                         setDATA(prevArray => [...prevArray, newData])
                     })
                 })
-                .catch(error => {
-                    // console.log(error)
+                .catch((error) => {
+                    console.log(error.message)
                 })
             setGotDataFlag(urlstring)
         }
@@ -206,7 +210,9 @@ const Dash_cal = ( {navigation} ) => {
               setDotStateFlag(true)
                 console.log(res.data)
             })
-            .catch(error=>console.log(error.response))
+            .catch((error)=>{
+                console.log(error.message)
+            })
 
     }
 
@@ -232,11 +238,10 @@ const Dash_cal = ( {navigation} ) => {
         setTemp(selectedTrainee.name)
     }
 
-    
     //ios datetimepicker
     const [show,setShow] = useState(false);
-    const [start, setStart] = useState(new Date().setHours(0, 0, 0, 0));
-    const [end, setEnd] = useState(new Date().setHours(0, 0, 0, 0));
+    const [start, setStart] = useState(new Date(1619103600000));
+    const [end, setEnd] = useState(new Date(1619103600000));
     const [temptime, setTempTime] = useState('')
 
     const [startTime, setStartTime] = useState({
