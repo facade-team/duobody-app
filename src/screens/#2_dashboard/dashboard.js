@@ -15,7 +15,7 @@ const Dash_dash = () => {
   const [traineeDidMount, settraineeDidMount] = useState(false);
   const [TraineeListFromDB, setTraineeListFromDB] = useState([]);
   const [isNewFlag, setisNewFlag] = useState(true)
-  const [trainerLesson, setTrainerLesson] = useState()
+  const [trainerLesson, setTrainerLesson] = useState([])
 
   let todaystr = '';
   const today = new Date()
@@ -84,23 +84,42 @@ const Dash_dash = () => {
     })
 
     //오늘 일정 가져오기
-    setTrainerLesson([])
-    axios.get(`/trainer/lesson/date/20210430`)
+
+    const timeArr = ["09", "10", "11", "12", "13", "14", "15", "16" ,"17" ,"18", "19", "20"]
+
+    let newTrainerLessonArr = []
+    timeArr.map((time, idx) => {
+      let newObj = {}
+      newObj.time = time
+      newObj.name = ''
+      newTrainerLessonArr.push(newObj)
+    })
+
+    axios.get(`/trainer/lesson/date/${todaystr}`)
     .then((res)=>{
       //console.log(res.data)
       if(res.data.data !== null){
         //lesson array
+        let arr = newTrainerLessonArr
+
         res.data.data.map(d=>{
-          let newData = {
-            _id: d._id,
-            name: d.name,
-            start: d.start,
-            end: d.end,
-            time: d.time
-          }
-          //console.log(newData)
-          setTrainerLesson(prevArray => [...prevArray, newData])
-        })
+          let timeIdx = String(d.start.substr(0, 2))
+          console.log(timeIdx)
+
+           newTrainerLessonArr.map((t, idx) => {
+             let newObj_ = {}
+              newObj_.time = t.time
+             if(t.time === timeIdx) {
+               newObj_.name = d.name
+               arr[idx] = newObj_
+             }
+             else{
+               newObj_.name = ''
+             }
+             }
+           )
+          })
+          setTrainerLesson(arr)
       }else{
         //no lesson
         console.log('today no lesson')
@@ -150,27 +169,24 @@ const Dash_dash = () => {
         <View style={styles.time}>
             <FlatList
               scrollEnabled={false}
-              data={[
+              keyExtractor={item => item.time}
+              numColumns={2}
+
+              data={ trainerLesson.length === 0 ? [
                 {time: '09'},
                 {time: '10'},
                 {time: '11'},
                 {time: '12'},
                 {time: '13'},
                 {time: '14'},
-              ]}
-              renderItem={({item}) => <Text style={styles.timelist}>{item.time}</Text>}
-            />
-            <FlatList
-              scrollEnabled={false}
-              data={[
                 {time: '15'},
                 {time: '16'},
                 {time: '17'},
                 {time: '18'},
                 {time: '19'},
                 {time: '20'},
-              ]}
-              renderItem={({item}) => <Text style={styles.timelist}>{item.time}</Text>}
+              ] : trainerLesson}
+              renderItem={({item}) => <Text style={styles.timelist}>{item.time}  {item.name}</Text>}
             />
         </View>
       </View> 

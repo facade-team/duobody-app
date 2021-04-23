@@ -96,6 +96,9 @@ const Dash_cal = ( {navigation} ) => {
                 })
                 
             })
+            .catch((error)=>{
+                console.log(error.message)
+            })
             setTraineeDidMount(true)
         }
 
@@ -125,13 +128,14 @@ const Dash_cal = ( {navigation} ) => {
             axios.get(`/trainer/lesson/date/${urlstring}`)
                 .then((res) => {
                     res.data.data.map(d=>{
+                        console.log
                         let newData = {}
 
-                        newData._id = d._id
+                        newData._id = d.traineeId
                         newData.name = d.name
                         newData.worktime = d.time
                         //chatroomid 필요
-                        axios.get(`/trainee/${d._id}`)
+                        axios.get(`/trainee/${d.traineeId}`)
                         .then((res)=>{
                             newData.chatroomId = res.data.data.chatRoomId
                         })
@@ -139,8 +143,8 @@ const Dash_cal = ( {navigation} ) => {
                         setDATA(prevArray => [...prevArray, newData])
                     })
                 })
-                .catch(error => {
-                    // console.log(error)
+                .catch((error) => {
+                    console.log(error.message)
                 })
             setGotDataFlag(urlstring)
         }
@@ -206,7 +210,9 @@ const Dash_cal = ( {navigation} ) => {
               setDotStateFlag(true)
                 console.log(res.data)
             })
-            .catch(error=>console.log(error.response))
+            .catch((error)=>{
+                console.log(error.message)
+            })
 
     }
 
