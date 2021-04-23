@@ -77,12 +77,9 @@ const indiv_msg = () => {
       if(loading){
         setLoading(false)
       }
-        console.log('useeffect : ' + chatroomId)
     }, [trainee])
 
     const onSend = useCallback( async (messages = [], id) => {
-        console.log(messages[0].text)
-        console.log(`id onsend :${id}`)
 
         // 서버로 전송하는 로직
         await axios.post(`/messenger/${id}`,{

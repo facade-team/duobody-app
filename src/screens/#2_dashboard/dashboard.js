@@ -99,14 +99,12 @@ const Dash_dash = () => {
 
     axios.get(`/trainer/lesson/date/${todaystr}`)
     .then((res)=>{
-      //console.log(res.data)
       if(res.data.data !== null){
         //lesson array
         let arr = newTrainerLessonArr
 
         res.data.data.map(d=>{
           let timeIdx = String(d.start.substr(0, 2))
-          console.log(timeIdx)
 
           newTrainerLessonArr.map((t, idx) => {
             let newObj_ = {}
@@ -192,7 +190,11 @@ const Dash_dash = () => {
                 {time: '19'},
                 {time: '20'},
               ] : trainerLesson}
-              renderItem={({item}) => <Text style={styles.timelist}>{item.time}  {item.name}</Text>}
+              renderItem={({item}) => 
+              <View style={{flexDirection: 'row', justifyContent: 'flex-start'}}>
+                <Text style={styles.timelist}>{item.time}      {item.name}</Text>
+              </View>
+              }
             />
           </View>
         )

@@ -1,28 +1,207 @@
-import { createAndSavePDF } from '../../utils/helpers'
+import { createAndSavePDF, createHTML, createReact } from '../../utils/helpers'
 import { View, Button, StyleSheet, Dimensions, SafeAreaView, Text } from 'react-native'
 import { AuthContext } from '../../services/AuthContext'
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { Colors, Spacing, Typography } from '../../styles';
 import { FontAwesome } from '@expo/vector-icons'
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { COLORS } from '../../utils/constants';
-
+import { useFocusEffect } from '@react-navigation/native';
+import axios from '../../axios/api';
+import getDateStringWithNumber from '../../utils/getDateStringWithNumber';
+import AsyncStorage from '@react-native-community/async-storage';
 
 const onPress = () => {}
 
 function indiv_etc({ navigation }) {
 
+  const [startDate, setStartDate] = useState('2021-01-01')
+  const [endDate, setEndDate] = useState('2021-12-31')
+
+  const [apiData, setApiData] = useState([])
+  const [noData, setNoData] = useState(true)
+
+  const [existStart, setExistStart] = useState('')
+  const [existEnd, setExistEnd] = useState('')
+  const [traineeId, setTraineeId] = useState('')
+  const [isSearched, setIsSearched] = useState(true)
+  const [flag, setFlag] = useState(true)
+  const [latestInbody, setLatestInbody] = useState(null)
+  const [traineeName, setTraineeName] = useState('')
+
+  const [exbody, setExbody] = useState({
+    exbodyBefore: '',
+    exbodyAfter: '',
+  })
+
+  const [weightGraph, setWeightGraph] = useState(null)
+
+  const [BMIGraph, setBMIGraph] = useState(null)
+
+  const [fatGraph, setFatGraph] = useState(null)
+
+  const [skeletalMuscleGraph, setSkeletalMuscleGraph] = useState(null)
+
+  useFocusEffect(
+    useCallback(() => {
+      const getTraineeId = async () => {
+        try {
+          const id = await AsyncStorage.getItem('traineeId')
+          console.log(id)
+          if (true) {
+            setTraineeId(id)
+            setIsSearched(false)
+            setFlag(false)
+            console.log(id)
+          }
+        } catch (err) {
+          console.log(err)
+        }
+      }
+      console.log('useFocusEffect')
+      getTraineeId()
+    }, [])
+  )
+
+  useEffect(() => {
+    if(!isSearched){
+      callAPIs()
+    }
+  }, [flag])
+
+  const callAPIs = () => {
+    axios.get(`/trainee/${traineeId}/inbody/latest`)
+      .then((res) => {
+        if(res.data.data){
+          setLatestInbody(res.data.data)
+          console.log('latest inbody')
+          console.log(res.data.data)
+          const endDateStr = getDateString(res.data.data.date)
+          setEndDate(endDateStr)
+  
+          callGetExbodyAPI()
+        }
+        else {
+          setEndDate(getDateString(new Date()))
+          setNoData(true)
+          setTraineeName('')
+
+          callGetExbodyAPI()
+        }
+      })
+      .catch((err) => {
+        console.log(err.response)
+        callGetExbodyAPI()
+        setNoData(true)
+        setTraineeName('')
+        setIsSearched(true)
+        setFlag(true)
+      })
+  }
+
+  const callGetExbodyAPI = () => {
+    axios
+      .get(`/trainee/exbody/${traineeId}`)
+      .then((res) => {
+        //
+        if (!res.data.data) {
+          console.log('exbody가 없어요')
+          setNoData(true)
+          callGetInbodyByDateRangeAPI()
+        } else {
+          console.log(res.data.data)
+          setExbody(res.data.data)
+          callGetInbodyByDateRangeAPI()
+        }
+      })
+      .catch((err) => {
+        //
+        callGetInbodyByDateRangeAPI()
+        setNoData(true)
+        setIsSearched(true)
+        setFlag(true)
+        //console.log(err.response)
+      })
+  }
+
+  const callGetInbodyByDateRangeAPI = () => {
+    //
+    getDateStringWithNumber
+    const endDateObj = new Date(endDate)
+    const endDateStrWithNumber = getDateStringWithNumber(endDateObj)
+
+    axios
+      .get(`/trainee/${traineeId}/inbody/date/20210101/${endDateStrWithNumber}`)
+      .then((res) => {
+        //
+        console.log('callGetInbodyByDateRangeAPI')
+        if (res.data.data) {
+          console.log(res.data.data.inbody)
+          setTraineeName(res.data.data.name)
+          setApiData(res.data.data.inbody)
+          const startDateStr = getDateString(res.data.data.inbody[0].date)
+          setStartDate(startDateStr)
+          setExistStart(startDateStr)
+
+          setIsSearched(false)
+          setIsDataUpdated(false)
+          setNoData(false)
+          setIsSearched(true)
+          setFlag(true)
+
+          // console.log(res.data.data.inbody)
+        } else {
+          setIsDataUpdated(false)
+          setIsSearched(true)
+          setFlag(true)
+        }
+      })
+      .catch((err) => {
+        //
+        //console.log(err.response)
+        setIsSearched(true)
+        setIsDataUpdated(false)
+        setFlag(true)
+      })
+  }
+
+  useEffect(() => {
+    console.log(latestInbody)
+    console.log(traineeName)
+  })
+
   const { signOut } = useContext(AuthContext)
 
   const makePortfolio = () => {
     /*여기에서 자유롭게 테스트 해보면 됨*/
-    console.log('pdf 내보내기')
+    
+    createAndSavePDF(createHTML({
+      content:`
+      <h1 style="text-align: center;">
+        <strong>DUOBODY 포트폴리오</strong>
+      </h1>
+      <p style="text-align: center;">
+        ${traineeName} 회원님의 최근 BMI, 체지방, 골격근량, 체중은 다음과 같습니다.
+      </p>
 
-    createAndSavePDF('<p>hello world</p>')
+      <p style="text-align: center;">
+        BMI: ${latestInbody.bmi}kg/m\xB2 / 체지방: ${latestInbody.fat}kg / 골격근량: ${latestInbody.skeletalMuscle}kg / 체중: ${latestInbody.weight}kg
+      </p>
+
+      <p style="text-align: center;">
+        <strong>Exbody</strong>
+      <p/>
+      <p style="text-align: center;">
+        <text>날짜 | 2021-04-20</text>
+      </p>
+      `
+    }))
+    //createAndSavePDF(createHTML({content: 'hello world!!!!!!!!!!!!!!!!'}))
+    //console.log(createHTML({content: 'hello world!!!!!!!!!!!!!!!!'}))
   }
 
   const logout = () => {
-    console.log('logout')
+    signOut()
   }
   
   const editGoal = () => {
@@ -31,12 +210,6 @@ function indiv_etc({ navigation }) {
   const editUniqueness = () => {
     console.log('특이사항 수정') 
   }
-
-  useEffect(() => {
-    console.log('마운트 될 때만 사용')
-
-  },[])
-
 
 
   return (

@@ -34,7 +34,6 @@ export default ({ navigation }) => {
           if (isActive && id !== _id) {
             set_id(id)
             setIsSearched(false)
-            console.log(`this is id for Mem_edit: ${id}`)
           }
         } catch (err) {
           console.log(err)
@@ -68,15 +67,12 @@ export default ({ navigation }) => {
     axios
       .get(`/trainee/${_id}`)
       .then((res) => {
-        console.log('now here!')
         let memData = {}
         memData.name = res.data.data.name
         memData.Hp = res.data.data.phoneNumber
         memData.address = res.data.data.address
         memData.age = res.data.data.age
         memData.height = res.data.data.height
-        console.log(memData.age)
-        console.log(memData.height)
         setDATAFromDB(memData)
         setIsSearched(true)
       })
@@ -123,12 +119,10 @@ export default ({ navigation }) => {
       .then((res) => {
         Alert.alert(res.data.msg)
         navigation.navigate('Indiv')
-        console.log(res.data.data)
         setisNewFlag(true)
       })
       .catch((err) => {
         Alert.alert(err.response.data.msg)
-        console.log(err.response.config.data)
       })
   }
 

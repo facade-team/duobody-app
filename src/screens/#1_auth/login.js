@@ -47,21 +47,6 @@ export default ({navigation}) => {
 
   const { signIn } = useContext(AuthContext);
 
-  const getApiTest = () => {
-    axios.get('/trainee')
-    .then(res => {
-      console.log('success')
-      console.log(res.data.data)
-      return res
-    })
-    .catch(error => {
-      console.log(`error! ${error}`)
-      Alert.alert(`${error}`)
-      console.log(error.response.request._response)
-      throw new Error('err')
-    })
-  }
-
   const handleOnCickLogin = () => {
     if (loginText === '') {
       Alert.alert('아이디를 입력하세요')
@@ -86,18 +71,7 @@ export default ({navigation}) => {
           <GrayTextButton
           content='회원가입'
           onClick = {() => navigation.navigate('Signup')}
-          />
-          
-            <TouchableOpacity onPressOut={async () => {
-              let token = await AsyncStorage.getItem('token')
-              console.log(`current token is : ${token}`)
-            }}>
-              <Text>Check token</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPressOut={getApiTest}>
-              <Text>API Check!</Text>
-            </TouchableOpacity>
-            
+          />            
         </View>
       </AuthContainer>
     </WhiteboxContainer>
