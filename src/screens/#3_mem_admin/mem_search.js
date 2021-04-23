@@ -39,7 +39,6 @@ const mem_search= ({navigation}) => {
   useFocusEffect(
     useCallback(async()=>{
       const NewLoadFlag = await AsyncStorage.getItem('newloadflag')
-      console.log('!!!'+NewLoadFlag)
 
       if(NewLoadFlag === 'hello'){
         getTrainee()
@@ -54,7 +53,6 @@ const mem_search= ({navigation}) => {
   )
 
   const getTrainee = () => {
-    console.log('will get the data')
     setTraineeListFromDB([])
     setIsNewFlag(false)
     axios.get('/trainee')
@@ -149,8 +147,6 @@ const Mem_List = ({DATA, SearchText, navigation}) => {
           traineeArr.push(newTrainee)
         })
         await AsyncStorage.setItem('newloadflag', 'bye')
-        console.log('got the data!')
-        console.log(traineeArr)
         setTraineeListFromDB(traineeArr)
       }).catch(err=>console.log(err[0]))
       settraineeDidMount(true)
@@ -159,12 +155,10 @@ const Mem_List = ({DATA, SearchText, navigation}) => {
 
   useEffect(()=>{
     if(!traineeDidMount){
-      console.log('useEffect traineeDidMount')
       getTrainee()
     };
 
     if(IsNewFlag){
-      console.log('isnew?')
       getTrainee()
     }
 }
