@@ -282,6 +282,7 @@ const styles = StyleSheet.create({
   goaltext: {
     fontSize: Typography.FONT_SIZE_16,
     fontWeight: Typography.FONT_WEIGHT_THIN,
+    marginVertical: Spacing.SCALE_2,
   },
   infobox: {
     marginLeft: Spacing.SCALE_16,
