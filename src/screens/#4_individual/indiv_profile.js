@@ -69,6 +69,8 @@ const indiv_profile = ({ navigation }) => {
           memData.height = res.data.data.height
           memData.name = res.data.data.name
           memData.phoneNumber = res.data.data.phoneNumber
+          memData.note = res.data.data.note
+          memData.purpose = res.data.data.purpose
 
           setDATAFromDB(memData)
         })
@@ -127,8 +129,14 @@ const indiv_profile = ({ navigation }) => {
             />
           </View>
           <View style={styles.goalbox}>
-            <Text style={styles.goaltext}>목표: 없음</Text>
-            <Text style={styles.goaltext}>특이사항: 없음</Text>
+            {DATAFromDB.purpose ?
+            <Text numberOfLines={1} ellipsizeMode='tail' style={styles.goaltext}>목표: {DATAFromDB.purpose}</Text>
+            :<Text style={styles.goaltext}>목표: 없음</Text>
+            }
+            {DATAFromDB.note ?
+            <Text numberOfLines={1} ellipsizeMode='tail' style={styles.goaltext}>특이사항: {DATAFromDB.note}</Text>
+            :<Text style={styles.goaltext}>특이사항: 없음</Text>
+            }
           </View>
           <View style={styles.infobox}>
             <Text style={styles.infotext}>H.P: {DATAFromDB.phoneNumber}</Text>
