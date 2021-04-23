@@ -1,6 +1,7 @@
 import { createAndSavePDF } from '../../utils/helpers'
 import { View, Button } from 'react-native'
 import { AuthContext } from '../../services/AuthContext'
+import React, { useContext } from 'react'
 
 const onPress = () => {}
 
@@ -20,7 +21,7 @@ function indiv_etc({ navigation }) {
     >
       <Button
         title="변화 보기"
-        onPress={onButtonPress(1, createAndSavePDF('<p>hello world</p>'))}
+        onPress={createAndSavePDF('<p>hello world</p>')}
       />
     </View>
   )
