@@ -5,7 +5,6 @@ import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { Colors, Spacing, Typography } from '../../styles';
 import { FontAwesome } from '@expo/vector-icons'
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { COLORS } from '../../utils/constants';
 import { useFocusEffect } from '@react-navigation/native';
 import axios from '../../axios/api';
 import getDateStringWithNumber from '../../utils/getDateStringWithNumber';
@@ -44,6 +43,7 @@ function indiv_etc({ navigation }) {
   const [flag, setFlag] = useState(true)
   const [latestInbody, setLatestInbody] = useState(null)
   const [traineeName, setTraineeName] = useState('')
+  const [t_result,setT_result] = useState({ note: '', purpose: '' })
 
   const [exbody, setExbody] = useState({
     exbodyBefore: '',
@@ -85,13 +85,30 @@ function indiv_etc({ navigation }) {
     }
   }, [flag])
 
+  const callTraineeApi = () => {
+    axios.get(`/trainee/${traineeId}`)
+    .then((res)=>{
+      console.log(res.data.data)
+      setT_result({
+        note: res.data.data.note,
+        purpose: res.data.data.purpose
+      })
+    })
+    .catch((err)=>{
+      console.log(err.response)
+    })
+  }
+
   const callAPIs = () => {
+    //되겠지
+    callTraineeApi()
+
     axios.get(`/trainee/${traineeId}/inbody/latest`)
       .then((res) => {
         if(res.data.data){
           setLatestInbody(res.data.data)
-          console.log('latest inbody')
-          console.log(res.data.data)
+          //console.log('latest inbody')
+          //console.log(res.data.data)
           const endDateStr = getDateString(res.data.data.date)
           setEndDate(endDateStr)
   
@@ -125,7 +142,7 @@ function indiv_etc({ navigation }) {
           setNoData(true)
           callGetInbodyByDateRangeAPI()
         } else {
-          console.log(res.data.data)
+          // console.log(res.data.data)
           setExbody(res.data.data)
           callGetInbodyByDateRangeAPI()
         }
@@ -150,9 +167,9 @@ function indiv_etc({ navigation }) {
       .get(`/trainee/${traineeId}/inbody/date/20210101/${endDateStrWithNumber}`)
       .then((res) => {
         //
-        console.log('callGetInbodyByDateRangeAPI')
+        // console.log('callGetInbodyByDateRangeAPI')
         if (res.data.data) {
-          console.log(res.data.data.inbody)
+          // console.log(res.data.data.inbody)
           setTraineeName(res.data.data.name)
           setApiData(res.data.data.inbody)
           const startDateStr = getDateString(res.data.data.inbody[0].date)
@@ -180,11 +197,6 @@ function indiv_etc({ navigation }) {
         setFlag(true)
       })
   }
-
-  useEffect(() => {
-    console.log(latestInbody)
-    console.log(traineeName)
-  })
 
   const { signOut } = useContext(AuthContext)
 
@@ -224,25 +236,34 @@ function indiv_etc({ navigation }) {
   }
 
   const setTraineeGoal = () => {
-    console.log('목표 set')
+    //result put to the page
+    setT_result({...t_result, purpose: goal})
+    //remove typed string
+    setGoal('')
+
+    //put new purpose(goal) to api
+    console.log('put new data to api')
+    
   }
   
   const editGoal = () => {
+    setGoal('')
     goalRef.current.snapTo(0)
-    console.log('목표수정')
   }
   const editUniqueness = () => {
-    console.log('특이사항 수정')
+    setUniqueness('')
     uniquenessRef.current.snapTo(0)
   }
   const setTraineeUniqueness = () => {
     console.log('특이사항 set') 
+    //result put to the page
+    setT_result({...t_result, note: uniqueness})
+    //remove typed string
+    setUniqueness('')
+
+    //put new purpose(goal) to api
+    console.log('put new data to api')
   }
-
-  useEffect(() => {
-    console.log('마운트 될 때만 사용')
-
-  },[])
 
   //bottomsheet
   const renderGoal = () => (
@@ -337,7 +358,7 @@ function indiv_etc({ navigation }) {
               <Text style={styles.subtitle}>목표</Text>
               <View>
                 <View style={{flexDirection:'row', justifyContent:'space-between'}}>
-                  <Text style={styles.text}>이러쿵저러쿵</Text>
+                  <Text style={styles.text}>{t_result.purpose}</Text>
                   <TouchableOpacity
                     onPressOut={()=>{
                       editGoal()
@@ -353,7 +374,7 @@ function indiv_etc({ navigation }) {
               <Text style={styles.subtitle}>특이사항</Text>
               <View>
                 <View style={{flexDirection:'row', justifyContent:'space-between'}}>
-                  <Text style={styles.text}>이러쿵저러쿵</Text>
+                  <Text style={styles.text}>{t_result.note}</Text>
                   <TouchableOpacity
                     onPressOut={()=>{
                       editUniqueness()
