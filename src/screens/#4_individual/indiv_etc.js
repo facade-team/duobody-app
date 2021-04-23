@@ -70,7 +70,7 @@ function indiv_etc({ navigation }) {
             setFlag(false)
           }
         } catch (err) {
-          console.log(err)
+          console.log('usefocuseffect error')
         }
       }
       //console.log('useFocusEffect')
@@ -88,21 +88,11 @@ function indiv_etc({ navigation }) {
   const callTraineeApi = () => {
     axios.get(`/trainee/${traineeId}`)
     .then((res)=>{
-
-      setT_result({purpose: res.data.data.purpose,note:res.data.data.note})
-
-      setT_data({
-        traineeId: res.data.data._id,
-        name: res.data.data.name,
-        phoneNumber: res.data.data.phoneNumber,
-        address: res.data.data.address,
-        age: res.data.data.age,
-        height: res.data.data.height
-      })
-      
+      setT_result({purpose: res.data.data.purpose, note:res.data.data.note})
     })
     .catch((err)=>{
-      console.log(err.response)
+      console.log('callTraineeApi error')
+      //console.log(err.response)
     })
   }
 
@@ -130,7 +120,7 @@ function indiv_etc({ navigation }) {
         }
       })
       .catch((err) => {
-        console.log(err.response)
+        console.log('callAPIs error' + err)
         callGetExbodyAPI()
         setNoData(true)
         setTraineeName('')
@@ -145,7 +135,7 @@ function indiv_etc({ navigation }) {
       .then((res) => {
         //
         if (!res.data.data) {
-          console.log('exbody가 없어요')
+          // console.log('exbody가 없어요')
           setNoData(true)
           callGetInbodyByDateRangeAPI()
         } else {
@@ -245,19 +235,17 @@ function indiv_etc({ navigation }) {
   const setTraineeGoal = () => {
     //result put to the page
     setT_result({...t_result, purpose: goal})
+    // console.log(t_result.purpose)
+    // console.log(t_result.note)
 
     //t_data
-    axios.put(`/trainee`,{
-      traineeId: t_data.traineeId,
-      name: t_data.name,
-      phoneNumber: t_data.phoneNumber,
-      address: t_data.address,
-      age: t_data.age,
-      height: t_data.height,
+    axios.put(`/trainee/etc`,{
+      traineeId: traineeId,
+      note: t_result.note,
       purpose: goal
     })
     .then((res)=>{
-      console.log(res)
+      console.log(res.data)
     })
     .catch((error)=>{
       console.log(error)
@@ -280,17 +268,13 @@ function indiv_etc({ navigation }) {
     setT_result({...t_result, note: uniqueness})
 
     //put new purpose(goal) to api
-    axios.put(`/trainee`,{
-      traineeId: t_data.traineeId,
-      name: t_data.name,
-      phoneNumber: t_data.phoneNumber,
-      address: t_data.address,
-      age: t_data.age,
-      height: t_data.height,
-      note: uniqueness
+    axios.put(`/trainee/etc`,{
+      traineeId: traineeId,
+      note: uniqueness,
+      purpose: t_result.purpose
     })
     .then((res)=>{
-      console.log(res)
+      console.log(res.data)
     })
     .catch((error)=>{
       console.log(error)
