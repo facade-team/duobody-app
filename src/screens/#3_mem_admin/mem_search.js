@@ -25,18 +25,18 @@ const mem_search = ({ navigation }) => {
   const [IsNewFlag, setIsNewFlag] = useState(true)
 
   useFocusEffect(
-    useCallback(async () => {
-      const NewLoadFlag = await AsyncStorage.getItem('newloadflag')
+    useCallback(() => {
 
-      if (NewLoadFlag === 'hello') {
-        getTrainee()
+      const getLoadFlag = async () => {
+        const NewLoadFlag = await AsyncStorage.getItem('newloadflag')
+        console.log(NewLoadFlag)
+        if (NewLoadFlag === 'hello') {
+          getTrainee()
+        }
       }
 
-      // if(IsNewFlag){
-      //   getTrainee()
-      // }
-      // setIsNewFlag(false)
-    })
+      getLoadFlag()
+    }, [])
   )
 
   const getTrainee = () => {
