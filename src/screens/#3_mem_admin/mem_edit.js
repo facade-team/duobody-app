@@ -15,6 +15,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useFocusEffect } from '@react-navigation/native'
 import axios from '../../axios/api'
 import { GiftedAvatar } from 'react-native-gifted-chat'
+import Loader from '../../components/Loader'
 
 export default ({ navigation }) => {
   const [_id, set_id] = useState('')
@@ -132,7 +133,9 @@ export default ({ navigation }) => {
   }
 
   return IsSearched !== true ? (
-    <Text> Loading ... </Text>
+      <View stye={{flex:1, backgroundColor: Colors.WHITE, justifyContent: 'center', alignItems: 'center'}}>
+          <Loader />
+      </View>
   ) : (
     <View style={styles.container}>
       <View style={styles.addcontainer}>
@@ -179,7 +182,7 @@ export default ({ navigation }) => {
           </View>
 
           <View style={styles.individual}>
-            <Text style={styles.leftname}> 키: </Text>
+            <Text style={styles.leftname}>  키:   </Text>
             <UnderLinedTextInputBig
               placeholder={'' + DATAFromDB.height}
               value={Height}
@@ -210,7 +213,7 @@ const styles = StyleSheet.create({
   },
   addcontainer: {
     flex: 1,
-    justifyContent: 'space-between',
+    justifyContent: 'space-evenly',
     backgroundColor: Colors.WHITE,
     width: '98%',
     alignItems: 'center',
@@ -219,39 +222,40 @@ const styles = StyleSheet.create({
   },
   headcontainer: {
     alignItems: 'center',
-    marginTop: Spacing.SCALE_48,
+    marginTop: Spacing.SCALE_10,
   },
   header: {
-    fontSize: Typography.FONT_SIZE_32,
+    fontSize: Typography.FONT_SIZE_24,
     fontWeight: Typography.FONT_WEIGHT_BOLD,
   },
   maincontent: {
     alignSelf: 'center',
-    marginBottom: Spacing.SCALE_80,
+    marginBottom: Spacing.SCALE_20,
   },
   leftname: {
-    fontSize: Typography.FONT_SIZE_24,
+    fontSize: Typography.FONT_SIZE_16,
     fontWeight: Typography.FONT_WEIGHT_BOLD,
-    alignSelf: 'flex-end',
-    marginBottom: Spacing.SCALE_24,
+    marginBottom: Spacing.SCALE_12
   },
   individual: {
     marginBottom: Spacing.SCALE_20,
     flexDirection: 'row',
+    alignItems: 'center',
   },
   greenbuttonconatiner: {
     backgroundColor: Colors.PRIMARY,
     alignItems: 'center',
     borderRadius: 15,
-    width: Spacing.SCALE_200,
-    height: Dimensions.get('window').height * 0.06,
+    width: Dimensions.get('window').width * 0.65,
     justifyContent: 'center',
     marginTop: Spacing.SCALE_12,
     marginBottom: Spacing.SCALE_24,
     alignSelf: 'center',
   },
   greenbutton: {
-    fontSize: Typography.FONT_SIZE_28,
+    fontSize: Typography.FONT_SIZE_20,
+    paddingBottom: Spacing.SCALE_4,
+    paddingTop: Spacing.SCALE_4,
     color: Colors.WHITE,
     fontWeight: Typography.FONT_WEIGHT_BOLD,
   },

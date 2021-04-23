@@ -293,7 +293,7 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.SCALE_12,
   },
   name: {
-    fontSize: Typography.FONT_SIZE_24,
+    fontSize: Typography.FONT_SIZE_20,
     fontWeight: Typography.FONT_WEIGHT_BOLD,
   },
   goalbox: {
@@ -306,15 +306,15 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.SCALE_16,
   },
   goaltext: {
-    fontSize: Typography.FONT_SIZE_20,
+    fontSize: Typography.FONT_SIZE_16,
     fontWeight: Typography.FONT_WEIGHT_THIN,
   },
   infobox: {
     marginLeft: Spacing.SCALE_16,
   },
   infotext: {
-    fontWeight: Typography.FONT_WEIGHT_BOLD,
-    fontSize: Typography.FONT_SIZE_24,
+    fontWeight: Typography.FONT_WEIGHT_REGULAR,
+    fontSize: Typography.FONT_SIZE_16,
     marginBottom: Spacing.SCALE_8,
   },
   exbodycontainer: {
@@ -326,7 +326,7 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.SCALE_16,
   },
   exbodytext: {
-    fontSize: Typography.FONT_SIZE_32,
+    fontSize: Typography.FONT_SIZE_24,
     fontWeight: Typography.FONT_WEIGHT_BOLD,
     marginLeft: Spacing.SCALE_28,
   },
@@ -335,6 +335,9 @@ const styles = StyleSheet.create({
     width: 120,
     marginRight: Spacing.SCALE_28,
     borderColor: Colors.GRAY,
+    alignItems: 'center',
+    justifyContent: 'center',
+    resizeMode: 'stretch',
     borderWidth: 1,
   },
   wbmfcontainer: {
@@ -355,7 +358,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   wbmftext: {
-    fontSize: Typography.FONT_SIZE_24,
+    fontSize: Typography.FONT_SIZE_20,
     fontWeight: Typography.FONT_WEIGHT_BOLD,
     marginBottom: Spacing.SCALE_24,
   },
@@ -365,13 +368,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 25,
     width: Dimensions.get('window').width * 0.65,
-    height: Dimensions.get('window').height * 0.08,
     justifyContent: 'center',
     marginTop: Spacing.SCALE_12,
     marginBottom: Spacing.SCALE_24,
   },
   greenbutton: {
-    fontSize: Typography.FONT_SIZE_36,
+    fontSize: Typography.FONT_SIZE_20,
+    paddingBottom: Spacing.SCALE_4,
+    paddingTop: Spacing.SCALE_4,
     color: Colors.WHITE,
     fontWeight: Typography.FONT_WEIGHT_BOLD,
   },
