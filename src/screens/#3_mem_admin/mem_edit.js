@@ -16,6 +16,7 @@ import { useFocusEffect } from '@react-navigation/native'
 import axios from '../../axios/api'
 import { GiftedAvatar } from 'react-native-gifted-chat'
 import Loader from '../../components/Loader'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 export default ({ navigation }) => {
   const [_id, set_id] = useState('')
@@ -133,10 +134,13 @@ export default ({ navigation }) => {
   ) : (
     <View style={styles.container}>
       <View style={styles.addcontainer}>
+      <KeyboardAwareScrollView style = {{flex: 1}}>
         <View style={styles.headcontainer}>
           <Text style={styles.header}>회원 수정하기</Text>
         </View>
+
         <View style={styles.maincontent}>
+          
           <View style={styles.individual}>
             <Text style={styles.leftname}> 이름: </Text>
             <UnderLinedTextInputBig
@@ -192,7 +196,9 @@ export default ({ navigation }) => {
               <Text style={styles.greenbutton}>완료하기</Text>
             </View>
           </TouchableOpacity>
+
         </View>
+        </KeyboardAwareScrollView>
       </View>
     </View>
   )
@@ -216,7 +222,7 @@ const styles = StyleSheet.create({
   },
   headcontainer: {
     alignItems: 'center',
-    marginTop: Spacing.SCALE_10,
+    marginTop: Spacing.SCALE_48,
   },
   header: {
     fontSize: Typography.FONT_SIZE_24,
@@ -224,7 +230,7 @@ const styles = StyleSheet.create({
   },
   maincontent: {
     alignSelf: 'center',
-    marginBottom: Spacing.SCALE_20,
+    marginTop: Spacing.SCALE_24,
   },
   leftname: {
     fontSize: Typography.FONT_SIZE_16,
@@ -232,6 +238,7 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.SCALE_12
   },
   individual: {
+    marginTop: Spacing.SCALE_20,
     marginBottom: Spacing.SCALE_20,
     flexDirection: 'row',
     alignItems: 'center',

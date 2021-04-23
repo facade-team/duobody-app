@@ -540,7 +540,7 @@ function indiv_etc({ navigation }) {
                       textDecorationLine: 'underline',
                       fontSize: Typography.FONT_SIZE_16,
                       fontWeight: Typography.FONT_WEIGHT_REGULAR,
-                       }}>내보내기</Text>
+                      }}>내보내기</Text>
                   </TouchableOpacity>
               </View>
             </View>

@@ -192,7 +192,8 @@ const Dash_dash = () => {
               ] : trainerLesson}
               renderItem={({item}) => 
               <View style={{flexDirection: 'row', justifyContent: 'flex-start'}}>
-                <Text style={styles.timelist}>{item.time}      {item.name}</Text>
+                {!item.name ? <Text style={styles.timelist}>{item.time}</Text>
+                :<Text style={styles.timelist}>{item.time}  {item.name} 회원님 </Text>}
               </View>
               }
             />
