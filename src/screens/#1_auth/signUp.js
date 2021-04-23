@@ -7,10 +7,13 @@ import UnderLinedTextInput from '../../components/UnderlinedTextInput';
 import { Spacing, Colors } from '../../styles';
 import { AuthContext } from '../../services/AuthContext';
 import axios from '../../axios/api';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+
 
 const Container = styled.View`
   flex: 1;
-  background-color: ${Colors.WHITE}
+  background-color: ${Colors.WHITE};
+  padding-vertical: ${Spacing.SCALE_80};
   justify-content: center;
   align-items: center;
 `
@@ -18,6 +21,7 @@ const Container = styled.View`
 const LogoContainer = styled.View`
   flex: 1;
   justify-content: flex-end;
+  margin-bottom: ${Spacing.SCALE_48};
 `
 
 const AuthContainer = styled.View`
@@ -67,6 +71,8 @@ export default ({ navigation }) => {
 
   return (
   <Container>
+        <KeyboardAwareScrollView style = {{flex:1, padding: Spacing.SCALE_48, marginTop: Spacing.SCALE_48}}>
+
     <LogoContainer>
       <LogoImage source={require('../../assets/logo_square.png')} />
     </LogoContainer>
@@ -85,5 +91,6 @@ export default ({ navigation }) => {
           onClick = {()=>navigation.goBack()} />
       </View>
     </AuthContainer>
+    </KeyboardAwareScrollView>
   </Container>
 )}
