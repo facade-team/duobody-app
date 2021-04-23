@@ -59,6 +59,9 @@ const Dash_dash = () => {
   const getTrainee = () => {
     setTraineeListFromDB([]);
     //trainee, chatroomid 가져오기
+
+    let newArr = []
+
     axios.get('/trainee')
     .then(res => {
       res.data.data.map(tmp=>{
@@ -74,15 +77,22 @@ const Dash_dash = () => {
           //res에 온 채팅방으로 초기 메시지 보내기
           axios.post(`/messenger/${res.data.data._id}`,{
             content: '환영합니다!'
+          }).then((res) => {
+            newTrainee.chatRoomId = tmp.chatRoomId
+            // setTraineeListFromDB(prevArray => [...prevArray, newTrainee])
+            newArr.push(newTrainee)
           })
         })
       }
-      //chatroomid가 이미 있을 경우
-      newTrainee.chatRoomId = tmp.chatRoomId
-
-      // api 세팅
-      setTraineeListFromDB(prevArray => [...prevArray, newTrainee])
+      else{
+        //chatroomid가 이미 있을 경우
+        newTrainee.chatRoomId = tmp.chatRoomId
+        //setTraineeListFromDB(prevArray => [...prevArray, newTrainee])
+        newArr.push(newTrainee)
+      }
       })
+      setTraineeListFromDB(newArr)
+      console.log(newArr)
     })
 
     //오늘 일정 가져오기

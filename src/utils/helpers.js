@@ -22,14 +22,17 @@ export const createReact = ({}) => {
 }
 
 export const createHTML = ({
+  head = '',
   content = '',
   styles = '',
   sholudRemovePageMargin = true,
+  script = '',
 } = {}) => {
   return `
         <!DOCTYPE html>
         <html lang="en">
         <head>
+            ${head}
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Example PDF</title>
@@ -40,7 +43,7 @@ export const createHTML = ({
                     height: 100%;
                 }
                 body {
-                    font-size: 16px;
+                    font-size: 12px;
                     margin: 0;
                     color: ${COLORS.black};
                     min-height: 100%;
@@ -62,7 +65,7 @@ export const createHTML = ({
                     text-align: center;
                     background: ${Colors.PRIMARY};
                     color: ${Colors.WHITE};
-                    padding: 30px;
+                    padding: 20px;
                     font-weight: 700;
                 }
 
@@ -81,6 +84,7 @@ export const createHTML = ({
         <body>
             ${content}
         </body>
+        ${script}
         </html>
     `
 }
@@ -90,7 +94,7 @@ export const createAndSavePDF = async (html) => {
   const temp = async() => {
     try {
       let isShared = false
-      const { uri } = await Print.printToFileAsync({ html })
+      const { uri } = await Print.printToFileAsync({ html, width: 595, height: 842})
       if (Platform.OS === 'ios') {
         isShared = await Sharing.shareAsync(uri)
       } else {

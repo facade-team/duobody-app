@@ -74,7 +74,7 @@ export default ({data, idx}) => {
   ]
 
   const chartValues = [
-    '몸무게', 'BMI', '골격근', '체지방'
+    '몸무게', 'BMI', '체지방', '골격근'
   ]
 
 
