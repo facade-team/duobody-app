@@ -80,24 +80,33 @@ function Change_view() {
   const [isDataUpdated, setIsDataUpdated] = useState(true)
   const [traineeName, setTraineeName] = useState('')
 
-  const callGetLatestInbodyAPI = async () => {
+  const callGetLatestInbodyAPI = () => {
     //
-    await axios
+    axios
       .get(`/trainee/${traineeId}/inbody/latest`)
       .then(async (res) => {
+        console.log('callGetLatestInbodyAPI')
         if (res.data.data) {
           const endDateStr = getDateString(res.data.data.date)
           const endDateObj = new Date(endDateStr)
           setEndDate(endDateStr)
           setCalEndDate(endDateObj)
           setExistEnd(endDateStr)
+          //
+          callGetExbodyAPI()
         } else {
+          setEndDate(getDateString(new Date()))
+          setCalEndDate(new Date())
           setNoData(true)
           setTraineeName('')
-          //Alert.alert('조회 가능한 데이터가 없습니다')
+          //
+          callGetExbodyAPI()
         }
       })
       .catch((error) => {
+        // setIsSearched(false)
+        // console.log('데이터가 없어요...')
+        callGetExbodyAPI()
         setNoData(true)
         setTraineeName('')
         //console.log(error.response)
@@ -105,35 +114,41 @@ function Change_view() {
       })
   }
 
-  const callGetExbodyAPI = async () => {
-    await axios
+  const callGetExbodyAPI = () => {
+    axios
       .get(`/trainee/exbody/${traineeId}`)
       .then((res) => {
         //
+        console.log('callGetExbodyAPI')
         if (!res.data.data) {
           console.log('exbody가 없어요')
           setNoData(true)
+          callGetInbodyByDateRangeAPI()
         } else {
           console.log(res.data.data)
           setExbody(res.data.data)
+          callGetInbodyByDateRangeAPI()
         }
       })
       .catch((err) => {
         //
+        console.log('exbody 데이터가 없어요')
+        callGetInbodyByDateRangeAPI()
         setNoData(true)
         //console.log(err.response)
       })
   }
 
-  const callGetInbodyByDateRangeAPI = async () => {
+  const callGetInbodyByDateRangeAPI = () => {
     //
     const endDateObj = new Date(endDate)
     const endDateStrWithNumber = getDateStringWithNumber(endDateObj)
 
-    await axios
+    axios
       .get(`/trainee/${traineeId}/inbody/date/20210101/${endDateStrWithNumber}`)
       .then((res) => {
         //
+        console.log('callGetInbodyByDateRangeAPI')
         if (res.data.data) {
           setTraineeName(res.data.data.name)
           setApiData(res.data.data.inbody)
@@ -142,18 +157,20 @@ function Change_view() {
           setStartDate(startDateStr)
           setCalStartDate(startDateObj)
           setExistStart(startDateStr)
-          setIsSearched(true)
+
+          setIsSearched(false)
           setIsDataUpdated(false)
           setNoData(false)
+          // console.log(res.data.data.inbody)
         } else {
-          setIsSearched(true)
+          setIsSearched(false)
           setIsDataUpdated(false)
         }
       })
       .catch((err) => {
         //
         //console.log(err.response)
-        setIsSearched(true)
+        setIsSearched(false)
         setIsDataUpdated(false)
       })
   }
@@ -187,7 +204,7 @@ function Change_view() {
   })
 
   const onDatePickHandler = (sDate, eDate) => {
-    setIsSearched(true)
+    setIsSearched(false)
     let sD = startDate
     let eD = endDate
     if (sDate === null) {
@@ -334,16 +351,14 @@ function Change_view() {
 
   useFocusEffect(
     useCallback(() => {
-      let isActive = true
 
       const getTraineeId = async () => {
         try {
+          console.log('useFocusEffect')
           const id = await AsyncStorage.getItem('traineeId')
-          if (isActive && id !== traineeId) {
-            setTraineeId(id)
-            setIsSearched(false)
-            //setIsFocused(true)
-          }
+          setTraineeId(id)
+          setIsSearched(true)
+          console.log(id)
         } catch (err) {
           console.log(err)
         }
@@ -351,24 +366,42 @@ function Change_view() {
 
       getTraineeId()
 
-      return () => {
-        isActive = false
-      }
-    })
+    }, [])
   )
 
+  // useEffect(() => {
+  //   if (!isSearched) {
+  //     if (traineeId !== '') {
+  //       callGetLatestInbodyAPI()
+  //       callGetExbodyAPI()
+  //       callGetInbodyByDateRangeAPI()
+  //     }
+  //   }
+  //   if (!isDataUpdated) {
+  //     updateData()
+  //   }
+  // })
+
   useEffect(() => {
-    if (!isSearched) {
-      if (traineeId !== '') {
-        callGetLatestInbodyAPI()
-        callGetExbodyAPI()
-        callGetInbodyByDateRangeAPI()
-      }
-    }
-    if (!isDataUpdated) {
+    if (!isDataUpdated){
       updateData()
     }
-  })
+  }, [isDataUpdated])
+
+  useEffect(() => {
+    if(isSearched){
+      console.log('useEffect '+isSearched)
+      callGetLatestInbodyAPI()
+      //callGetExbodyAPI()
+      //callGetInbodyByDateRangeAPI()
+    }
+  }, [isSearched])
+
+  useEffect(() => {
+    console.log(apiData)
+  }, [noData])
+
+
 
   const RenderDate = (dateStr) => {
     const styles = StyleSheet.create({
@@ -409,7 +442,7 @@ function Change_view() {
     }
   }
 
-  return !isSearched ? (
+  return isSearched ? (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       <Loader />
     </View>

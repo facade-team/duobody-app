@@ -1197,7 +1197,7 @@
     mv "~2"
     safe-json-stringify "~1"
 
-"@expo/config-plugins@1.0.24", "@expo/config-plugins@^1.0.18":
+"@expo/config-plugins@1.0.24":
   version "1.0.24"
   resolved "https://registry.npmjs.org/@expo/config-plugins/-/config-plugins-1.0.24.tgz"
   integrity sha512-DB4CgkeZEKG2DWC0GzbLSHuWlxWZ6d3wE95Cjy6DOyR60cFyxo+1eriaxLaBCApX3KrFAdxJFsxvwK9zbCtuzQ==
@@ -6168,23 +6168,20 @@ expo-location@~10.0.0:
   resolved "https://registry.npmjs.org/expo-location/-/expo-location-10.0.0.tgz"
   integrity sha512-QLEb0iaBv4/blLxxfKRj2/HPisY+1t+g6MgegqZ1j1U/0qih4dvzUQrxie9ZOZyQB9gnXFCRnZv3QzHEb52dcA==
 
-expo-media-library@^12.0.2:
-  version "12.0.2"
-  resolved "https://registry.npmjs.org/expo-media-library/-/expo-media-library-12.0.2.tgz"
-  integrity sha512-0gi4ny4IldYg3uWHjwP+P04VRe5Ea9BYflRILpQWBzcivppzEzTSYFQKUTQEXuZsWB9PA5uTQd2UaB+4q/dcJQ==
-  dependencies:
-    "@expo/config-plugins" "^1.0.18"
-    unimodules-permissions-interface "~6.1.0"
+expo-media-library@~10.0.0:
+  version "10.0.0"
+  resolved "https://registry.yarnpkg.com/expo-media-library/-/expo-media-library-10.0.0.tgz#44ab985fa684a9cf5b23d50ac5874b61bfe779c7"
+  integrity sha512-/edgaLU8ClYEgwmiMknpNbkouTNZlL/FNAxcSpPlTmXuRAqd2YmE5BpNOe1demDrR1VWTrZ8/ekS/RwQAWQU2g==
 
 expo-permissions@~10.0.0:
   version "10.0.0"
   resolved "https://registry.npmjs.org/expo-permissions/-/expo-permissions-10.0.0.tgz"
   integrity sha512-b6oitd4JmFdQ7DxczZ2WRS9aDyqgVM7lEhy3JyKZ2dbU19C6NyHyLCcwssZgfzOfGnp2owoaWn3KU4zdrF5MIA==
 
-expo-print@^10.1.0:
-  version "10.1.0"
-  resolved "https://registry.npmjs.org/expo-print/-/expo-print-10.1.0.tgz"
-  integrity sha512-Kewebb4bq4mzc+kl98hEiJfy0BsC5a91NkYVMJ3cswQkJviOJbYR0cK2julVJXh22DpidgJ43FxHMIjsN/aPsg==
+expo-print@~9.2.0:
+  version "9.2.0"
+  resolved "https://registry.yarnpkg.com/expo-print/-/expo-print-9.2.0.tgz#28c4d64bb40c1d1c61ea667517dc83894b77090d"
+  integrity sha512-cRrvfU2Xmy/aFBqbvvrEPM/iLmShEiBbVEpiFi4meZtoSnrIcuJAipp7sMOe7q1aOZkSxzTTaXs64PBL8tMkaw==
 
 expo-pwa@0.0.70:
   version "0.0.70"
@@ -6202,10 +6199,10 @@ expo-secure-store@~9.3.0:
   resolved "https://registry.npmjs.org/expo-secure-store/-/expo-secure-store-9.3.0.tgz"
   integrity sha512-dNhKcoUUn+1kmEfFVxSU7h+YsqODqlExZQJcQgxgeiuCeeDvJWkE10t3jjrO6aNfrdM5i/X2l3oh401EDslWsQ==
 
-expo-sharing@^9.1.2:
-  version "9.1.2"
-  resolved "https://registry.npmjs.org/expo-sharing/-/expo-sharing-9.1.2.tgz"
-  integrity sha512-IFBQPimeZtdqtvmqQZEmiI0D4j9xE53tSZxLFrFPplNWzgDefk+dP+flof3duf9JgCQTsvOUU2h2/XwjD3vBTA==
+expo-sharing@~8.5.0:
+  version "8.5.0"
+  resolved "https://registry.yarnpkg.com/expo-sharing/-/expo-sharing-8.5.0.tgz#8f54774fc0b2405bf63183c235544b7f978a7765"
+  integrity sha512-k5vz5O1bu9xMpIc3TTQSOwo0g/hvDGOLZzeN9F4dW6GbicC3PTRgFxHOw6vOMS5LXphAxfYcC+9ZtbocVJ7C0g==
 
 expo-splash-screen@0.8.1:
   version "0.8.1"
@@ -14206,11 +14203,6 @@ unimodules-permissions-interface@~5.4.0:
   version "5.4.0"
   resolved "https://registry.npmjs.org/unimodules-permissions-interface/-/unimodules-permissions-interface-5.4.0.tgz"
   integrity sha512-mb+uiWvf2M/og7bA28CYOH6uKsAg/7oRBodZNsXVRH/h5LjQlBd5lTECH/L3Hkm3Ta7NSQUnENtXUCO4jfnVkg==
-
-unimodules-permissions-interface@~6.1.0:
-  version "6.1.0"
-  resolved "https://registry.npmjs.org/unimodules-permissions-interface/-/unimodules-permissions-interface-6.1.0.tgz"
-  integrity sha512-jeJx/y+Vn/Cp1/4su5XJ06UBul83MpXkYEqIOAb2jwaikhmj6tNwko7HpKy9OhfGfrhddCzwtedlro8xxZUk9A==
 
 unimodules-sensors-interface@~5.4.0:
   version "5.4.0"
