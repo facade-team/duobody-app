@@ -1,5 +1,5 @@
 import { createAndSavePDF, createHTML, createReact } from '../../utils/helpers'
-import { View, Button, StyleSheet, Dimensions, SafeAreaView, Text } from 'react-native'
+import { View, Button, StyleSheet, Dimensions, SafeAreaView, Text, TextInput } from 'react-native'
 import { AuthContext } from '../../services/AuthContext'
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { Colors, Spacing, Typography } from '../../styles';
@@ -10,8 +10,23 @@ import { useFocusEffect } from '@react-navigation/native';
 import axios from '../../axios/api';
 import getDateStringWithNumber from '../../utils/getDateStringWithNumber';
 import AsyncStorage from '@react-native-community/async-storage';
+import BottomSheet from 'reanimated-bottom-sheet';
 
-const onPress = () => {}
+
+//AsyncStorage에서 trainee_id로 axios get
+//목표, 특이사항 저장 후 set
+//
+//edit 버튼 구현 
+// 
+// logout 함수 호출
+//
+// pdf 내보내기 구현
+// 
+
+
+const getTraineeId = () => {
+
+}
 
 function indiv_etc({ navigation }) {
 
@@ -172,6 +187,9 @@ function indiv_etc({ navigation }) {
 
   const { signOut } = useContext(AuthContext)
 
+  const [goal,setGoal] = useState('')
+  const [uniqueness,setUniqueness] = useState('')
+
   const makePortfolio = () => {
     /*여기에서 자유롭게 테스트 해보면 됨*/
     
@@ -203,14 +221,96 @@ function indiv_etc({ navigation }) {
   const logout = () => {
     signOut()
   }
+
+  const setTraineeGoal = () => {
+    console.log('목표 set')
+  }
   
   const editGoal = () => {
+    goalRef.current.snapTo(0)
     console.log('목표수정')
   }
   const editUniqueness = () => {
-    console.log('특이사항 수정') 
+    console.log('특이사항 수정')
+    uniquenessRef.current.snapTo(0)
+  }
+  const setTraineeUniqueness = () => {
+    console.log('특이사항 set') 
   }
 
+  useEffect(() => {
+    console.log('마운트 될 때만 사용')
+
+  },[])
+
+  //bottomsheet
+  const renderGoal = () => (
+    <View style={styles.sheetContainer}>
+        <View style={{ paddingBottom: 40, paddingTop: 10 }}>
+            <View style={{paddingTop:16}}>
+                <Text style={styles.textSubtitle}> 목표 수정 </Text>
+            </View>
+        </View>
+
+        <View>
+          <TextInput
+            placeholder='목표를 수정하세요'
+            value={goal}
+            onChangeText={setGoal}
+          />
+        </View>
+
+        <View style={styles.position}>
+        <View style={styles.confirm}>
+            <TouchableOpacity onPressOut={() => { goalRef.current.snapTo(1) }}>
+                <Text style={styles.textConfirm} >취소</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPressOut={() => {
+                goalRef.current.snapTo(1)
+                setTraineeGoal()
+            }}>
+                <Text style={styles.textConfirm} >확인</Text>
+            </TouchableOpacity>
+        </View>
+        </View>
+    </View>
+  );
+
+  const renderUniqueness = () => (
+    <View style={styles.sheetContainer}>
+        <View style={{ paddingBottom: 40, paddingTop: 10 }}>
+            <View style={{paddingTop:16}}>
+                <Text style={styles.textSubtitle}> 특이사항 수정 </Text>
+            </View>
+        </View>
+
+        <View>
+          <TextInput
+            placeholder='특이사항을 수정하세요'
+            value={uniqueness}
+            onChangeText={setUniqueness}
+          />
+        </View>
+
+        <View style={styles.position}>
+          <View style={styles.confirm}>
+              <TouchableOpacity onPressOut={() => { uniquenessRef.current.snapTo(1) }}>
+                  <Text style={styles.textConfirm} >취소</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPressOut={() => {
+                  uniquenessRef.current.snapTo(1)
+                  setTraineeUniqueness()
+              }}>
+                  <Text style={styles.textConfirm} >확인</Text>
+              </TouchableOpacity>
+          </View>
+        </View>
+    </View>
+  );
+
+  //bottomsheet ref
+  const goalRef = React.useRef(null);
+  const uniquenessRef = React.useRef(null);
 
   return (
     <SafeAreaView style={styles.wrap}>
@@ -218,7 +318,7 @@ function indiv_etc({ navigation }) {
         <View style={styles.row}>
           <Text style={styles.title}>테스트 회원님</Text>
           <TouchableOpacity onPressOut={()=>logout()}>
-            <FontAwesome name="sign-out" size={33} style={{paddingRight:Spacing.SCALE_16}} />
+            <FontAwesome name="sign-out" size={33} style={{paddingRight:Spacing.SCALE_16,}} />
           </TouchableOpacity>
         </View>
 
@@ -275,6 +375,20 @@ function indiv_etc({ navigation }) {
           </View>
         </View>
       </View>
+      <BottomSheet
+        ref={goalRef}
+        snapPoints={[500, 0, 0]}
+        borderRadius={20}
+        renderContent={renderGoal}
+        initialSnap={1}
+      />
+      <BottomSheet
+        ref={uniquenessRef}
+        snapPoints={[500, 0, 0]}
+        borderRadius={20}
+        renderContent={renderUniqueness}
+        initialSnap={1}
+      />
     </SafeAreaView>
   )
 }
@@ -302,6 +416,11 @@ const styles = StyleSheet.create({
     fontSize: Typography.FONT_SIZE_16,
     fontWeight: Typography.FONT_WEIGHT_REGULAR,
   },
+  textSubtitle: {
+    fontSize: 16,
+    paddingLeft: 3,
+    fontWeight: 'bold'
+},
   list: {
     justifyContent:'center',
     alignItems:'center',
@@ -335,7 +454,30 @@ const styles = StyleSheet.create({
   horizontalLine: {
     borderBottomColor: Colors.PRIMARY,
     borderBottomWidth: 1,
-},
+  },
+  sheetContainer: {
+    backgroundColor: '#E3E3E3',
+    padding: 20,
+    height: 500
+  },
+  confirm: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignSelf: 'flex-end',
+    width: 150,
+    paddingTop: 10,
+    paddingBottom: 20,
+    paddingRight: 10,
+  },
+  textConfirm: {
+    fontSize: 18,
+    color: '#177EFB'
+  },
+  position:{
+    position:'absolute',
+    bottom:Spacing.SCALE_20,
+    right:Spacing.SCALE_20
+  }
 })
 
 export default indiv_etc
