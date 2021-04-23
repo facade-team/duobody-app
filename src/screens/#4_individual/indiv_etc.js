@@ -1,10 +1,9 @@
 import { createAndSavePDF, createHTML, createReact } from '../../utils/helpers'
-import { View, Button, StyleSheet, Dimensions, SafeAreaView, Text, TextInput } from 'react-native'
+import { View, Button, StyleSheet, Dimensions, SafeAreaView, Text, TextInput, TouchableOpacity } from 'react-native'
 import { AuthContext } from '../../services/AuthContext'
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { Colors, Spacing, Typography } from '../../styles';
 import { FontAwesome } from '@expo/vector-icons'
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import { COLORS } from '../../utils/constants';
 import { useFocusEffect } from '@react-navigation/native';
 import axios from '../../axios/api';
@@ -12,6 +11,7 @@ import getDateStringWithNumber from '../../utils/getDateStringWithNumber';
 import AsyncStorage from '@react-native-community/async-storage';
 import BottomSheet from 'reanimated-bottom-sheet';
 import Loader from '../../components/Loader';
+import getDateString from '../../utils/getDateString';
 
 
 //AsyncStorage에서 trainee_id로 axios get
@@ -63,13 +63,10 @@ function indiv_etc({ navigation }) {
       const getTraineeId = async () => {
         try {
           const id = await AsyncStorage.getItem('traineeId')
+          setTraineeId(id)
+          setIsSearched(false)
+          setFlag(false)
           console.log(id)
-          if (true) {
-            setTraineeId(id)
-            setIsSearched(false)
-            setFlag(false)
-            console.log(id)
-          }
         } catch (err) {
           console.log(err)
         }
@@ -80,6 +77,8 @@ function indiv_etc({ navigation }) {
   )
 
   useEffect(() => {
+    console.log('isSearched: ' + isSearched)
+    console.log('flag: ' + flag)
     if(!isSearched){
       callAPIs()
     }
@@ -153,8 +152,10 @@ function indiv_etc({ navigation }) {
         console.log('callGetInbodyByDateRangeAPI')
         if (res.data.data) {
           console.log(res.data.data.inbody)
+          console.log(res.data.data.inbody)
           setTraineeName(res.data.data.name)
           setApiData(res.data.data.inbody)
+          makeDataArr(res.data.data.inbody)
           const startDateStr = getDateString(res.data.data.inbody[0].date)
           setStartDate(startDateStr)
           setExistStart(startDateStr)
@@ -181,42 +182,204 @@ function indiv_etc({ navigation }) {
       })
   }
 
-  useEffect(() => {
-    console.log(latestInbody)
-    console.log(traineeName)
-  })
-
   const { signOut } = useContext(AuthContext)
 
   const [goal,setGoal] = useState('')
   const [uniqueness,setUniqueness] = useState('')
 
+  const [bmiArr, setBmiArr] = useState([])
+  const [fatArr, setFatArr] = useState([])
+  const [smArr, setSmArr] = useState([])
+  const [wArr, setWArr] = useState([])
+
+  const makeDataArr = (DataArr) => {
+    const toDateStr = (text) => {
+      const date = new Date(text)
+      return `${date.getMonth()+1}/${date.getDate()}`
+    }
+    let B = [['측정날짜', 'BMI']]
+    let F = [['측정날짜', '체지방']]
+    let S = [['측정날짜', '골격근량']]
+    let W = [['측정날짜', '체중']]
+    
+    DataArr.map((data) => {
+      let bA = []
+      let fA = []
+      let sA = []
+      let wA = []
+
+      const dateStr = toDateStr(data.date)
+      bA.push(dateStr)
+      fA.push(dateStr)
+      sA.push(dateStr)
+      wA.push(dateStr)
+
+      bA.push(data.bmi)
+      fA.push(data.fat)
+      sA.push(data.skeletalMuscle)
+      wA.push(data.weight)
+
+      B.push(bA)
+      F.push(fA)
+      S.push(sA)
+      W.push(wA)
+    })
+
+    setBmiArr(B)
+    setFatArr(F)
+    setSmArr(S)
+    setWArr(W)
+  }
+
+
   const makePortfolio = () => {
     /*여기에서 자유롭게 테스트 해보면 됨*/
+
+    const name = 'bmi'
+
+    let bmiStr = "["
     
-    createAndSavePDF(createHTML({
-      content:`
-      <h1 style="text-align: center;">
-        <strong>DUOBODY 포트폴리오</strong>
-      </h1>
-      <p style="text-align: center;">
-        ${traineeName} 회원님의 최근 BMI, 체지방, 골격근량, 체중은 다음과 같습니다.
-      </p>
+    bmiArr.map((d, idx) => {
+      if (idx === 0) {
+        bmiStr = bmiStr + "['"+d[0]+"','"+d[1]+"'],"
+      }
+      else {
+        bmiStr = bmiStr + "['"+d[0]+"',"+d[1]+"],"
+      }
+    })
+    bmiStr = bmiStr + "]"
 
-      <p style="text-align: center;">
-        BMI: ${latestInbody.bmi}kg/m\xB2 / 체지방: ${latestInbody.fat}kg / 골격근량: ${latestInbody.skeletalMuscle}kg / 체중: ${latestInbody.weight}kg
-      </p>
+    let fatStr = "["
+    
+    fatArr.map((d, idx) => {
+      if (idx === 0) {
+        fatStr = fatStr + "['"+d[0]+"','"+d[1]+"'],"
+      }
+      else {
+        fatStr = fatStr + "['"+d[0]+"',"+d[1]+"],"
+      }
+    })
+    fatStr = fatStr + "]"
 
-      <p style="text-align: center;">
-        <strong>Exbody</strong>
-      <p/>
-      <p style="text-align: center;">
-        <text>날짜 | 2021-04-20</text>
-      </p>
+    let smStr = "["
+    
+    smArr.map((d, idx) => {
+      if (idx === 0) {
+        smStr = smStr + "['"+d[0]+"','"+d[1]+"'],"
+      }
+      else {
+        smStr = smStr + "['"+d[0]+"',"+d[1]+"],"
+      }
+    })
+    smStr = smStr + "]"
+
+    let wStr = "["
+    
+    wArr.map((d, idx) => {
+      if (idx === 0) {
+        wStr = wStr + "['"+d[0]+"','"+d[1]+"'],"
+      }
+      else {
+        wStr = wStr + "['"+d[0]+"',"+d[1]+"],"
+      }
+    })
+    wStr = wStr + "]"
+
+    // console.log(bmiStr)
+
+    let htmlObj = {
+      head:`
+      <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+      <script type="text/javascript">
+        google.charts.load('current', {'packages':['corechart']});
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+          var bmiData = google.visualization.arrayToDataTable(${bmiStr});
+
+          var bmiOptions = {
+            title: 'bmi',
+            legend: { position: 'bottom' },
+            colors:['#0162ff','#004411']
+          };
+
+          var fatData = google.visualization.arrayToDataTable(${fatStr});
+
+          var fatOptions = {
+            title: '체지방',
+            legend: { position: 'bottom' },
+            colors:['#05ebff','#004411']
+          };
+
+          var smData = google.visualization.arrayToDataTable(${smStr});
+
+          var smOptions = {
+            title: '골격근량',
+            legend: { position: 'bottom' },
+            colors:['#00ff01','#004411']
+          };
+
+          var weightData = google.visualization.arrayToDataTable(${wStr});
+
+          var weightOptions = {
+            title: '체중',
+            legend: { position: 'bottom' },
+            colors:['#b345e6','#004411']
+          };
+
+          var bmiChart = new google.visualization.LineChart(document.getElementById('bmi_chart'));
+          var fatChart = new google.visualization.LineChart(document.getElementById('fat_chart'));
+          var smChart = new google.visualization.LineChart(document.getElementById('sm_chart'));
+          var weightChart = new google.visualization.LineChart(document.getElementById('weight_chart'));
+
+          bmiChart.draw(bmiData, bmiOptions);
+          fatChart.draw(fatData, fatOptions);
+          smChart.draw(smData, smOptions);
+          weightChart.draw(weightData, weightOptions);
+        }
+      </script>
       `
-    }))
-    //createAndSavePDF(createHTML({content: 'hello world!!!!!!!!!!!!!!!!'}))
-    //console.log(createHTML({content: 'hello world!!!!!!!!!!!!!!!!'}))
+      ,
+      content:`
+      <div style="display: flex; justify-content: center; flex-direction: column; align-items: center;">
+        <h1 style="text-align: center;">
+          <strong>${traineeName} 회원님 포트폴리오</strong>
+        </h1>
+        <p style="text-align: center; font-size: 12px;">
+          ${traineeName} 회원님의 BMI, 체지방, 골격근량, 체중 변화와 exbody는 다음과 같습니다.
+        </p>
+        <h3 style="text-align: center;">
+          <strong>Exbody</strong>
+        <h3/>
+    
+        <p style="align-self: center;">
+          <img src=${exbody.exbodyBefore} width="100" height="100">
+          <img src=${exbody.exbodyAfter} width="100" height="100">
+        <p/>
+        <h3 style="text-align: center;">
+          <strong>그래프</strong>
+        <h3/>
+
+        <div style="display: flex; justify-content: center;">
+          <div id="bmi_chart" style="width: 300px; height: 200px"></div>
+          <div id="fat_chart" style="width: 300px; height: 200px"></div>
+        </div>
+        <div style="display: flex; justify-content: center;">
+          <div id="sm_chart" style="width: 300px; height: 200px"></div>
+          <div id="weight_chart" style="width: 300px; height: 200px"></div>
+        </div>
+      </div>
+      
+      `
+      ,
+      script: `
+      <script type="text/javascript">
+
+      </script>
+      `
+    }
+
+    createAndSavePDF(createHTML(htmlObj))
   }
 
   const logout = () => {
