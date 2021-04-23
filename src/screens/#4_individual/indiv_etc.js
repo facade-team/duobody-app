@@ -44,6 +44,8 @@ function indiv_etc({ navigation }) {
   const [flag, setFlag] = useState(true)
   const [latestInbody, setLatestInbody] = useState(null)
   const [traineeName, setTraineeName] = useState('')
+  const [t_result,setT_result] = useState({ note: '', purpose: '' })
+  const [t_data,setT_data] = useState({})
 
   const [exbody, setExbody] = useState({
     exbodyBefore: '',
@@ -68,10 +70,10 @@ function indiv_etc({ navigation }) {
           setFlag(false)
           console.log(id)
         } catch (err) {
-          console.log(err)
+          console.log('usefocuseffect error')
         }
       }
-      console.log('useFocusEffect')
+      //console.log('useFocusEffect')
       getTraineeId()
     }, [])
   )
@@ -84,13 +86,33 @@ function indiv_etc({ navigation }) {
     }
   }, [flag])
 
+
+  useEffect(() => {
+    console.log('isSearched: ' + isSearched)
+    console.log('flag: ' + flag)
+  })
+
+  const callTraineeApi = () => {
+    axios.get(`/trainee/${traineeId}`)
+    .then((res)=>{
+      setT_result({purpose: res.data.data.purpose, note:res.data.data.note})
+    })
+    .catch((err)=>{
+      console.log('callTraineeApi error')
+      //console.log(err.response)
+    })
+  }
+
   const callAPIs = () => {
+    //되겠지
+    callTraineeApi()
+
     axios.get(`/trainee/${traineeId}/inbody/latest`)
       .then((res) => {
         if(res.data.data){
           setLatestInbody(res.data.data)
-          console.log('latest inbody')
-          console.log(res.data.data)
+          //console.log('latest inbody')
+          //console.log(res.data.data)
           const endDateStr = getDateString(res.data.data.date)
           setEndDate(endDateStr)
   
@@ -105,7 +127,7 @@ function indiv_etc({ navigation }) {
         }
       })
       .catch((err) => {
-        console.log(err.response)
+        console.log('callAPIs error' + err)
         callGetExbodyAPI()
         setNoData(true)
         setTraineeName('')
@@ -120,11 +142,11 @@ function indiv_etc({ navigation }) {
       .then((res) => {
         //
         if (!res.data.data) {
-          console.log('exbody가 없어요')
+          // console.log('exbody가 없어요')
           setNoData(true)
           callGetInbodyByDateRangeAPI()
         } else {
-          console.log(res.data.data)
+          // console.log(res.data.data)
           setExbody(res.data.data)
           callGetInbodyByDateRangeAPI()
         }
@@ -149,10 +171,10 @@ function indiv_etc({ navigation }) {
       .get(`/trainee/${traineeId}/inbody/date/20210101/${endDateStrWithNumber}`)
       .then((res) => {
         //
-        console.log('callGetInbodyByDateRangeAPI')
+        // console.log('callGetInbodyByDateRangeAPI')
         if (res.data.data) {
-          console.log(res.data.data.inbody)
-          console.log(res.data.data.inbody)
+          // console.log(res.data.data.inbody)
+          setFlag(true)
           setTraineeName(res.data.data.name)
           setApiData(res.data.data.inbody)
           makeDataArr(res.data.data.inbody)
@@ -164,21 +186,20 @@ function indiv_etc({ navigation }) {
           setIsDataUpdated(false)
           setNoData(false)
           setIsSearched(true)
-          setFlag(true)
 
           // console.log(res.data.data.inbody)
         } else {
+          setFlag(true)
           setIsDataUpdated(false)
           setIsSearched(true)
-          setFlag(true)
         }
       })
       .catch((err) => {
+        setFlag(true)
         //
         //console.log(err.response)
         setIsSearched(true)
         setIsDataUpdated(false)
-        setFlag(true)
       })
   }
 
@@ -387,25 +408,56 @@ function indiv_etc({ navigation }) {
   }
 
   const setTraineeGoal = () => {
-    console.log('목표 set')
+    //result put to the page
+    setT_result({...t_result, purpose: goal})
+    // console.log(t_result.purpose)
+    // console.log(t_result.note)
+
+    //t_data
+    axios.put(`/trainee/etc`,{
+      traineeId: traineeId,
+      note: t_result.note,
+      purpose: goal
+    })
+    .then((res)=>{
+      console.log(res.data)
+    })
+    .catch((error)=>{
+      console.log(error)
+    })
+    
+    //remove typed string
+    setGoal('')
   }
   
   const editGoal = () => {
+    setGoal('')
     goalRef.current.snapTo(0)
-    console.log('목표수정')
   }
   const editUniqueness = () => {
-    console.log('특이사항 수정')
+    setUniqueness('')
     uniquenessRef.current.snapTo(0)
   }
   const setTraineeUniqueness = () => {
-    console.log('특이사항 set') 
+    //result put to the page
+    setT_result({...t_result, note: uniqueness})
+
+    //put new purpose(goal) to api
+    axios.put(`/trainee/etc`,{
+      traineeId: traineeId,
+      note: uniqueness,
+      purpose: t_result.purpose
+    })
+    .then((res)=>{
+      console.log(res.data)
+    })
+    .catch((error)=>{
+      console.log(error)
+    })
+
+    //remove typed string
+    setUniqueness('')
   }
-
-  useEffect(() => {
-    console.log('마운트 될 때만 사용')
-
-  },[])
 
   //bottomsheet
   const renderGoal = () => (
@@ -500,7 +552,7 @@ function indiv_etc({ navigation }) {
               <Text style={styles.subtitle}>목표</Text>
               <View>
                 <View style={{flexDirection:'row', justifyContent:'space-between'}}>
-                  <Text style={styles.text}>이러쿵저러쿵</Text>
+                  <Text style={styles.text}>{t_result.purpose}</Text>
                   <TouchableOpacity
                     onPressOut={()=>{
                       editGoal()
@@ -516,7 +568,7 @@ function indiv_etc({ navigation }) {
               <Text style={styles.subtitle}>특이사항</Text>
               <View>
                 <View style={{flexDirection:'row', justifyContent:'space-between'}}>
-                  <Text style={styles.text}>이러쿵저러쿵</Text>
+                  <Text style={styles.text}>{t_result.note}</Text>
                   <TouchableOpacity
                     onPressOut={()=>{
                       editUniqueness()
