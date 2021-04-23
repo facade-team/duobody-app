@@ -1,10 +1,12 @@
 import axios from 'axios';
-import React, { useState } from 'react'
+import React, { useState, useCallback, useEffect } from 'react'
 import { StyleSheet , View, Text, Dimensions, TouchableOpacity, Alert } from 'react-native';
 import GrayTextButton from '../../components/GrayTextButton';
 import GreenButton from '../../components/GreenButton';
 import UnderLinedTextInputBig from '../../components/UnderlinedTextInputBig';
 import { Spacing, Colors, Typography } from '../../styles';
+import { useFocusEffect } from '@react-navigation/native'
+import AsyncStorage from '@react-native-community/async-storage';
 
 
 
@@ -14,7 +16,27 @@ export default ({navigation}) => {
   const [Address, setAddress] = useState('')
   const [Age, setAge] = useState('')
   const [Height, setHeight] = useState('')
+  const [isNewFlag, setisNewFlag] = useState(true)
 
+  useFocusEffect(
+    useCallback(() => {
+    if(isNewFlag === true){
+      setName('')
+      setHp('')
+      setAddress('')
+      setAge('')
+      setHeight('')
+    }
+    setisNewFlag(false)
+  }))
+
+  useEffect(()=>{
+  })
+
+  /*const handlerforsearch = async () => {
+    await AsyncStorage.setItem('newloadflag', true)
+  }
+*/
   const SaveControler = () => {
     let newMember = {}
     newMember.name = Name
@@ -24,8 +46,9 @@ export default ({navigation}) => {
     newMember.height = Height
 
     axios.post('/trainee', newMember)
-    .then(res => {
+    .then((res) => {
       Alert.alert(res.data.msg)
+      setisNewFlag(true)
       navigation.goBack()
     })
     .catch(err => {
@@ -62,7 +85,7 @@ export default ({navigation}) => {
         </View>
         <TouchableOpacity 
           style = {styles.greenbuttonconatiner}
-          onPress = {SaveControler}//정보 보내기 필요
+          onPress = {SaveControler}
         >
           <View>
             <Text style = {styles.greenbutton}>

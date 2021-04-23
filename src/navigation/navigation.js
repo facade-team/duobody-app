@@ -167,7 +167,9 @@ const ChangeViewStack = createStackNavigator();
 const DashStackScreen = ({navigation}) => (
     <DashStack.Navigator screenOptions={{
         headerStyle: {
+            shadowColor: 'transparent',
             backgroundColor: Colors.PRIMARY,
+
         },
     }}>
         <DashStack.Screen
@@ -180,6 +182,7 @@ const DashStackScreen = ({navigation}) => (
 const DashCalStackScreen = ({navigation}) => (
     <DashCalStack.Navigator screenOptions={{
         headerStyle: {
+            shadowColor: 'transparent',
             backgroundColor: Colors.PRIMARY,
         },
     }}>
@@ -192,7 +195,8 @@ const DashCalStackScreen = ({navigation}) => (
 
 const DashMsgStackScreen = ({navigation}) => (
     <DashMsgStack.Navigator screenOptions={{
-        headerStyle: {
+                headerStyle: {
+            shadowColor: 'transparent',
             backgroundColor: Colors.PRIMARY,
         },
     }}>
@@ -205,7 +209,8 @@ const DashMsgStackScreen = ({navigation}) => (
 
 const MemAddStackScreen = ({navigation}) => (
     <MemAddStack.Navigator screenOptions={{
-        headerStyle: {
+                headerStyle: {
+            shadowColor: 'transparent',
             backgroundColor: Colors.PRIMARY,
         },
     }}>
@@ -225,7 +230,8 @@ const MemAddStackScreen = ({navigation}) => (
 
 const MemEditStackScreen = ({navigation}) => (
     <MemEditStack.Navigator screenOptions={{
-        headerStyle: {
+                headerStyle: {
+            shadowColor: 'transparent',
             backgroundColor: Colors.PRIMARY,
         },
     }}>
@@ -245,7 +251,8 @@ const MemEditStackScreen = ({navigation}) => (
 
 const MemSearchStackScreen = ({navigation}) => (
     <MemSearchStack.Navigator screenOptions={{
-        headerStyle: {
+                headerStyle: {
+            shadowColor: 'transparent',
             backgroundColor: Colors.PRIMARY,
         },
     }}>
@@ -265,7 +272,8 @@ const MemSearchStackScreen = ({navigation}) => (
 
 const IndivProfileStackScreen = ({navigation}) => (
     <IndivProfileStack.Navigator screenOptions={{
-        headerStyle: {
+                headerStyle: {
+            shadowColor: 'transparent',
             backgroundColor: Colors.PRIMARY,
         },
     }}>
@@ -285,7 +293,8 @@ const IndivProfileStackScreen = ({navigation}) => (
 
 const IndivSessionStackScreen = ({navigation}) => (
     <IndivSessionStack.Navigator screenOptions={{
-        headerStyle: {
+                headerStyle: {
+            shadowColor: 'transparent',
             backgroundColor: Colors.PRIMARY,
         },
     }}>
@@ -305,7 +314,8 @@ const IndivSessionStackScreen = ({navigation}) => (
 
 const IndivMessageStackScreen = ({navigation}) => (
     <IndivMessageStack.Navigator screenOptions={{
-        headerStyle: {
+                headerStyle: {
+            shadowColor: 'transparent',
             backgroundColor: Colors.PRIMARY,
         },
     }}>
@@ -325,7 +335,8 @@ const IndivMessageStackScreen = ({navigation}) => (
 
 const IndivCalendarStackScreen = ({navigation}) => (
     <IndivCalendarStack.Navigator screenOptions={{
-        headerStyle: {
+                headerStyle: {
+            shadowColor: 'transparent',
             backgroundColor: Colors.PRIMARY,
         },
     }}>
@@ -345,7 +356,8 @@ const IndivCalendarStackScreen = ({navigation}) => (
 
 const IndivEtcStackScreen = ({navigation}) => (
     <IndivEtcStack.Navigator screenOptions={{
-        headerStyle: {
+                headerStyle: {
+            shadowColor: 'transparent',
             backgroundColor: Colors.PRIMARY,
         },
     }}>
@@ -365,7 +377,8 @@ const IndivEtcStackScreen = ({navigation}) => (
 
 const ChangeAddStackScreen = ({navigation}) => (
     <ChangeAddStack.Navigator screenOptions={{
-        headerStyle: {
+                headerStyle: {
+            shadowColor: 'transparent',
             backgroundColor: Colors.PRIMARY,
         },
     }}>
@@ -385,7 +398,8 @@ const ChangeAddStackScreen = ({navigation}) => (
 
 const ChangeViewStackScreen = ({navigation}) => (
     <ChangeViewStack.Navigator screenOptions={{
-        headerStyle: {
+                headerStyle: {
+            shadowColor: 'transparent',
             backgroundColor: Colors.PRIMARY,
         },
     }}>
@@ -409,7 +423,7 @@ const Navigation = () => {
   return (
       <NavigationContainer>
           <Drawer.Navigator
-          screenOptions= {{ gestureEnabled: true}}>
+          screenOptions= {{ gestureEnabled: false }}>
               <Drawer.Screen name = "Dash" component={Footer_dash} />
               <Drawer.Screen name = "Indiv" component = {Footer_indiv} />
               <Drawer.Screen name = "Mem_Add" component = {MemAddStackScreen} />

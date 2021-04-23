@@ -15,6 +15,7 @@ export default ({navigation}) => {
   const [_id, set_id] = useState('')
   const [IsSearched, setIsSearched] = useState(true)
   const [DATAFromDB, setDATAFromDB] = useState([]);
+  const [isNewFlag, setisNewFlag] = useState(true)
 
   useFocusEffect(
     useCallback(() => {
@@ -36,6 +37,16 @@ export default ({navigation}) => {
       }
 
       getTraineeId()
+      if(isNewFlag===true){
+        GetData()
+        setName('')
+        setHp('')
+        setAddress('')
+        setAge('')
+        setHeight('')
+      }
+      setisNewFlag(false)
+
 
       return () => {
         isActive = false
@@ -88,6 +99,7 @@ export default ({navigation}) => {
       Alert.alert(res.data.msg)
       navigation.navigate('Indiv')
       console.log(res.data.data)
+      setisNewFlag(true)
     })
     .catch(err=>{
       Alert.alert(err.response.data.msg)

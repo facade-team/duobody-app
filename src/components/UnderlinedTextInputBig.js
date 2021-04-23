@@ -31,7 +31,7 @@ const UnderLinedTextInputBig = ({
       placeholder={placeholder}
       value={value}
       onChangeText={text => onChangeText(text)}
-      placeholderTextColor = {Colors.GRAY}
+      placeholderTextColor = {Colors.GRAY_LIGHT}
       keyboardType = {keyboardType}
     />
   </View>

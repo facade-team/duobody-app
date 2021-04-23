@@ -82,10 +82,14 @@ function Change_view() {
           setExistEnd(endDateStr)
         }
         else {
+          setNoData(true)
+          setTraineeName('')
           //Alert.alert('조회 가능한 데이터가 없습니다')
         }        
       })
       .catch((error) => {
+        setNoData(true)
+        setTraineeName('')
         //console.log(error.response)
         //Alert.alert('조회 가능한 데이터가 없습니다')
       })
@@ -98,6 +102,7 @@ function Change_view() {
         //
         if (!res.data.data) {
           console.log('exbody가 없어요')
+          setNoData(true)
         }
         else {
           console.log(res.data.data)
@@ -106,6 +111,7 @@ function Change_view() {
       })
       .catch((err) => {
         //
+        setNoData(true)
         //console.log(err.response)
       })
   }
@@ -518,7 +524,7 @@ function Change_view() {
               )
             }
             {
-              noData && weightGraph && weightGraph.labels.length === 0 && (
+              noData && (
               <View style={{flex:1, justifyContent:'center', alignItems: 'center'}}>
                 <Text>데이터가 없어요!</Text>
               </View>
