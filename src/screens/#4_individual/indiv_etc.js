@@ -7,10 +7,7 @@ function indiv_etc({ navigation }) {
 
   const makePortfolio = () => {
     /*여기에서 자유롭게 테스트 해보면 됨*/
-    
     console.log('터미널 보면 버튼 누를때마다 콘솔 찍힘')
-  }
-
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
         <Button
