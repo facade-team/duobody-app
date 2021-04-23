@@ -104,13 +104,12 @@ const Dash_dash = () => {
 
         res.data.data.map(d=>{
           let timeIdx = String(d.start.substr(0, 2))
-          console.log(timeIdx)
 
            newTrainerLessonArr.map((t, idx) => {
              let newObj_ = {}
               newObj_.time = t.time
              if(t.time === timeIdx) {
-               newObj_.name = d.name
+               newObj_.name = d.name + ' 회원님'
                arr[idx] = newObj_
              }
              else{
