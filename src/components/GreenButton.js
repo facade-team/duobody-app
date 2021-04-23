@@ -23,7 +23,7 @@ const GreenButton = ({content, onClick, width=Spacing.SCALE_200}) => {
   }
 
   return(
-    <Container onPressOut={handleOnPressOut} width={width}>
+    <Container onPressOut={() => handleOnPressOut()} width={width}>
       <ButtonText>{content}</ButtonText>
     </Container>
   )

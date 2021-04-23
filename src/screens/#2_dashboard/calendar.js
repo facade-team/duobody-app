@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { StyleSheet, SafeAreaView, Text, View, FlatList, TouchableOpacity, Platform } from 'react-native';
 import CalendarView from '../../components/Calendar';
 import CircleButton from '../../components/CircleButton'
@@ -9,6 +9,10 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import TraineeList from '../../components/TraineeList';
 import { Colors } from '../../styles';
 import axios from '../../axios/api';
+import AsyncStorage from '@react-native-community/async-storage';
+import { useFocusEffect } from '@react-navigation/native';
+import Loader from '../../components/Loader';
+import getDateString from '../../utils/getDateString';
 
 const Item = ({ name, worktime }) => (
     <View style={styles.content}>
@@ -17,7 +21,7 @@ const Item = ({ name, worktime }) => (
     </View>
 );
 
-const Dash_cal = () => {
+const Dash_cal = ( {navigation} ) => {
 
     let urlstring = ''
     const [gotDataFlag, setGotDataFlag] = useState(urlstring)
@@ -36,11 +40,52 @@ const Dash_cal = () => {
 
         return result.getTime()
     }
+    const [dotDatesFromDB, setDotDatesFromDB] = useState(null)
+    const [dotFlag, setDotFlag] = useState(false)
+    const [dotStateFlag, setDotStateFlag] = useState(true)
+
+    useFocusEffect(
+      useCallback(() => {
+        let isActive = true
+        console.log('useFocusEffect')
+        console.log(dotFlag)
+        if (!dotFlag) {
+          callGetAllLessonDatesAPI()
+        }
+
+        return () => {
+          isActive = false
+        }
+      })
+    )
+
+    const callGetAllLessonDatesAPI = async () => {
+      //
+      await axios.get('/trainer/lesson')
+        .then((res) => {
+          if (res.data.data) {
+            const workout = {key:'workout', color: 'red',selectedDotColor: 'blue'}
+            let newObj = {}
+            res.data.data.map((d) => {
+              newObj[d.date] = {dots: [workout]}
+            })
+            setDotDatesFromDB(newObj)
+          }
+          else {
+            setDotDatesFromDB({})
+          }
+          setDotFlag(true)
+        })
+        .catch((err) => {
+          console.log(err.response)
+        })
+    }
 
     useEffect(()=>{
-        //trainee 불러오기
+        //모든 trainee 불러오기
         if(!traineeDidMount){
-            axios.get('/trainee').then((res)=>{
+            axios.get('/trainee')
+            .then((res)=>{
                 // console.log(res.data.data)
                 res.data.data.map(d=>{
                     let newTrainee = {}
@@ -50,11 +95,12 @@ const Dash_cal = () => {
                     setTraineeListFromDB(prevArray => [...prevArray, newTrainee])
                 })
                 
-            }).catch(error => {
-                console.log(error)
             })
             setTraineeDidMount(true)
         }
+
+        console.log(`dot:`)
+        console.log(dotDatesFromDB)
 
 
         //해당 날짜 일정 불러오기 - url 형식에 맞게 날짜 string으로 변경
@@ -78,24 +124,31 @@ const Dash_cal = () => {
             setDATA([])
             axios.get(`/trainer/lesson/date/${urlstring}`)
                 .then((res) => {
-                    // console.log(res.data.data[0])
                     res.data.data.map(d=>{
                         let newData = {}
 
                         newData._id = d._id
                         newData.name = d.name
                         newData.worktime = d.time
+                        //chatroomid 필요
+                        axios.get(`/trainee/${d._id}`)
+                        .then((res)=>{
+                            newData.chatroomId = res.data.data.chatRoomId
+                        })
     
                         setDATA(prevArray => [...prevArray, newData])
                     })
                 })
-                .catch(error => console.log(error))
+                .catch(error => {
+                    // console.log(error)
+                })
             setGotDataFlag(urlstring)
         }
     })
     
     // local storage에 데이터 저장하는 함수
     const saveDataLocalStorage = () => {
+        setDotStateFlag(false)
         //ID
         const _id = selectedTrainee._id
         //NAME
@@ -112,12 +165,34 @@ const Dash_cal = () => {
         //DATA에 push   
         setDATA(prevArray => [...prevArray, newData])
 
-        console.log()
         // timestamp 만들기
         const st = convertTimeStamp(startTime)
         const et = convertTimeStamp(endTime)
 
         console.log('ee')
+        const date = getDateString(start)
+        const newObj = {}
+        const workout = {key:'workout', color: 'red',selectedDotColor: 'blue'}
+
+        newObj[date] = {dots: [workout]}
+
+        const mergeObj = (obj1, obj2) => {
+          const newObj = {};
+          for (let att in obj1) { 
+            newObj[att] = obj1[att]; 
+          }
+        
+          for(let att in obj2)  {
+            newObj[att] = obj2[att];
+          }
+          
+          return newObj;
+        }
+
+        const prevDotDates = dotDatesFromDB
+        const newDotDates = mergeObj(prevDotDates, newObj)
+
+
         
         //새로 업데이트 된 DATA를 push
         axios.post('/trainee/lesson',{
@@ -127,6 +202,8 @@ const Dash_cal = () => {
                 session: null,
             })
             .then((res)=> {
+              setDotDatesFromDB(newDotDates)
+              setDotStateFlag(true)
                 console.log(res.data)
             })
             .catch(error=>console.log(error.response))
@@ -158,8 +235,8 @@ const Dash_cal = () => {
     
     //ios datetimepicker
     const [show,setShow] = useState(false);
-    const [start, setStart] = useState(new Date());
-    const [end, setEnd] = useState(new Date());
+    const [start, setStart] = useState(new Date().setHours(0, 0, 0, 0));
+    const [end, setEnd] = useState(new Date().setHours(0, 0, 0, 0));
     const [temptime, setTempTime] = useState('')
 
     const [startTime, setStartTime] = useState({
@@ -346,7 +423,26 @@ const Dash_cal = () => {
         </View>
     );
 
-    const renderItem = ({ item }) => <Item name={item.name} worktime={item.worktime} />;
+    const renderItem = ({ item }) => {
+        const onPressOutHandler = async () => {
+            await AsyncStorage.setItem('chatRoomId', item.chatroomId)
+            await AsyncStorage.setItem('traineeId', item._id)
+
+            //flag 세워?
+            //setIsNewFlag(true)
+            navigation.navigate('Indiv', {screen: 'indiv_profile'})
+            
+        }
+    
+        return(
+            <TouchableOpacity onPressOut={()=>{
+                //indiv_profile로 이동
+                onPressOutHandler()
+            }}>
+                <Item name={item.name} worktime={item.worktime} />
+            </TouchableOpacity>
+        )
+    }
 
     const renderContent = () => (
         <View style={styles.bottomsheetcontainer}>
@@ -455,9 +551,16 @@ const Dash_cal = () => {
             <SafeAreaView style={styles.wrap}>
                 <View style = {styles.maincontainer}>
                 <View style={{flex:1, marginTop: 12}}>
+                  {!dotDatesFromDB && dotStateFlag ?
+                    <View style={{flex:1, justifyContent: 'center', alignItems: 'center'}}>
+                      <Loader />
+                    </View>
+                    :
                     <CalendarView 
                         setSelectedDatePick={setSelectedDatePick}
+                        dotDatesFromDB={dotDatesFromDB}
                     />
+                  }
                 </View>
                 </View>
                 <View style = {styles.downcontainer}>
@@ -473,7 +576,10 @@ const Dash_cal = () => {
                                 <View>
                                     <Text style={{color:'#AAAAAA'}}>이날의 일정이 없습니다</Text>
                                 </View>
-                            :<FlatList data={DATA} renderItem={renderItem} keyExtractor={item => item._id} />}
+                            :<View>
+                                <FlatList data={DATA} renderItem={renderItem} keyExtractor={item => item._id} />
+                            </View>
+                        }
                     </View>
                 </View>
                 </View>
