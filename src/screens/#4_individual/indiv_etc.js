@@ -11,12 +11,25 @@ import { COLORS } from '../../utils/constants';
 const onPress = () => {}
 
 function indiv_etc({ navigation }) {
+
   const { signOut } = useContext(AuthContext)
 
   const makePortfolio = () => {
     /*여기에서 자유롭게 테스트 해보면 됨*/
+    console.log('pdf 내보내기')
+
     createAndSavePDF('<p>hello world</p>')
-    console.log('터미널 보면 버튼 누를때마다 콘솔 찍힘')
+  }
+
+  const logout = () => {
+    console.log('logout')
+  }
+  
+  const editGoal = () => {
+    console.log('목표수정')
+  }
+  const editUniqueness = () => {
+    console.log('특이사항 수정') 
   }
 
   useEffect(() => {
@@ -31,7 +44,7 @@ function indiv_etc({ navigation }) {
       <View style={styles.content}>
         <View style={styles.row}>
           <Text style={styles.title}>테스트 회원님</Text>
-          <TouchableOpacity>
+          <TouchableOpacity onPressOut={()=>logout()}>
             <FontAwesome name="sign-out" size={33} style={{paddingRight:Spacing.SCALE_16}} />
           </TouchableOpacity>
         </View>
@@ -43,7 +56,11 @@ function indiv_etc({ navigation }) {
               <View>
                 <View style={{flexDirection:'row', justifyContent:'space-between'}}>
                   <Text style={styles.text}>이러쿵저러쿵</Text>
-                  <TouchableOpacity>
+                  <TouchableOpacity
+                    onPressOut={()=>{
+                      editGoal()
+                    }}
+                  >
                     <FontAwesome name="edit" size={25}/>
                   </TouchableOpacity>
                 </View>
@@ -55,7 +72,11 @@ function indiv_etc({ navigation }) {
               <View>
                 <View style={{flexDirection:'row', justifyContent:'space-between'}}>
                   <Text style={styles.text}>이러쿵저러쿵</Text>
-                  <TouchableOpacity>
+                  <TouchableOpacity
+                    onPressOut={()=>{
+                      editUniqueness()
+                    }}
+                  >
                     <FontAwesome name="edit" size={25}/>
                   </TouchableOpacity>
                 </View>
@@ -65,7 +86,11 @@ function indiv_etc({ navigation }) {
             <View style={{flex:1}}>
               <Text style={styles.subtitle}>PDF 내보내기</Text>
               <View>
-                  <TouchableOpacity>
+                  <TouchableOpacity
+                    onPressOut={()=>{
+                      makePortfolio()
+                    }}
+                  >
                     <Text style={{
                       textDecorationLine: 'underline',
                       fontSize: Typography.FONT_SIZE_16,
