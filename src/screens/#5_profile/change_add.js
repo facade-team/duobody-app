@@ -270,34 +270,6 @@ const onSaveExbodyHandler = () => {
 
   let form = new FormData()
   form.append('exbodyImage', { uri: localUri, name: filename, type })
-
-  /*
-  axios({
-    method: 'post',
-    url: `/trainee/exbody/${_id}/before`,
-    data: form,
-  }).then((res) => {
-    Alert.alert('exbody을 등록했습니다')
-    console.log('exbody 등록 성공!')
-    console.log(res.data.data)
-  }).catch((err) => {
-    Alert.alert('exbody 등록에 실패했습니다')
-    console.log('병신이니?')
-    console.log(err.response)
-  })
-  */
-
-  /*
-  axios.post(`/trainee/exbody/${_id}/before`, form)
-    .then((res) => {
-      Alert.alert('exbody을 등록했습니다')
-      console.log('exbody 등록 성공!')
-      console.log(res.data.data)
-    })
-    .catch((err) => {
-      console.log(err.response)
-    })
-    */
   
   if (exbody.exbodyAfter === null && exbody.exbodyBefore === null) {
     axios({
@@ -307,11 +279,13 @@ const onSaveExbodyHandler = () => {
     })
       .then((res) => {
         Alert.alert('exbody을 등록했습니다')
-        console.log(res.data.data)
+        //console.log(res.data.data)
       })
-      .catch((err) => {
-        Alert.alert('exbody 등록에 실패했습니다')
-        console.log(err.response)
+      .catch((error) => {
+        //const errJson = JSON.parse(error.response.request._response)
+        //Alert.alert(errJson.message)
+        Alert.alert('exbodt 등록에 실패했습니다..')
+        //console.log(errJson.message)
       })
   }
   else if (exbody.exbodyAfter === null && exbody.exbodyBefore !== null) {
@@ -322,11 +296,11 @@ const onSaveExbodyHandler = () => {
     })
       .then((res) => {
         Alert.alert('exbody을 등록했습니다')
-        console.log(res.data.data)
+        //console.log(res.data.data)
       })
       .catch((err) => {
-        Alert.alert('exbody 등록에 실패했습니다')
-        console.log(err.response)
+        Alert.alert('exbody 등록에 실패했습니다!!')
+        //console.log(err.response.data.msg)
       })
   }
   else if (exbody.exbodyAfter !== null && exbody.exbodyBefore !== null) {

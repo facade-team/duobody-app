@@ -109,9 +109,9 @@ const Dash_dash = () => {
   }
 
   const SearchControler = async () => {
-    setisNewFlag(true)
     await AsyncStorage.setItem('newloadflag', 'hello')
     console.log('to the search!')
+    setisNewFlag(true)
     navigation.navigate('Mem_Search')
   }
 
