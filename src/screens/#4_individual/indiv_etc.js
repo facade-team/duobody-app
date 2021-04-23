@@ -11,6 +11,7 @@ import axios from '../../axios/api';
 import getDateStringWithNumber from '../../utils/getDateStringWithNumber';
 import AsyncStorage from '@react-native-community/async-storage';
 import BottomSheet from 'reanimated-bottom-sheet';
+import Loader from '../../components/Loader';
 
 
 //AsyncStorage에서 trainee_id로 axios get
@@ -314,9 +315,17 @@ function indiv_etc({ navigation }) {
 
   return (
     <SafeAreaView style={styles.wrap}>
+      {!isSearched ? 
+      <View style={styles.content}>
+        <View style={{flex:1, justifyContent: 'center', alignItems: 'center'}}>
+          <Loader />
+        </View>
+      </View>
+      :
+      <View>
       <View style={styles.content}>
         <View style={styles.row}>
-          <Text style={styles.title}>테스트 회원님</Text>
+          <Text style={styles.title}>{traineeName} 회원님</Text>
           <TouchableOpacity onPressOut={()=>logout()}>
             <FontAwesome name="sign-out" size={33} style={{paddingRight:Spacing.SCALE_16,}} />
           </TouchableOpacity>
@@ -389,6 +398,8 @@ function indiv_etc({ navigation }) {
         renderContent={renderUniqueness}
         initialSnap={1}
       />
+      </View>
+                      }
     </SafeAreaView>
   )
 }
