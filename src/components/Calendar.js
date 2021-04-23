@@ -16,7 +16,7 @@ LocaleConfig.defaultLocale = 'fr';
 // 날짜를 눌렀을 때 이벤트 추가해야 됨
 const CalendarView = ({setSelectedDatePick}) => {
     //test
-    const workout[] = {key:'workout', color: 'red',selectedDotColor: 'blue'};
+    const workout = {key:'workout', color: 'red',selectedDotColor: 'blue'};
     //test
 
     const [markedDates, setMarkedDates] = useState(null)

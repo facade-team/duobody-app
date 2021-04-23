@@ -37,7 +37,6 @@ const Dash_dash = () => {
     setTraineeListFromDB([]);
     axios.get('/trainee')
     .then(res => {
-      console.log('got the data! - from dashboard')
       res.data.data.map(tmp=>{
       let newTrainee = {}
       newTrainee._id = tmp._id
@@ -109,8 +108,10 @@ const Dash_dash = () => {
     navigation.navigate('Mem_Add')
   }
 
-  const SearchControler = () => {
+  const SearchControler = async () => {
     setisNewFlag(true)
+    await AsyncStorage.setItem('newloadflag', 'hello')
+    console.log('to the search!')
     navigation.navigate('Mem_Search')
   }
 
