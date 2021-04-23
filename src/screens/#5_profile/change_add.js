@@ -28,8 +28,14 @@ const change_add = ({navigation}) => {
   const [isSearched, setIsSearched] = useState(false);
   const [isNewLoad, setisNewLoad] = useState(true);
   
+<<<<<<< HEAD
 
   // 승우가 짠 부분 start
+=======
+  
+  // 승우가 짠 부분 start
+  const [Result, setResult] = useState(null);
+>>>>>>> b6262a8d554e0560e87cda8062c1f50c2f11c370
   const [image, setImage] = useState(null);
   const [exbody, setExbody] = useState({
     exbodyAfter: null,
@@ -43,6 +49,10 @@ const change_add = ({navigation}) => {
       aspect: [4, 3],
       quality: 1,
     });
+<<<<<<< HEAD
+=======
+    setResult(result)
+>>>>>>> b6262a8d554e0560e87cda8062c1f50c2f11c370
 
     console.log(result);
 
@@ -259,47 +269,89 @@ const exbodyAddControler = () => {
 }
 
 const onSaveExbodyHandler = () => {
+  let localUri = Result.uri;
+  let filename = localUri.split('/').pop();
+
+  let match = /\.(\w+)$/.exec(filename);
+  let type = match ? `image/${match[1]}` : `image`;
+
+
   let form = new FormData()
-  form.append('exbodyImage', image)
-  console.log('exbody below!')
-  console.log(exbody)
+  form.append('exbodyImage', { uri: localUri, name: filename, type })
+
+  /*
+  axios({
+    method: 'post',
+    url: `/trainee/exbody/${_id}/before`,
+    data: form,
+  }).then((res) => {
+    Alert.alert('exbody을 등록했습니다')
+    console.log('exbody 등록 성공!')
+    console.log(res.data.data)
+  }).catch((err) => {
+    Alert.alert('exbody 등록에 실패했습니다')
+    console.log('병신이니?')
+    console.log(err.response)
+  })
+  */
+
+  /*
   axios.post(`/trainee/exbody/${_id}/before`, form)
     .then((res) => {
+      Alert.alert('exbody을 등록했습니다')
+      console.log('exbody 등록 성공!')
       console.log(res.data.data)
     })
     .catch((err) => {
       console.log(err.response)
     })
-  /*
+    */
+  
   if (exbody.exbodyAfter === null && exbody.exbodyBefore === null) {
-    axios.post(`/trainee/exbody/${_id}/before`, form)
+    axios({
+      method: 'post',
+      url: `/trainee/exbody/${_id}/before`,
+      data: form,
+    })
       .then((res) => {
+        Alert.alert('exbody을 등록했습니다')
         console.log(res.data.data)
       })
       .catch((err) => {
+        Alert.alert('exbody 등록에 실패했습니다')
         console.log(err.response)
       })
   }
   else if (exbody.exbodyAfter === null && exbody.exbodyBefore !== null) {
-    axios.post(`/trainee/exbody/${_id}/after`, form)
+    axios({
+      method: 'post',
+      url: `/trainee/exbody/${_id}/after`,
+      data: form,
+    })
       .then((res) => {
+        Alert.alert('exbody을 등록했습니다')
         console.log(res.data.data)
       })
       .catch((err) => {
+        Alert.alert('exbody 등록에 실패했습니다')
         console.log(err.response)
       })
   }
   else if (exbody.exbodyAfter !== null && exbody.exbodyBefore !== null) {
-    axios.post(`/trainee/exbody/${_id}/before`, form)
+    axios({
+      method: 'post',
+      url: `/trainee/exbody/${_id}/after`,
+      data: form,
+    })
       .then((res) => {
+        Alert.alert('exbody을 등록했습니다')
         console.log(res.data.data)
       })
       .catch((err) => {
+        Alert.alert('exbody 등록에 실패했습니다')
         console.log(err.response)
       })
   }
-  */
-  Alert.alert('Exbody가 저장되었습니다')
 }
 
 return (

@@ -15,6 +15,10 @@ export default ({navigation}) => {
   const [_id, set_id] = useState('')
   const [IsSearched, setIsSearched] = useState(true)
   const [DATAFromDB, setDATAFromDB] = useState([]);
+<<<<<<< HEAD
+=======
+  const [isNewFlag, setisNewFlag] = useState(true)
+>>>>>>> b6262a8d554e0560e87cda8062c1f50c2f11c370
 
   useFocusEffect(
     useCallback(() => {
@@ -36,6 +40,19 @@ export default ({navigation}) => {
       }
 
       getTraineeId()
+<<<<<<< HEAD
+=======
+      if(isNewFlag===true){
+        GetData()
+        setName('')
+        setHp('')
+        setAddress('')
+        setAge('')
+        setHeight('')
+      }
+      setisNewFlag(false)
+
+>>>>>>> b6262a8d554e0560e87cda8062c1f50c2f11c370
 
       return () => {
         isActive = false
@@ -88,6 +105,10 @@ export default ({navigation}) => {
       Alert.alert(res.data.msg)
       navigation.navigate('Indiv')
       console.log(res.data.data)
+<<<<<<< HEAD
+=======
+      setisNewFlag(true)
+>>>>>>> b6262a8d554e0560e87cda8062c1f50c2f11c370
     })
     .catch(err=>{
       Alert.alert(err.response.data.msg)

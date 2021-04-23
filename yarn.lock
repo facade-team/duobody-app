@@ -12161,7 +12161,7 @@
     "shell-quote" "^1.6.1"
     "ws" "^7"
 
-"react-dom@16.13.1":
+"react-dom@^16.13.1":
   "integrity" "sha512-81PIMmVLnCNLO/fFOQxdQkvEq/+Hfpv24XNJfpyZhTRfO0QcmQIF/PgCa1zCOj2w1hrn12MFLyaJ/G0+Mxtfag=="
   "resolved" "https://registry.npmjs.org/react-dom/-/react-dom-16.13.1.tgz"
   "version" "16.13.1"
@@ -12280,6 +12280,11 @@
     "react-native-typing-animation" "^0.1.7"
     "uuid" "3.4.0"
 
+"react-native-html-to-pdf@^0.9.1":
+  "integrity" "sha512-aACv9A2i9A6FY5hi9zuhDSsJqea3yRpbpQu0/y1LGPk9DknE4c0CDDOI9qjEJv+wgBpS1gfQM+sezqVlZ8xtlA=="
+  "resolved" "https://registry.npmjs.org/react-native-html-to-pdf/-/react-native-html-to-pdf-0.9.1.tgz"
+  "version" "0.9.1"
+
 "react-native-ionicons@^4.x":
   "integrity" "sha512-s2Ia7M5t609LE9LWygMj3ALVPUlKhK7R9XcMb67fP4EYJv0oLcwg5pc+8ftv9XXaUuTW/WgL3zJlBYxAvtvMJg=="
   "resolved" "https://registry.npmjs.org/react-native-ionicons/-/react-native-ionicons-4.6.5.tgz"
@@ -12332,6 +12337,11 @@
   "integrity" "sha512-Uvye5evur8prriN/OxPyYOVoY1DaIh9980OgF9vXTPflQwvmpdygDHBOOmeFMUuMPAc+kNdi++BkV2PJCGvSSQ=="
   "resolved" "https://registry.npmjs.org/react-native-permissions/-/react-native-permissions-3.0.2.tgz"
   "version" "3.0.2"
+
+"react-native-print@^0.7.0":
+  "integrity" "sha512-wnLLLNgOS1zqEUYPvHChBuFawnEJ6CUzHeCceG05cepnWZsAO+wHUErhcwCGx3Ryu5R084lCYdZzdU+I128V0A=="
+  "resolved" "https://registry.npmjs.org/react-native-print/-/react-native-print-0.7.0.tgz"
+  "version" "0.7.0"
 
 "react-native-reanimated@~1.13.0":
   "integrity" "sha512-i714H24dv6ncpFO7/SZ0PfAMbvjgVbF8Ow2NPtowoZAz8osS54DmTMrkgJ9Za+uEku/s0AEaxqiXG2Xgntvv2g=="
@@ -12412,7 +12422,7 @@
     "escape-string-regexp" "2.0.0"
     "invariant" "2.2.4"
 
-"react-native@>=0.59.5", "react-native@>=0.60.0", "react-native@0.64.0":
+"react-native@>=0.59.5", "react-native@>=0.60.0", "react-native@>=0.8.0 || 0.8.0-rc || 0.8.0-rc.2 || 0.9.0-rc || 0.10.1", "react-native@0.64.0":
   "integrity" "sha512-8dhSHBthgGwAjU+OjqUEA49229ThPMQH7URH0u8L0xoQFCnZO2sZ9Wc6KcbxI0x9KSmjCMFFZqRe3w3QsRv64g=="
   "resolved" "https://registry.npmjs.org/react-native/-/react-native-0.64.0.tgz"
   "version" "0.64.0"
