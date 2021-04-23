@@ -69,7 +69,7 @@ function Indiv_calendar({ navigation }) {
             setTrainee_id(id)
             setDidMount(false)
             setGotId(true)
-            console.log(`this is id: ${id}`)
+            //console.log(`this is id: ${id}`)
           }
         } catch (err) {
           console.log(err)

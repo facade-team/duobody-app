@@ -47,12 +47,8 @@ export default ({navigation}) => {
 
     axios.post('/trainee', newMember)
     .then((res) => {
-      console.log('000000')
       Alert.alert(res.data.msg)
-      console.log('aaaaaa')
       setisNewFlag(true)
-      console.log('11111')
-      console.log('222222')
       navigation.goBack()
     })
     .catch(err => {
