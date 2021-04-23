@@ -142,8 +142,8 @@ const mem_search = ({ navigation }) => {
                 color={Colors.BLACK}
                 size={Spacing.SCALE_20}
                 borderColor={Colors.PRIMARY}
-                borderWidth={1}
-                backgroundColor={Colors.GRAY_LIGHT}
+                borderWidth={0}
+                backgroundColor={Colors.WHITE}
                 paddingTop={Spacing.SCALE_12}
                 paddingLeft={Spacing.SCALE_16}
                 paddingBottom={Spacing.SCALE_16}
