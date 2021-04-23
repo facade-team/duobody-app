@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { StyleSheet, SafeAreaView, Text, View, FlatList, TouchableOpacity, Platform } from 'react-native';
+import { StyleSheet, SafeAreaView, Text, View, FlatList, TouchableOpacity, Platform, Alert } from 'react-native';
 import CalendarView from '../../components/Calendar';
 import CircleButton from '../../components/CircleButton'
 import Animated from 'react-native-reanimated';
@@ -47,8 +47,7 @@ const Dash_cal = ( {navigation} ) => {
     useFocusEffect(
       useCallback(() => {
         let isActive = true
-        //console.log('useFocusEffect')
-        //console.log(dotFlag)
+
         if (!dotFlag) {
           callGetAllLessonDatesAPI()
         }
@@ -56,13 +55,14 @@ const Dash_cal = ( {navigation} ) => {
         return () => {
           isActive = false
         }
-      })
+      }, [])
     )
 
     const callGetAllLessonDatesAPI = async () => {
       //
       await axios.get('/trainer/lesson')
         .then((res) => {
+
           if (res.data.data) {
             const workout = {key:'workout', color: 'red',selectedDotColor: 'blue'}
             let newObj = {}
@@ -86,7 +86,6 @@ const Dash_cal = ( {navigation} ) => {
         if(!traineeDidMount){
             axios.get('/trainee')
             .then((res)=>{
-                // console.log(res.data.data)
                 res.data.data.map(d=>{
                     let newTrainee = {}
                     newTrainee._id = d._id
@@ -101,10 +100,6 @@ const Dash_cal = ( {navigation} ) => {
             })
             setTraineeDidMount(true)
         }
-
-        //console.log(`dot:`)
-        //console.log(dotDatesFromDB)
-
 
         //해당 날짜 일정 불러오기 - url 형식에 맞게 날짜 string으로 변경
         let stringmonth = selectedDatePick.month
@@ -128,7 +123,6 @@ const Dash_cal = ( {navigation} ) => {
             axios.get(`/trainer/lesson/date/${urlstring}`)
                 .then((res) => {
                     res.data.data.map(d=>{
-                        console.log
                         let newData = {}
 
                         newData._id = d.traineeId
@@ -152,7 +146,7 @@ const Dash_cal = ( {navigation} ) => {
     
     // local storage에 데이터 저장하는 함수
     const saveDataLocalStorage = () => {
-        setDotStateFlag(false)
+      setDotStateFlag(true)
         //ID
         const _id = selectedTrainee._id
         //NAME
@@ -173,19 +167,20 @@ const Dash_cal = ( {navigation} ) => {
         const st = convertTimeStamp(startTime)
         const et = convertTimeStamp(endTime)
 
-        console.log('ee')
-        const date = getDateString(start)
+        //const date = getDateString(start)
+        const dateObj = new Date(selectedDatePick.year, selectedDatePick.month - 1, selectedDatePick.date, 9, 0)
+        const date = getDateString(dateObj)
         const newObj = {}
         const workout = {key:'workout', color: 'red',selectedDotColor: 'blue'}
 
         newObj[date] = {dots: [workout]}
-
+        
         const mergeObj = (obj1, obj2) => {
           const newObj = {};
           for (let att in obj1) { 
             newObj[att] = obj1[att]; 
           }
-        
+          
           for(let att in obj2)  {
             newObj[att] = obj2[att];
           }
@@ -195,8 +190,7 @@ const Dash_cal = ( {navigation} ) => {
 
         const prevDotDates = dotDatesFromDB
         const newDotDates = mergeObj(prevDotDates, newObj)
-
-
+        
         
         //새로 업데이트 된 DATA를 push
         axios.post('/trainee/lesson',{
@@ -207,14 +201,22 @@ const Dash_cal = ( {navigation} ) => {
             })
             .then((res)=> {
               setDotDatesFromDB(newDotDates)
-              setDotStateFlag(true)
-                console.log(res.data)
+              Alert.alert('레슨을 생성했습니다')
             })
             .catch((error)=>{
                 console.log(error.message)
             })
+            
 
     }
+
+    
+    useEffect(() => {
+      if (dotDatesFromDB) {
+        setDotStateFlag(false)
+      }
+    }, [dotDatesFromDB])
+    
 
     const today = new Date()
     const koreaday = ['일','월','화','수','목','금','토']
@@ -552,15 +554,17 @@ const Dash_cal = ( {navigation} ) => {
     const EndTimeRef = React.useRef(null);
 
     return (
-        <>
+        <SafeAreaView style={{flex:1}}>
             <SafeAreaView style={styles.wrap}>
                 <View style = {styles.maincontainer}>
                 <View style={{flex:1, marginTop: 12}}>
-                  {!dotDatesFromDB && dotStateFlag ?
+                  
+                  {(dotStateFlag || !dotDatesFromDB )&&
                     <View style={{flex:1, justifyContent: 'center', alignItems: 'center'}}>
                       <Loader />
                     </View>
-                    :
+                  }
+                  {!dotStateFlag && dotDatesFromDB &&
                     <CalendarView 
                         setSelectedDatePick={setSelectedDatePick}
                         dotDatesFromDB={dotDatesFromDB}
@@ -618,7 +622,7 @@ const Dash_cal = ( {navigation} ) => {
                 renderContent={renderEndTime}
                 initialSnap={1}
             />
-        </>
+        </SafeAreaView>
     )
 }
 
