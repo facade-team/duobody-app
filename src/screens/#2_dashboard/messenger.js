@@ -23,7 +23,7 @@ const Dash_Msg = ( {navigation} ) => {
       navigation.navigate('Indiv', {screen: 'indiv_msg'})
     }
     return (
-    <TouchableOpacity onPressOut={() => {
+    <TouchableOpacity onPress={() => {
         // 회원별 채팅방으로 이동
         onPressOutHandler()
       }}>
