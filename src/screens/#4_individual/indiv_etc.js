@@ -1,5 +1,5 @@
 import { createAndSavePDF } from '../../utils/helpers'
-import { View, Button } from 'react-native'
+import { View, Button, Text } from 'react-native'
 import { AuthContext } from '../../services/AuthContext'
 import React, { useContext } from 'react'
 
