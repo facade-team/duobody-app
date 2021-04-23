@@ -1,0 +1,21 @@
+{
+"expo": {
+    "name": "Duobody",
+    "version": "1.0.0",
+    "privacy": "public",
+    "slug": "DuobodyApp",
+    "platforms": [
+        "ios",
+        "andriod"
+    ],  
+    "ios":{
+        "supportsTablet": false,
+        "icon": "./src/assets/logo_square.png"
+    },
+    "andriod": {
+        "versionCode" : 1,
+        "icon": "./src/assets/logo_square.png"
+    }
+
+    }
+  }
