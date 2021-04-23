@@ -58,12 +58,10 @@ function Indiv_calendar({ navigation }) {
   useFocusEffect(
     useCallback(() => {
       let isActive = true
-      console.log('useFocusEffect')
       const getTraineeId = async () => {
         try {
           const id = await AsyncStorage.getItem('traineeId')
           if (isActive && (id !== trainee_id)) {
-            console.log('아이디를 새로 등록하는 과정...')
             setDotDatesFromDB(null)
             callGetAllLessonDatesAPI(id)
             setTrainee_id(id)
@@ -96,7 +94,6 @@ function Indiv_calendar({ navigation }) {
     // 해당 날짜 일정 불러오기 - url 형식에 맞게 날짜 string으로 변경
     selectedDateToString()
     if(gotDataFlag !== urlstring && gotId) {
-      console.log('call get lesson by date API...')
       setLesson({})
       axios.get(`/trainee/${trainee_id}/lesson/date/${urlstring}`)
       .then((res) => {
@@ -144,7 +141,6 @@ function Indiv_calendar({ navigation }) {
   const [dotDatesFromDB, setDotDatesFromDB] = useState(null)
 
   const callGetAllLessonDatesAPI = async (id) => {
-    console.log('callGetAllLessonDatesAPI ' + id)
     await axios.get(`/trainee/${id}/lesson/date`)
       .then((res) => {
         if (res.data.data) {
