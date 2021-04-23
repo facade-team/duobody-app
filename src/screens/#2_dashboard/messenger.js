@@ -4,6 +4,7 @@ import { SafeAreaView, View, FlatList, StyleSheet, Text, StatusBar, TouchableOpa
 import { Colors } from '../../styles';
 import AsyncStorage from '@react-native-community/async-storage';
 import {useFocusEffect} from '@react-navigation/native'
+import Loader from '../../components/Loader';
 
 const Item = ({ title, submessenger }) => (
   <View style={styles.item}>
@@ -84,7 +85,7 @@ const Dash_Msg = ( {navigation} ) => {
         setDidMount(true)
       }
       setIsNewFlag(false)
-    })
+    }, [])
   )
 
   useEffect(()=>{
@@ -139,7 +140,19 @@ const Dash_Msg = ( {navigation} ) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style = {styles.maincontainer}>
+      {chatRoom.length === 0 || isNewFlag === true &&
+        <View style={{flex:1, justifyContent: 'center', alignItems: 'center'}}>
+          <Loader />
+        </View>
+      }
+      {chatRoom.length !== 0 && isNewFlag === true && 
+        <View style={{flex:1, justifyContent: 'center', alignItems: 'center'}}>
+          <Loader />
+        </View>
+      }
+      {chatRoom.length !== 0 && isNewFlag === false &&
         <FlatList data={chatRoom} renderItem={renderItem} keyExtractor={item => item._id} />
+      }
       </View>
     </SafeAreaView>
   );
@@ -151,7 +164,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.PRIMARY,
-    marginTop: StatusBar.currentHeight || 0,
   },
   maincontainer:{
     backgroundColor: Colors.WHITE,

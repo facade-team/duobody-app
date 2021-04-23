@@ -39,7 +39,7 @@ const CalendarView = ({setSelectedDatePick, dotDatesFromDB}) => {
 
     return (
       markedDates && 
-      <View style={{ flex: 1, paddingTop: 5,}}>
+      <View style={{ flex: 1, paddingTop: 5,paddingBottom: 20,}}>
         <Calendar
         //선택날짜 마킹
         markedDates={markedDates}

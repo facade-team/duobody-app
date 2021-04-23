@@ -367,7 +367,7 @@ export default IndividualSession = () => {
           {Platform.OS === 'ios' && (
             <View>
               <DateTimePicker
-                style={{ width: Spacing.SCALE_80, flex: 1 }}
+                style={{ width: Spacing.SCALE_150, flex: 1 }}
                 testID="dateTimePicker"
                 value={renderedDate}
                 mode={'date'}

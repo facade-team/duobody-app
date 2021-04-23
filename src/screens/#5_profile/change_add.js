@@ -359,7 +359,7 @@ const change_add = ({ navigation }) => {
           <View style={styles.dayselect}>
             <DateTimePicker
               style={{
-                width: Spacing.SCALE_100,
+                width: Spacing.SCALE_150,
                 justifyContent: 'center',
                 alignSelf: 'center',
               }}
@@ -504,7 +504,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   nametext: {
-    fontSize: Typography.FONT_SIZE_28,
+    fontSize: Typography.FONT_SIZE_24,
     fontWeight: Typography.FONT_WEIGHT_BOLD,
   },
   dayselect: {

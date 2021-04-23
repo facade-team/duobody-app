@@ -25,18 +25,18 @@ const mem_search = ({ navigation }) => {
   const [IsNewFlag, setIsNewFlag] = useState(true)
 
   useFocusEffect(
-    useCallback(async () => {
-      const NewLoadFlag = await AsyncStorage.getItem('newloadflag')
+    useCallback(() => {
 
-      if (NewLoadFlag === 'hello') {
-        getTrainee()
+      const getLoadFlag = async () => {
+        const NewLoadFlag = await AsyncStorage.getItem('newloadflag')
+        console.log(NewLoadFlag)
+        if (NewLoadFlag === 'hello') {
+          getTrainee()
+        }
       }
 
-      // if(IsNewFlag){
-      //   getTrainee()
-      // }
-      // setIsNewFlag(false)
-    })
+      getLoadFlag()
+    }, [])
   )
 
   const getTrainee = () => {
@@ -133,7 +133,7 @@ const mem_search = ({ navigation }) => {
       }
 
       return (
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
           <TouchableOpacity onPress={() => onPressOutHandler()}>
             <Item name={item.name} />
           </TouchableOpacity>
@@ -142,8 +142,10 @@ const mem_search = ({ navigation }) => {
               <Icon.Button
                 name="trash"
                 color={Colors.BLACK}
-                size={Spacing.SCALE_24}
-                backgroundColor={Colors.GRAY}
+                size={Spacing.SCALE_20}
+                borderColor={Colors.PRIMARY}
+                borderWidth={1}
+                backgroundColor={Colors.GRAY_LIGHT}
                 paddingTop={Spacing.SCALE_12}
                 paddingLeft={Spacing.SCALE_16}
                 paddingBottom={Spacing.SCALE_16}

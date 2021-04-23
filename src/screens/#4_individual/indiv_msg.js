@@ -5,6 +5,7 @@ import { Bubble, GiftedChat } from 'react-native-gifted-chat'
 import {StyleSheet, Text, View} from 'react-native';
 import axios from '../../axios/api';
 import { Colors } from '../../styles';
+import Loader from '../../components/Loader';
 
 const indiv_msg = () => {
 
@@ -16,15 +17,15 @@ const indiv_msg = () => {
     const [isMounted, setIsMounted] = useState(true)
 
     const [messages, setMessages] = useState([]);
+    const [loading, setLoading] = useState(true)
 
     useFocusEffect(
         useCallback(() => {
-          let isActive = true
-    
           const getChatRoomId = async () => {
             try {
               const id = await AsyncStorage.getItem('chatRoomId')
-              if (isActive && (id !== chatroomId)) {
+              if (true) {
+                    setLoading(true)
                     setChatroomId(id)
                     setIsMounted(false)
                     setMessages([])
@@ -69,15 +70,15 @@ const indiv_msg = () => {
     
           getChatRoomId()
     
-          return () => {
-            isActive = false
-          }
-        })
+        }, [])
     )
 
     useEffect(() => {
+      if(loading){
+        setLoading(false)
+      }
         console.log('useeffect : ' + chatroomId)
-    })
+    }, [trainee])
 
     const onSend = useCallback( async (messages = [], id) => {
         console.log(messages[0].text)
@@ -118,20 +119,25 @@ const indiv_msg = () => {
     }
 
     return(
-        <>
-        <View style={styles.topbar}>
-            <Text style={styles.title}>{trainee.name} 회원님</Text>
+        <View style={{flex:1,}}>
+          {
+            loading ? <View style={{flex:1, justifyContent: 'center', alignItems: 'center'}}><Loader /></View> :
+            <View style={{flex:1,}}>
+              <View style={styles.topbar}>
+                  <Text style={styles.title}>{trainee.name} 회원님</Text>
+              </View>
+              <GiftedChat
+              messages={messages}
+              onSend={messages => onSend(messages, chatroomId)}
+              user={{
+                  _id: trainer._id,
+              }}
+              renderBubble={renderBubble}
+              alwaysShowSend
+              />
+            </View>
+          }
         </View>
-        <GiftedChat
-        messages={messages}
-        onSend={messages => onSend(messages, chatroomId)}
-        user={{
-            _id: trainer._id,
-        }}
-        renderBubble={renderBubble}
-        alwaysShowSend
-        />
-        </>
     )
 }
 
