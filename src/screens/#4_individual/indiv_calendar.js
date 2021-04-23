@@ -189,90 +189,92 @@ function Indiv_calendar({ navigation }) {
 
   return (
     <SafeAreaView style={styles.wrap}>
-      <View style = {styles.whiteBox}>
-        <View style={{flex:1,}}>
-          {!dotDatesFromDB ? 
-          <View style={{flex:1, justifyContent: 'center', alignItems: 'center'}}>
-            <Loader />
-          </View>
-          :
-            <CalendarView
-              setSelectedDatePick={setSelectedDatePick}
-              dotDates={dotDates}
-              dotDatesFromDB={dotDatesFromDB}
-            />
-          }
-        </View>
-      </View>
-      <View style={styles.whiteBox}>
-        <View style={styles.container}>
-          <View style={{flex:1, flexDirection: 'row', justifyContent: 'space-around'}}>
-            <Text>{selectedDatePick.year}년 {selectedDatePick.month}월 {selectedDatePick.date}일</Text>
-            {
-              lesson && lesson.start && (
-                <Text>{lesson.start} - {lesson.end}</Text>
-              )
-            }
-          </View>
-        </View>
-        <View style={{flex:6, borderTopWidth:0.5, marginBottom: 5,}}>
-          {
-            selectedNull === true && lesson && lesson.sessions && (
-            <View>
-              <ScrollView>
-                {
-                  partAndField.map((data__, index__) => 
-                    (partToggle[index__]) && (
-                      <View style={{margin: Spacing.SCALE_8}}>
-                        <PartTitle data__={data__} index__={index__} />
-                        {
-                          lesson.sessions.map((data_, index_) => 
-                            (data_.part === data__.part) && (
-                              <View style={{marginBottom: Spacing.SCALE_20, marginLeft: Spacing.SCALE_4}}>
-                                <View style={{margin: Spacing.SCALE_4,}}>
-                                  <Text key={index_} style={{fontSize: Typography.FONT_SIZE_16}}>{data_.field}</Text>
-                                </View>
-                                {
-                                  data_.sets.map((data, index) => 
-                                    (data_.part !== '유산소') && (data_.field !== '플랭크')? 
-                                    <SetsView index={index} dbWeight={data.weight} dbRep={data.rep} />
-                                    :
-                                    <SetsIViewWithMinutes index={index} dbMinutes={data.minutes} />
-                                  )
-                                }
-                              </View>
-                            )
-                          )
-                        }
-                      </View>
-                    )
-                  )
-                }
-              </ScrollView>
-            </View>
-            )
-          }
-          {
-            selectedNull === true && lesson && lesson.sessions && lesson.sessions.length === 0 && (
-              <View style={{flex:1, justifyContent: 'center', alignItems: 'center'}}>
-                <Text>운동 스케줄을 등록해주세요!</Text>
-              </View>
-            )
-          }
-          {
-            (selectedNull === false) && 
-            <View style={{flex:1, justifyContent: 'center', alignItems: 'center'}}>
-              <Text>등록된 레슨이 없어요!</Text>
-            </View>
-          }
-          {
-            (selectedNull === true && isEmpty(lesson)) && 
+      <ScrollView>
+        <View style = {styles.whiteBox}>
+          <View style={{flex:1,}}>
+            {!dotDatesFromDB ? 
             <View style={{flex:1, justifyContent: 'center', alignItems: 'center'}}>
               <Loader />
             </View>
-          }
+            :
+              <CalendarView
+                setSelectedDatePick={setSelectedDatePick}
+                dotDates={dotDates}
+                dotDatesFromDB={dotDatesFromDB}
+              />
+            }
+          </View>
         </View>
-      </View>
+        <View style={styles.whiteBox}>
+          <View style={styles.container}>
+            <View style={{flex:1, flexDirection: 'row', justifyContent: 'space-around'}}>
+              <Text>{selectedDatePick.year}년 {selectedDatePick.month}월 {selectedDatePick.date}일</Text>
+              {
+                lesson && lesson.start && (
+                  <Text>{lesson.start} - {lesson.end}</Text>
+                )
+              }
+            </View>
+          </View>
+          <View style={{flex:6, borderTopWidth:0.5, marginBottom: 40,}}>
+            {
+              selectedNull === true && lesson && lesson.sessions && (
+              <View>
+                <ScrollView>
+                  {
+                    partAndField.map((data__, index__) => 
+                      (partToggle[index__]) && (
+                        <View style={{margin: Spacing.SCALE_8}}>
+                          <PartTitle data__={data__} index__={index__} />
+                          {
+                            lesson.sessions.map((data_, index_) => 
+                              (data_.part === data__.part) && (
+                                <View style={{marginBottom: Spacing.SCALE_20, marginLeft: Spacing.SCALE_4}}>
+                                  <View style={{margin: Spacing.SCALE_4,}}>
+                                    <Text key={index_} style={{fontSize: Typography.FONT_SIZE_16}}>{data_.field}</Text>
+                                  </View>
+                                  {
+                                    data_.sets.map((data, index) => 
+                                      (data_.part !== '유산소') && (data_.field !== '플랭크')? 
+                                      <SetsView index={index} dbWeight={data.weight} dbRep={data.rep} />
+                                      :
+                                      <SetsIViewWithMinutes index={index} dbMinutes={data.minutes} />
+                                    )
+                                  }
+                                </View>
+                              )
+                            )
+                          }
+                        </View>
+                      )
+                    )
+                  }
+                </ScrollView>
+              </View>
+              )
+            }
+            {
+              selectedNull === true && lesson && lesson.sessions && lesson.sessions.length === 0 && (
+                <View style={{flex:1, justifyContent: 'center', alignItems: 'center', marginTop: 40}}>
+                  <Text>운동 스케줄을 등록해주세요!</Text>
+                </View>
+              )
+            }
+            {
+              (selectedNull === false) && 
+              <View style={{flex:1, justifyContent: 'center', alignItems: 'center', marginTop: 40}}>
+                <Text>등록된 레슨이 없어요!</Text>
+              </View>
+            }
+            {
+              (selectedNull === true && isEmpty(lesson)) && 
+              <View style={{flex:1, justifyContent: 'center', alignItems: 'center'}}>
+                <Loader />
+              </View>
+            }
+          </View>
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { StyleSheet, SafeAreaView, Text, View, FlatList, TouchableOpacity, Platform, Alert } from 'react-native';
+import { StyleSheet, SafeAreaView, Text, View, FlatList, TouchableOpacity, Platform, Alert, ScrollView } from 'react-native';
 import CalendarView from '../../components/Calendar';
 import CircleButton from '../../components/CircleButton'
 import Animated from 'react-native-reanimated';
@@ -556,6 +556,7 @@ const Dash_cal = ( {navigation} ) => {
     return (
         <SafeAreaView style={{flex:1}}>
             <SafeAreaView style={styles.wrap}>
+              <ScrollView>
                 <View style = {styles.maincontainer}>
                 <View style={{flex:1, marginTop: 12}}>
                   
@@ -592,6 +593,7 @@ const Dash_cal = ( {navigation} ) => {
                     </View>
                 </View>
                 </View>
+              </ScrollView>
             </SafeAreaView>
 
             <BottomSheet

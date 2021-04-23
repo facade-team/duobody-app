@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { FlatList, StyleSheet, Text, Image, View, TouchableOpacity, Dimensions } from 'react-native';
+import { FlatList, StyleSheet, Text, Image, View, TouchableOpacity, Dimensions, ScrollView } from 'react-native';
 import { Colors, Spacing } from '../../styles';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { SafeAreaView } from 'react-navigation';
@@ -268,7 +268,6 @@ const Dash_dash = () => {
 
     return (
         <View style = {{flex:1}}>
-        <View></View>
         <FlatList data={DATA} renderItem={renderItem} keyExtractor={item => item._id} />
       
         </View>
@@ -279,6 +278,7 @@ const Dash_dash = () => {
   const styles = StyleSheet.create({
     container:{
       flex:1,
+      height: Dimensions.get('screen').height,
       backgroundColor: Colors.PRIMARY,
       padding: 0,
     },
@@ -349,7 +349,7 @@ const Dash_dash = () => {
       color: Colors.GRAY,
       fontSize: Spacing.SCALE_18,
       textAlign: 'left',
-      height: Dimensions.get('screen').height * 0.048,
+      height: Dimensions.get('screen').height * 0.043,
     },
     upper: {
       flex: 1,
