@@ -29,7 +29,6 @@ const mem_search = ({ navigation }) => {
 
       const getLoadFlag = async () => {
         const NewLoadFlag = await AsyncStorage.getItem('newloadflag')
-        console.log(NewLoadFlag)
         if (NewLoadFlag === 'hello') {
           getTrainee()
         }
@@ -123,7 +122,6 @@ const mem_search = ({ navigation }) => {
           })
           .then((res) => {
             Alert.alert(res.data.msg)
-            console.log(res.data)
             setIsNewFlag(true)
           })
           .catch((err) => {

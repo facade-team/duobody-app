@@ -14,6 +14,7 @@ import Icon from 'react-native-vector-icons/Ionicons'
 import axios from '../../axios/api'
 import { useFocusEffect } from '@react-navigation/native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import Loader from '../../components/Loader'
 
 const indiv_profile = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState('')
@@ -26,27 +27,17 @@ const indiv_profile = ({ navigation }) => {
   const [FormerID, setFormerID] = useState('')
   const [isNewFlag, setisNewFlag] = useState(true)
 
-  const getApiTest = () => {
-    axios
-      .get(`/trainee/${_id}`)
-      .then((res) => {
-        console.log(res.data)
-      })
-      .catch((err) => console.log('this is error for inbody ' + err))
-  }
+  const [dflag, setDflag] = useState(false)
 
   useFocusEffect(
     useCallback(() => {
-      let isActive = true
-
       const getTraineeId = async () => {
         try {
           const id = await AsyncStorage.getItem('traineeId')
-          if (isActive && id !== _id) {
+          if (true) {
             set_id(id)
             setIsSearched(false)
-
-            console.log(`this is id for indiv_profile: ${id}`)
+            setDflag(true)
           }
         } catch (err) {
           console.log(err)
@@ -54,41 +45,21 @@ const indiv_profile = ({ navigation }) => {
       }
 
       getTraineeId()
-      if (isNewFlag === true) {
-        getMemData()
-        getMemInbodyData()
-        setisNewFlag(false)
-      }
-
-      return () => {
-        isActive = false
-      }
-    })
+    }, [])
   )
 
   useEffect(() => {
-    if (!IsSearched) {
-      setIsLoading(true)
-      if (isNewFlag === false) {
-        if (!gotData || FormerID !== _id) {
-          getMemData()
-          getMemInbodyData()
-        }
-      }
-      setGotData(true)
-      setIsLoading(false)
-      setFormerID(_id)
+    if(!IsSearched){
+      getMemData()
+      getMemInbodyData()
     }
-  })
+  }, [dflag])
 
   const getMemData = () => {
-    console.log(`passed id : ${_id}`)
     {
-      console.log('\\\\\\' + _id)
       axios
         .get(`/trainee/${_id}`)
         .then((res) => {
-          //console.log(res.data.data)
           let memData = {}
           memData._id = res.data.data._id
           memData.address = res.data.data.address
@@ -99,7 +70,6 @@ const indiv_profile = ({ navigation }) => {
           memData.name = res.data.data.name
           memData.phoneNumber = res.data.data.phoneNumber
 
-          console.log(memData)
           setDATAFromDB(memData)
         })
         .catch((err) => console.log(err))
@@ -107,11 +77,9 @@ const indiv_profile = ({ navigation }) => {
   }
 
   const getMemInbodyData = () => {
-    console.log('//////' + _id)
     axios
       .get(`/trainee/${_id}/inbody/latest`)
       .then((res) => {
-        //console.log(res.data.data)
         let meminbodyData = {}
         meminbodyData.weight = res.data.data.weight
         meminbodyData.bmi = res.data.data.bmi
@@ -122,11 +90,12 @@ const indiv_profile = ({ navigation }) => {
         setInbodyDATAFromDB(meminbodyData)
         setNoInbodyData(false)
         setIsSearched(true)
+        setDflag(false)
       })
       .catch((err) => {
-        console.log(err.response.data.msg)
-        console.log('와 안찍히노' + _id)
         setNoInbodyData(true)
+        setIsSearched(true)
+        setDflag(false)
       })
   }
 
@@ -140,19 +109,16 @@ const indiv_profile = ({ navigation }) => {
     navigation.navigate('Change_Add')
   }
 
-  return isLoading ? (
-    <Text>Loading...</Text>
+  return !IsSearched ? (
+    <View style={{flex:1, justifyContent:'center', alignItems: 'center'}}>
+      <Loader />
+    </View>
   ) : (
     <SafeAreaView style={styles.container}>
       <ScrollView>
         <View style={styles.profilecontainer}>
           <View style={styles.nameandediticon}>
             <Text style={styles.name}>{DATAFromDB.name} 회원님</Text>
-
-            <TouchableOpacity onPressOut={getApiTest}>
-              <Text>API Test</Text>
-            </TouchableOpacity>
-
             <Icon
               name="create"
               size={30}

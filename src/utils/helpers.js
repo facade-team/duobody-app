@@ -1,8 +1,25 @@
-import { Platform } from 'react-native'
+import { Platform, View } from 'react-native'
 import * as Print from 'expo-print'
 import * as MediaLibrary from 'expo-media-library'
 import * as Sharing from 'expo-sharing'
 import { COLORS } from './constants'
+import React from 'react'
+import { Colors } from '../styles'
+
+export const createReact = ({}) => {
+  return 
+  `
+  <h1 style="text-align: center;">
+    <strong>Hello Guys</strong>
+  </h1>
+  <p style="text-align: center;">
+    Here is an example of pdf Print in React Native
+  </p>
+  <p style="text-align: center;">
+    <strong>Team About React</strong>
+  </p>'
+  `
+}
 
 export const createHTML = ({
   content = '',
@@ -43,7 +60,8 @@ export const createHTML = ({
                 h1 {
                     margin-top: 0;
                     text-align: center;
-                    background: rgb(255, 196, 0);
+                    background: ${Colors.PRIMARY};
+                    color: ${Colors.WHITE};
                     padding: 30px;
                     font-weight: 700;
                 }
@@ -68,25 +86,31 @@ export const createHTML = ({
 }
 
 export const createAndSavePDF = async (html) => {
-  try {
-    let isShared = false
-    const { uri } = await Print.printToFileAsync({ html })
-    if (Platform.OS === 'ios') {
-      isShared = await Sharing.shareAsync(uri)
-    } else {
-      const permission = await MediaLibrary.requestPermissionsAsync()
-
-      if (permission.granted) {
-        await MediaLibrary.createAssetAsync(uri)
-        isShared = true
+  
+  const temp = async() => {
+    try {
+      let isShared = false
+      const { uri } = await Print.printToFileAsync({ html })
+      if (Platform.OS === 'ios') {
+        isShared = await Sharing.shareAsync(uri)
+      } else {
+        console.log()
+        const permission = await MediaLibrary.requestPermissionsAsync()
+  
+        if (permission.granted) {
+          await MediaLibrary.createAssetAsync(uri)
+          isShared = true
+        }
       }
+  
+      if (!isShared) {
+        throw new Error('Something went wrong...')
+      }
+    } catch (error) {
+      console.log(error)
+      throw error
     }
-
-    if (!isShared) {
-      throw new Error('Something went wrong...')
-    }
-  } catch (error) {
-    console.log(error)
-    throw error
   }
+
+  temp()
 }
