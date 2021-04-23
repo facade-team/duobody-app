@@ -44,6 +44,7 @@ function indiv_etc({ navigation }) {
   const [latestInbody, setLatestInbody] = useState(null)
   const [traineeName, setTraineeName] = useState('')
   const [t_result,setT_result] = useState({ note: '', purpose: '' })
+  const [t_data,setT_data] = useState({})
 
   const [exbody, setExbody] = useState({
     exbodyBefore: '',
@@ -63,18 +64,16 @@ function indiv_etc({ navigation }) {
       const getTraineeId = async () => {
         try {
           const id = await AsyncStorage.getItem('traineeId')
-          console.log(id)
           if (true) {
             setTraineeId(id)
             setIsSearched(false)
             setFlag(false)
-            console.log(id)
           }
         } catch (err) {
           console.log(err)
         }
       }
-      console.log('useFocusEffect')
+      //console.log('useFocusEffect')
       getTraineeId()
     }, [])
   )
@@ -85,14 +84,22 @@ function indiv_etc({ navigation }) {
     }
   }, [flag])
 
+
   const callTraineeApi = () => {
     axios.get(`/trainee/${traineeId}`)
     .then((res)=>{
-      console.log(res.data.data)
-      setT_result({
-        note: res.data.data.note,
-        purpose: res.data.data.purpose
+
+      setT_result({purpose: res.data.data.purpose,note:res.data.data.note})
+
+      setT_data({
+        traineeId: res.data.data._id,
+        name: res.data.data.name,
+        phoneNumber: res.data.data.phoneNumber,
+        address: res.data.data.address,
+        age: res.data.data.age,
+        height: res.data.data.height
       })
+      
     })
     .catch((err)=>{
       console.log(err.response)
@@ -238,12 +245,26 @@ function indiv_etc({ navigation }) {
   const setTraineeGoal = () => {
     //result put to the page
     setT_result({...t_result, purpose: goal})
+
+    //t_data
+    axios.put(`/trainee`,{
+      traineeId: t_data.traineeId,
+      name: t_data.name,
+      phoneNumber: t_data.phoneNumber,
+      address: t_data.address,
+      age: t_data.age,
+      height: t_data.height,
+      purpose: goal
+    })
+    .then((res)=>{
+      console.log(res)
+    })
+    .catch((error)=>{
+      console.log(error)
+    })
+    
     //remove typed string
     setGoal('')
-
-    //put new purpose(goal) to api
-    console.log('put new data to api')
-    
   }
   
   const editGoal = () => {
@@ -255,14 +276,28 @@ function indiv_etc({ navigation }) {
     uniquenessRef.current.snapTo(0)
   }
   const setTraineeUniqueness = () => {
-    console.log('특이사항 set') 
     //result put to the page
     setT_result({...t_result, note: uniqueness})
-    //remove typed string
-    setUniqueness('')
 
     //put new purpose(goal) to api
-    console.log('put new data to api')
+    axios.put(`/trainee`,{
+      traineeId: t_data.traineeId,
+      name: t_data.name,
+      phoneNumber: t_data.phoneNumber,
+      address: t_data.address,
+      age: t_data.age,
+      height: t_data.height,
+      note: uniqueness
+    })
+    .then((res)=>{
+      console.log(res)
+    })
+    .catch((error)=>{
+      console.log(error)
+    })
+
+    //remove typed string
+    setUniqueness('')
   }
 
   //bottomsheet
