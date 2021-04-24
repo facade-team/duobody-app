@@ -169,6 +169,7 @@ export default IndividualSession = () => {
           setEndTime(renderedDate)
         }
         if (res.data.data !== null) {
+          setLessonId(res.data.data._id)
           res.data.data[0].sessions.map((data) => {
             let newSession = {}
             newSession.part = data.part
@@ -300,7 +301,6 @@ export default IndividualSession = () => {
   }
 
   const onSaveSessionhandler = () => {
-    console.log('lessonId: ' + lessonId)
     if (lessonId) {
       axios
         .delete(`/trainee/${traineeId}/lesson/${lessonId}`)

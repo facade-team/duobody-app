@@ -71,7 +71,7 @@ export default ({ navigation }) => {
 
   return (
   <Container>
-        <KeyboardAwareScrollView style = {{flex:1, padding: Spacing.SCALE_48, marginTop: Spacing.SCALE_48}}>
+        <KeyboardAwareScrollView style = {{flex:1, padding: Spacing.SCALE_2, marginTop: Spacing.SCALE_2}}>
 
     <LogoContainer>
       <LogoImage source={require('../../assets/logo_square.png')} />

@@ -130,7 +130,7 @@ function Indiv_calendar({ navigation }) {
       })
       setGotDataFlag(urlstring)
     }
-  }, [])
+  })
 
   // 요 아래는 승우가 만든 컴포넌트, state, function ^^
   const [partToggle, setPartToggle] = useState([false, false, false, false, false, false, false])

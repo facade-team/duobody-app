@@ -29,7 +29,7 @@ const change_add = ({ navigation }) => {
   const [fatText, setFatText] = useState('')
   const [DATAFromDB, setDATAFromDB] = useState([])
   const [set, setset] = useState(false)
-  const [pickedDate, setPickedDate] = useState('2021-04-10')
+  const [pickedDate, setPickedDate] = useState('')
   const [CalDate, setCalDate] = useState(new Date(pickedDate))
   const [InbodyFromDB, setInbodyFromDB] = useState([])
   const [NoDataFlag, setNoDataFlag] = useState(true)
@@ -128,16 +128,18 @@ const change_add = ({ navigation }) => {
 
   useFocusEffect(
     useCallback(() => {
-      let isActive = true
 
       const getTraineeId = async () => {
         try {
           const id = await AsyncStorage.getItem('traineeId')
-          if (isActive && id !== _id) {
+          if (true) {
+            const d = new Date();
+            const today = getDateString(d)
+            setPickedDate(today)
+            setCalDate(d)
             setImage(null)
             set_id(id)
             setIsSearched(false)
-            console.log(`this is id for change_add: ${id}`)
             callGetExbodyAPI(id)
           }
         } catch (err) {
@@ -153,11 +155,7 @@ const change_add = ({ navigation }) => {
         setFatText('')
         setisNewLoad(false)
       }
-
-      return () => {
-        isActive = false
-      }
-    })
+    }, [])
   )
 
   useEffect(() => {

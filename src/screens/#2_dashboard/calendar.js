@@ -148,7 +148,6 @@ const Dash_cal = ( {navigation} ) => {
     // local storage에 데이터 저장하는 함수
     const saveDataLocalStorage = () => {
       setDotFlag(true)
-      setDotStateFlag(true)
         //ID
         const _id = selectedTrainee._id
         //NAME
@@ -196,14 +195,13 @@ const Dash_cal = ( {navigation} ) => {
         
         //새로 업데이트 된 DATA를 push
         axios.post('/trainee/lesson',{
-                traineeId: newData._id,
-                start: st,
-                end: et,
-                session: null,
-            })
-            .then((res)=> {
+          traineeId: newData._id,
+          start: st,
+          end: et,
+          session: null,
+        })
+        .then((res)=> {
               setDotDatesFromDB(newDotDates)
-              dotFlag(false)
               Alert.alert('레슨을 생성했습니다')
             })
             .catch((error)=>{
@@ -216,6 +214,7 @@ const Dash_cal = ( {navigation} ) => {
     
     useEffect(() => {
       if (dotDatesFromDB) {
+        setDotFlag(false)
         setDotStateFlag(false)
       }
     }, [dotDatesFromDB])
@@ -563,12 +562,12 @@ const Dash_cal = ( {navigation} ) => {
                 <View style = {styles.maincontainer}>
                 <View style={{flex:1, marginTop: 12}}>
                   
-                  {(dotStateFlag || !dotDatesFromDB )&&
+                  {(dotFlag)&&
                     <View style={{flex:1, justifyContent: 'center', alignItems: 'center'}}>
                       <Loader />
                     </View>
                   }
-                  {!dotStateFlag && dotDatesFromDB &&
+                  {!dotFlag && dotDatesFromDB &&
                     <CalendarView 
                         setSelectedDatePick={setSelectedDatePick}
                         dotDatesFromDB={dotDatesFromDB}

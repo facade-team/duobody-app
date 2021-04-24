@@ -97,6 +97,10 @@ const Dash_dash = () => {
       setTraineeListFromDB(newArr)
       console.log(newArr)
     })
+    .catch((err) => {
+      console.log(err.response)
+      setTraineeListFromDB([])
+    })
 
     //오늘 일정 가져오기
 

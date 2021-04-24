@@ -264,6 +264,7 @@ function Change_view() {
     setBMIGraph(prevBMI)
     setFatGraph(prevFat)
     setSkeletalMuscleGraph(prevSkeletalMuscle)
+    setNoData(false)
   }
 
   const [calStartDate, setCalStartDate] = useState(new Date('2021-01-01'))
@@ -273,10 +274,12 @@ function Change_view() {
     const currentDate = selectedDate
     if (getDateString(currentDate) <= endDate) {
       setShow(false)
+      setNoData(true)
       setCalStartDate(currentDate)
       setStartDate(getDateString(currentDate))
       onDatePickHandler(currentDate, null)
     } else {
+      setNoData(true)
       Alert.alert('잘못된 날짜 범위 입니다')
       let prevDate = startDate
       let prevCalDate = calStartDate
@@ -290,10 +293,12 @@ function Change_view() {
     const currentDate = selectedDate
     if (startDate <= getDateString(currentDate)) {
       setShow(false)
+      setNoData(true)
       setCalEndDate(currentDate)
       setEndDate(getDateStringWithNumber(currentDate))
       onDatePickHandler(null, currentDate)
     } else {
+      setNoData(true)
       Alert.alert('잘못된 날짜 범위 입니다')
       let prevDate = endDate
       let prevCalDate = calEndDate

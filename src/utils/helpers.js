@@ -98,12 +98,10 @@ export const createAndSavePDF = async (html) => {
       if (Platform.OS === 'ios') {
         isShared = await Sharing.shareAsync(uri)
       } else {
-        console.log()
         const permission = await MediaLibrary.requestPermissionsAsync()
   
         if (permission.granted) {
-          await MediaLibrary.createAssetAsync(uri)
-          isShared = true
+          isShared = await Sharing.shareAsync(uri)
         }
       }
   
