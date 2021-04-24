@@ -52,19 +52,12 @@ function indiv_etc({ navigation }) {
     exbodyAfter: '',
   })
 
-  const [weightGraph, setWeightGraph] = useState(null)
-
-  const [BMIGraph, setBMIGraph] = useState(null)
-
-  const [fatGraph, setFatGraph] = useState(null)
-
-  const [skeletalMuscleGraph, setSkeletalMuscleGraph] = useState(null)
-
   useFocusEffect(
     useCallback(() => {
       const getTraineeId = async () => {
         try {
           const id = await AsyncStorage.getItem('traineeId')
+          setNoData(true)
           setTraineeId(id)
           setIsSearched(false)
           setFlag(false)
@@ -96,6 +89,7 @@ function indiv_etc({ navigation }) {
     axios.get(`/trainee/${traineeId}`)
     .then((res)=>{
       setT_result({purpose: res.data.data.purpose, note:res.data.data.note})
+      setTraineeName(res.data.data.name)
     })
     .catch((err)=>{
       console.log('callTraineeApi error')
@@ -110,6 +104,7 @@ function indiv_etc({ navigation }) {
     axios.get(`/trainee/${traineeId}/inbody/latest`)
       .then((res) => {
         if(res.data.data){
+          setNoData(false)
           setLatestInbody(res.data.data)
           //console.log('latest inbody')
           //console.log(res.data.data)
@@ -119,18 +114,16 @@ function indiv_etc({ navigation }) {
           callGetExbodyAPI()
         }
         else {
+          //setNoData(true)
+          console.log('데이터없음')
           setEndDate(getDateString(new Date()))
-          setNoData(true)
-          setTraineeName('')
-
           callGetExbodyAPI()
         }
       })
       .catch((err) => {
         console.log('callAPIs error' + err)
         callGetExbodyAPI()
-        setNoData(true)
-        setTraineeName('')
+        //setNoData(true)
         setIsSearched(true)
         setFlag(true)
       })
@@ -143,7 +136,6 @@ function indiv_etc({ navigation }) {
         //
         if (!res.data.data) {
           // console.log('exbody가 없어요')
-          setNoData(true)
           callGetInbodyByDateRangeAPI()
         } else {
           // console.log(res.data.data)
@@ -154,7 +146,6 @@ function indiv_etc({ navigation }) {
       .catch((err) => {
         //
         callGetInbodyByDateRangeAPI()
-        setNoData(true)
         setIsSearched(true)
         setFlag(true)
         //console.log(err.response)
@@ -184,7 +175,6 @@ function indiv_etc({ navigation }) {
 
           setIsSearched(false)
           setIsDataUpdated(false)
-          setNoData(false)
           setIsSearched(true)
 
           // console.log(res.data.data.inbody)
@@ -255,152 +245,163 @@ function indiv_etc({ navigation }) {
 
   const makePortfolio = () => {
     /*여기에서 자유롭게 테스트 해보면 됨*/
-
-    const name = 'bmi'
-
-    let bmiStr = "["
-    
-    bmiArr.map((d, idx) => {
-      if (idx === 0) {
-        bmiStr = bmiStr + "['"+d[0]+"','"+d[1]+"'],"
-      }
-      else {
-        bmiStr = bmiStr + "['"+d[0]+"',"+d[1]+"],"
-      }
-    })
-    bmiStr = bmiStr + "]"
-
-    let fatStr = "["
-    
-    fatArr.map((d, idx) => {
-      if (idx === 0) {
-        fatStr = fatStr + "['"+d[0]+"','"+d[1]+"'],"
-      }
-      else {
-        fatStr = fatStr + "['"+d[0]+"',"+d[1]+"],"
-      }
-    })
-    fatStr = fatStr + "]"
-
-    let smStr = "["
-    
-    smArr.map((d, idx) => {
-      if (idx === 0) {
-        smStr = smStr + "['"+d[0]+"','"+d[1]+"'],"
-      }
-      else {
-        smStr = smStr + "['"+d[0]+"',"+d[1]+"],"
-      }
-    })
-    smStr = smStr + "]"
-
-    let wStr = "["
-    
-    wArr.map((d, idx) => {
-      if (idx === 0) {
-        wStr = wStr + "['"+d[0]+"','"+d[1]+"'],"
-      }
-      else {
-        wStr = wStr + "['"+d[0]+"',"+d[1]+"],"
-      }
-    })
-    wStr = wStr + "]"
-
-    // console.log(bmiStr)
-
-    let htmlObj = {
-      head:`
-      <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-      <script type="text/javascript">
-        google.charts.load('current', {'packages':['corechart']});
-        google.charts.setOnLoadCallback(drawChart);
-
-        function drawChart() {
-          var bmiData = google.visualization.arrayToDataTable(${bmiStr});
-
-          var bmiOptions = {
-            title: 'bmi',
-            legend: { position: 'bottom' },
-            colors:['#0162ff','#004411']
-          };
-
-          var fatData = google.visualization.arrayToDataTable(${fatStr});
-
-          var fatOptions = {
-            title: '체지방',
-            legend: { position: 'bottom' },
-            colors:['#05ebff','#004411']
-          };
-
-          var smData = google.visualization.arrayToDataTable(${smStr});
-
-          var smOptions = {
-            title: '골격근량',
-            legend: { position: 'bottom' },
-            colors:['#00ff01','#004411']
-          };
-
-          var weightData = google.visualization.arrayToDataTable(${wStr});
-
-          var weightOptions = {
-            title: '체중',
-            legend: { position: 'bottom' },
-            colors:['#b345e6','#004411']
-          };
-
-          var bmiChart = new google.visualization.LineChart(document.getElementById('bmi_chart'));
-          var fatChart = new google.visualization.LineChart(document.getElementById('fat_chart'));
-          var smChart = new google.visualization.LineChart(document.getElementById('sm_chart'));
-          var weightChart = new google.visualization.LineChart(document.getElementById('weight_chart'));
-
-          bmiChart.draw(bmiData, bmiOptions);
-          fatChart.draw(fatData, fatOptions);
-          smChart.draw(smData, smOptions);
-          weightChart.draw(weightData, weightOptions);
+    console.log(noData)
+    let htmelObj = {}
+    if(!noData){
+      let bmiStr = "["
+      
+      bmiArr.map((d, idx) => {
+        if (idx === 0) {
+          bmiStr = bmiStr + "['"+d[0]+"','"+d[1]+"'],"
         }
-      </script>
-      `
-      ,
-      content:`
-      <div style="display: flex; justify-content: center; flex-direction: column; align-items: center;">
+        else {
+          bmiStr = bmiStr + "['"+d[0]+"',"+d[1]+"],"
+        }
+      })
+      bmiStr = bmiStr + "]"
+  
+      let fatStr = "["
+      
+      fatArr.map((d, idx) => {
+        if (idx === 0) {
+          fatStr = fatStr + "['"+d[0]+"','"+d[1]+"'],"
+        }
+        else {
+          fatStr = fatStr + "['"+d[0]+"',"+d[1]+"],"
+        }
+      })
+      fatStr = fatStr + "]"
+  
+      let smStr = "["
+      
+      smArr.map((d, idx) => {
+        if (idx === 0) {
+          smStr = smStr + "['"+d[0]+"','"+d[1]+"'],"
+        }
+        else {
+          smStr = smStr + "['"+d[0]+"',"+d[1]+"],"
+        }
+      })
+      smStr = smStr + "]"
+  
+      let wStr = "["
+      
+      wArr.map((d, idx) => {
+        if (idx === 0) {
+          wStr = wStr + "['"+d[0]+"','"+d[1]+"'],"
+        }
+        else {
+          wStr = wStr + "['"+d[0]+"',"+d[1]+"],"
+        }
+      })
+      wStr = wStr + "]"
+  
+      // console.log(bmiStr)
+  
+      let htmlObj = {
+        head:`
+        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+        <script type="text/javascript">
+          google.charts.load('current', {'packages':['corechart']});
+          google.charts.setOnLoadCallback(drawChart);
+  
+          function drawChart() {
+            var bmiData = google.visualization.arrayToDataTable(${bmiStr});
+  
+            var bmiOptions = {
+              title: 'bmi',
+              legend: { position: 'bottom' },
+              colors:['#0162ff','#004411']
+            };
+  
+            var fatData = google.visualization.arrayToDataTable(${fatStr});
+  
+            var fatOptions = {
+              title: '체지방',
+              legend: { position: 'bottom' },
+              colors:['#05ebff','#004411']
+            };
+  
+            var smData = google.visualization.arrayToDataTable(${smStr});
+  
+            var smOptions = {
+              title: '골격근량',
+              legend: { position: 'bottom' },
+              colors:['#00ff01','#004411']
+            };
+  
+            var weightData = google.visualization.arrayToDataTable(${wStr});
+  
+            var weightOptions = {
+              title: '체중',
+              legend: { position: 'bottom' },
+              colors:['#b345e6','#004411']
+            };
+  
+            var bmiChart = new google.visualization.LineChart(document.getElementById('bmi_chart'));
+            var fatChart = new google.visualization.LineChart(document.getElementById('fat_chart'));
+            var smChart = new google.visualization.LineChart(document.getElementById('sm_chart'));
+            var weightChart = new google.visualization.LineChart(document.getElementById('weight_chart'));
+  
+            bmiChart.draw(bmiData, bmiOptions);
+            fatChart.draw(fatData, fatOptions);
+            smChart.draw(smData, smOptions);
+            weightChart.draw(weightData, weightOptions);
+          }
+        </script>
+        `
+        ,
+        content:`
+        <div style="display: flex; justify-content: center; flex-direction: column; align-items: center;">
+          <h1 style="text-align: center;">
+            <strong>${traineeName} 회원님 포트폴리오</strong>
+          </h1>
+          <p style="text-align: center; font-size: 12px;">
+            ${traineeName} 회원님의 BMI, 체지방, 골격근량, 체중 변화와 exbody는 다음과 같습니다.
+          </p>
+          <h3 style="text-align: center;">
+            <strong>Exbody</strong>
+          <h3/>
+      
+          <p style="align-self: center;">
+            <img src=${exbody.exbodyBefore} width="100" height="100">
+            <img src=${exbody.exbodyAfter} width="100" height="100">
+          <p/>
+          <h3 style="text-align: center;">
+            <strong>그래프</strong>
+          <h3/>
+  
+          <div style="display: flex; justify-content: center;">
+            <div id="bmi_chart" style="width: 300px; height: 200px"></div>
+            <div id="fat_chart" style="width: 300px; height: 200px"></div>
+          </div>
+          <div style="display: flex; justify-content: center;">
+            <div id="sm_chart" style="width: 300px; height: 200px"></div>
+            <div id="weight_chart" style="width: 300px; height: 200px"></div>
+          </div>
+          <p>
+            DUOBDOY
+          </p>
+        </div>
+        
+        
+        `
+      }
+      createAndSavePDF(createHTML(htmlObj))
+    }
+    else{
+      let htmlObj = {
+        content:`
         <h1 style="text-align: center;">
           <strong>${traineeName} 회원님 포트폴리오</strong>
         </h1>
-        <p style="text-align: center; font-size: 12px;">
-          ${traineeName} 회원님의 BMI, 체지방, 골격근량, 체중 변화와 exbody는 다음과 같습니다.
-        </p>
-        <h3 style="text-align: center;">
-          <strong>Exbody</strong>
-        <h3/>
-    
         <p style="align-self: center;">
-          <img src=${exbody.exbodyBefore} width="100" height="100">
-          <img src=${exbody.exbodyAfter} width="100" height="100">
-        <p/>
-        <h3 style="text-align: center;">
-          <strong>그래프</strong>
-        <h3/>
-
-        <div style="display: flex; justify-content: center;">
-          <div id="bmi_chart" style="width: 300px; height: 200px"></div>
-          <div id="fat_chart" style="width: 300px; height: 200px"></div>
-        </div>
-        <div style="display: flex; justify-content: center;">
-          <div id="sm_chart" style="width: 300px; height: 200px"></div>
-          <div id="weight_chart" style="width: 300px; height: 200px"></div>
-        </div>
-      </div>
-      
-      `
-      ,
-      script: `
-      <script type="text/javascript">
-
-      </script>
-      `
+          데이터가 없어요!
+        </p>
+        `
+      }
+      createAndSavePDF(createHTML(htmlObj))
     }
-
-    createAndSavePDF(createHTML(htmlObj))
   }
 
   const logout = () => {
