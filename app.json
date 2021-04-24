@@ -1,0 +1,38 @@
+{
+  "expo": {
+    "name": "duobody-app",
+    "slug": "duobody-app",
+    "privacy": "public",
+    "sdkVersion": "40.0.0",
+    "ios": {
+      "bundleIdentifier": "com.segunwookim99.duobody_app"
+    },
+    "android": {
+      "package": "com.segunwookim99.duobody_app",
+      "versionCode": 1
+    },
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./src/assets/logo_square.png",
+    "splash": {
+      "image": "./src/assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "description": "duobody-app 2021.04.24"
+  }
+}
