@@ -72,8 +72,8 @@ const A_Drawer = createDrawerNavigator();
 
 const Auth_Nav = () => (
     <NavigationContainer>
-        <A_Drawer.Navigator
-            screenOptions = {{gestureEnabled: true, headerShown: false,}}>
+        <A_Drawer.Navigator 
+            screenOptions = {{gestureEnabled: false, headerShown: false,}}>
                 <A_Drawer.Screen name = 'Login' component = {Auth_login}/>
                 <A_Drawer.Screen name = 'Signup' component = {Auth_signup}/>
                 <A_Drawer.Screen name = 'Confirm' component = {Auth_confirm}/>
