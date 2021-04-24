@@ -57,11 +57,11 @@ function Indiv_calendar({ navigation }) {
   const [gotId, setGotId] = useState(false)
   useFocusEffect(
     useCallback(() => {
-      let isActive = true
       const getTraineeId = async () => {
         try {
           const id = await AsyncStorage.getItem('traineeId')
-          if (isActive && (id !== trainee_id)) {
+          if (true) {
+            setSelectedNull(false)
             setDotDatesFromDB(null)
             callGetAllLessonDatesAPI(id)
             setTrainee_id(id)
@@ -76,10 +76,7 @@ function Indiv_calendar({ navigation }) {
 
       getTraineeId()
 
-      return () => {
-        isActive = false
-      }
-    })
+    }, [])
   )
 
   useEffect(()=>{
@@ -133,7 +130,7 @@ function Indiv_calendar({ navigation }) {
       })
       setGotDataFlag(urlstring)
     }
-  })
+  }, [])
 
   // 요 아래는 승우가 만든 컴포넌트, state, function ^^
   const [partToggle, setPartToggle] = useState([false, false, false, false, false, false, false])
@@ -202,6 +199,9 @@ function Indiv_calendar({ navigation }) {
           </View>
         </View>
         <View style={styles.whiteBox}>
+          {!dotDatesFromDB && <View><Loader /></View>}
+          {dotDatesFromDB &&
+          <>
           <View style={styles.container}>
             <View style={{flex:1, flexDirection: 'row', justifyContent: 'space-around'}}>
               <Text>{selectedDatePick.year}년 {selectedDatePick.month}월 {selectedDatePick.date}일</Text>
@@ -269,6 +269,8 @@ function Indiv_calendar({ navigation }) {
               </View>
             }
           </View>
+          </>
+          }
         </View>
       </ScrollView>
     </SafeAreaView>

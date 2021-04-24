@@ -69,6 +69,7 @@ const Dash_dash = () => {
       newTrainee._id = tmp._id
       newTrainee.name = tmp.name
 
+      /*
       //chatroom 생성 - 없을시
       if(tmp.chatRoomId === undefined){
         axios.post('/messenger',{
@@ -84,12 +85,14 @@ const Dash_dash = () => {
           })
         })
       }
-      else{
-        //chatroomid가 이미 있을 경우
-        newTrainee.chatRoomId = tmp.chatRoomId
-        //setTraineeListFromDB(prevArray => [...prevArray, newTrainee])
-        newArr.push(newTrainee)
-      }
+      */
+    
+      //chatroomid가 이미 있을 경우
+      newTrainee.chatRoomId = tmp.chatRoomId
+
+      newArr.push(newTrainee)
+      // api 세팅
+      //setTraineeListFromDB(prevArray => [...prevArray, newTrainee])
       })
       setTraineeListFromDB(newArr)
       console.log(newArr)

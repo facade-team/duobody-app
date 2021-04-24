@@ -222,6 +222,6 @@ export default [
   {
     id: 6,
     part: '기타',
-    fields: [],
+    fields: [{}],
   }
 ]

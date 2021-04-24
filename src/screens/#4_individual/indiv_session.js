@@ -8,6 +8,7 @@ import {
   Platform,
   Dimensions,
   Alert,
+  Button,
 } from 'react-native'
 import { Spacing, Typography, Colors } from '../../styles'
 import SetsInput from '../../components/SetsInput'
@@ -26,6 +27,7 @@ import { AuthContext } from '../../services/AuthContext'
 import AsyncStorage from '@react-native-community/async-storage'
 import { useFocusEffect } from '@react-navigation/native'
 import Loader from '../../components/Loader'
+import { TextInput } from 'react-native-gesture-handler'
 
 const styles = StyleSheet.create({
   container: {
@@ -88,8 +90,6 @@ export default IndividualSession = () => {
       }
 
       setSessions((oldSessions) => [...oldSessions, newSession])
-    } else if (index === 6) {
-      console.log('not yet!')
     } else {
       const newSession = {
         part,
@@ -231,6 +231,7 @@ export default IndividualSession = () => {
 
   useEffect(() => {
     // api 조회
+    
     if (!isSearched) {
       getDate()
       callGetLessonByDateAPI()
@@ -299,7 +300,7 @@ export default IndividualSession = () => {
   }
 
   const onSaveSessionhandler = () => {
-    console.log(lessonId)
+    console.log('lessonId: ' + lessonId)
     if (lessonId) {
       axios
         .delete(`/trainee/${traineeId}/lesson/${lessonId}`)
@@ -314,6 +315,7 @@ export default IndividualSession = () => {
           axios
             .post('/trainee/lesson', wholeLesson)
             .then((res) => {
+              setLessonId(res.data.data._id)
               Alert.alert('저장이 완료되었습니다')
             })
             .catch((error) => {
@@ -332,6 +334,7 @@ export default IndividualSession = () => {
       axios
         .post('/trainee/lesson', wholeLesson)
         .then((res) => {
+          setLessonId(res.data.data._id)
           Alert.alert('저장이 완료되었습니다')
         })
         .catch((error) => {
@@ -343,15 +346,30 @@ export default IndividualSession = () => {
   const [showCal, setShowCal] = useState(false)
 
   const onDateSelectorClickHandler = () => {
-    setShowCal(true)
+    if(!showCal){
+      setShowCal(true)
+    }
   }
 
   const onDateSelectHandler = (event, selectedDate) => {
-    const currentDate = selectedDate
-    setShowCal(false)
-    setRenderedDate(currentDate)
-    setIsSearched(false)
+    if(Platform.OS !== 'ios') {
+      setShowCal(false)
+      setRenderedDate(new Date(y, m-1, d))
+      setIsSearched(false)
+    }
+    else {
+      console.log('selected: ' + currentDate)
+      const currentDate = selectedDate
+      setRenderedDate(new Date(currentDate))
+      setIsSearched(false)
+    }
   }
+
+  const [y, setY] = useState(new Date().getFullYear())
+  const [m, setM] = useState(new Date().getMonth() + 1)
+  const [d, setD] = useState(new Date().getDate())
+
+  const [fieldInput ,setFieldInput] = useState('')
 
   return (
     <View style={styles.container}>
@@ -373,27 +391,44 @@ export default IndividualSession = () => {
               />
             </View>
           )}
-          {Platform.OS !== 'ios' && (
-            <TouchableOpacity onPressOut={onDateSelectorClickHandler}>
+          {Platform.OS === 'android' && !showCal && (
+            <TouchableOpacity onPress={() => onDateSelectorClickHandler()}>
               <Text style={styles.title}>
-                {renderedDate.getFullYear()}년 {renderedDate.getMonth() + 1}월{' '}
-                {renderedDate.getDate()}일
+                {y}년 {m}월 {d}일
               </Text>
-              {showCal && (
-                <DateTimePicker
-                  style={{ width: Spacing.SCALE_80 }}
-                  testID="dateTimePicker"
-                  value={renderedDate}
-                  mode={'date'}
-                  is24Hour={true}
-                  display="compact"
-                  onChange={(event, selectedDate) =>
-                    onDateSelectHandler(event, selectedDate)
-                  }
-                />
-              )}
             </TouchableOpacity>
           )}
+          {Platform.OS === 'android' && showCal &&
+            (
+              <View style={{flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center'}}>
+                <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginRight:4}}>
+                  <TextInput 
+                    placeholder={String(y)}
+                    value={y}
+                    onChangeText={setY}
+                  />
+                  <Text>년</Text>
+                </View>
+                <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginRight:4}}>
+                  <TextInput
+                    placeholder={String(m)}
+                    value={m}
+                    onChangeText={setM}
+                  />
+                  <Text>월</Text>
+                </View>
+                <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginRight:4}}>
+                  <TextInput 
+                    placeholder={String(d)}
+                    value={d}
+                    onChangeText={setD}
+                  />
+                  <Text>일</Text>
+                </View>
+                <Button title={'확인'} onPress={() => onDateSelectHandler()} />
+              </View>
+            )
+          }
         </View>
         <View style={styles.timePickerContainer}>
           {Platform.OS === 'ios' && (
@@ -596,10 +631,10 @@ export default IndividualSession = () => {
                       )
                   )}
                   {partToggle[index__] && Platform.OS === 'ios' && (
-                    <AddFieldIOS addSession={addSession} index={index__} />
+                    <AddFieldIOS addSession={addSession} index={index__} setFieldInput={setFieldInput} fieldInput={fieldInput}/>
                   )}
                   {partToggle[index__] && Platform.OS !== 'ios' && (
-                    <AddFieldAndroid addSession={addSession} index={index__} />
+                    <AddFieldAndroid addSession={addSession} index={index__} setFieldInput={setFieldInput} fieldInput={fieldInput}/>
                   )}
                 </View>
               ))

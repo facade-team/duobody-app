@@ -41,26 +41,27 @@ const Dash_cal = ( {navigation} ) => {
         return result.getTime()
     }
     const [dotDatesFromDB, setDotDatesFromDB] = useState(null)
-    const [dotFlag, setDotFlag] = useState(false)
+    const [dotFlag, setDotFlag] = useState(true)
     const [dotStateFlag, setDotStateFlag] = useState(true)
 
     useFocusEffect(
       useCallback(() => {
-        let isActive = true
-
-        if (!dotFlag) {
+        console.log('focusEffect')
+        setDotFlag(true)
+        if (true) {
           callGetAllLessonDatesAPI()
         }
 
-        return () => {
-          isActive = false
-        }
       }, [])
     )
 
-    const callGetAllLessonDatesAPI = async () => {
+    useEffect(() => {
+      console.log(dotFlag)
+    }, [dotFlag])
+
+    const callGetAllLessonDatesAPI = () => {
       //
-      await axios.get('/trainer/lesson')
+      axios.get('/trainer/lesson')
         .then((res) => {
 
           if (res.data.data) {
@@ -74,7 +75,7 @@ const Dash_cal = ( {navigation} ) => {
           else {
             setDotDatesFromDB({})
           }
-          setDotFlag(true)
+          setDotFlag(false)
         })
         .catch((err) => {
           console.log(err.response)
@@ -146,6 +147,7 @@ const Dash_cal = ( {navigation} ) => {
     
     // local storage에 데이터 저장하는 함수
     const saveDataLocalStorage = () => {
+      setDotFlag(true)
       setDotStateFlag(true)
         //ID
         const _id = selectedTrainee._id
@@ -201,6 +203,7 @@ const Dash_cal = ( {navigation} ) => {
             })
             .then((res)=> {
               setDotDatesFromDB(newDotDates)
+              dotFlag(false)
               Alert.alert('레슨을 생성했습니다')
             })
             .catch((error)=>{

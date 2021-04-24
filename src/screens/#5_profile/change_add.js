@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Image,
   SafeAreaView,
+  Platform,
 } from 'react-native'
 import { Colors, Spacing, Typography } from '../../styles'
 import UnderLinedTextInputBig from '../../components/UnderlinedTextInputBig'
@@ -100,9 +101,11 @@ const change_add = ({ navigation }) => {
   // 승우가 짠 부분 end
 
   const onChangePickedDate = (event, selectedDate) => {
+    setShow(false)
     const currentDate = selectedDate
+    console.log(getDateString(currentDate))
     setCalDate(currentDate)
-    setPickedDate(currentDate)
+    setPickedDate(getDateString(currentDate))
     setWeightText('')
     setBMIText('')
     setMuscleText('')
@@ -348,6 +351,43 @@ const change_add = ({ navigation }) => {
     }
   }
 
+  const RenderDate = (dateStr) => {
+    const styles = StyleSheet.create({
+      renderTimeContainer: {
+        paddingRight: Spacing.SCALE_8,
+        paddingLeft: Spacing.SCALE_8,
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginTop: Spacing.SCALE_4,
+        backgroundColor: Colors.GRAY_LIGHT,
+        justifyContent: 'center',
+        borderRadius: 10,
+      },
+    })
+    return (
+      <View style={styles.renderTimeContainer}>
+        <Text
+          style={{
+            fontSize: Typography.FONT_SIZE_16,
+            justifyContent: 'center',
+            alignSelf: 'center',
+            color: Colors.PRIMARY,
+          }}
+        >
+          {dateStr.dateStr}
+        </Text>
+      </View>
+    )
+  }
+
+  const [show, setShow] = useState(false)
+
+  const handelSetShow = () => {
+    if (!show) {
+      setShow(true)
+    }
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.maincontainer}>
@@ -356,21 +396,59 @@ const change_add = ({ navigation }) => {
             <Text style={styles.nametext}>{DATAFromDB.name} 회원님</Text>
           </View>
 
-          <View style={styles.dayselect}>
-            <DateTimePicker
-              style={{
-                width: Spacing.SCALE_150,
-                justifyContent: 'center',
-                alignSelf: 'center',
-              }}
-              testID="dateTimePicker"
-              value={CalDate}
-              mode={'date'}
-              is24Hour={true}
-              display="default"
-              onChange={onChangePickedDate}
-            />
-          </View>
+          {
+            Platform.OS === "ios" && (
+              <View style={styles.dayselect}>
+                <DateTimePicker
+                  style={{
+                    width: Spacing.SCALE_150,
+                    justifyContent: 'center',
+                    alignSelf: 'center',
+                  }}
+                  testID="dateTimePicker"
+                  value={CalDate}
+                  mode={'date'}
+                  is24Hour={true}
+                  display="default"
+                  onChange={onChangePickedDate}
+                />
+              </View>
+            )
+          }
+          {
+            Platform.OS !== 'ios' && (
+              <TouchableOpacity onPressOut={() => handelSetShow(true)}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <RenderDate dateStr={pickedDate} />
+                </View>
+              </TouchableOpacity>
+            )
+          }
+          {
+            Platform.OS !== 'ios' && show && (
+              <View>
+                <DateTimePicker
+                  style={{
+                    width: Spacing.SCALE_150,
+                    justifyContent: 'center',
+                    alignSelf: 'center',
+                  }}
+                  testID="dateTimePicker"
+                  value={CalDate}
+                  mode={'date'}
+                  is24Hour={true}
+                  display="default"
+                  onChange={(event, selectedDate) => onChangePickedDate(event, selectedDate)}
+                />
+              </View>
+            )
+          }
 
           <View style={styles.wbmfcontainer}>
             <View style={styles.infoinput}>

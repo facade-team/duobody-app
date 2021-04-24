@@ -53,12 +53,31 @@ export default ({ navigation }) => {
     axios
       .post('/trainee', newMember)
       .then((res) => {
-        Alert.alert(res.data.msg)
-        setisNewFlag(true)
-        navigation.goBack()
+        axios
+          .post('/messenger',{
+            traineeId:res.data.data._id
+          })
+          .then((res)=>{
+            //res에 온 채팅방으로 초기 메시지 보내기
+            axios
+              .post(`/messenger/${res.data.data._id}`,{
+                content: '환영합니다!'
+              })
+              .then((res) => {
+                Alert.alert('회원 생성에 성공했습니다')
+                setisNewFlag(true)
+                navigation.goBack()
+              })
+              .catch((err) => {
+                console.log(err.response.data.msg)
+              })
+          })
+          .catch((err) => {
+            Alert.alert(err.response.data.msg)
+          })
       })
       .catch((err) => {
-        Alert.alert(err.response.data.msg)
+        console.log(err.response.data.msg)
       })
   }
 
