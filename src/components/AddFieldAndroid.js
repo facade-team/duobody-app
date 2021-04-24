@@ -33,19 +33,31 @@ const inputStyles = StyleSheet.create({
   }
 });
 
-export default ({addSession, index}) => {
+export default ({addSession, index, setFieldInput, fieldInput}) => {
   const [selectedPart, setSelectedPart] = useState(partAndField[index].fields[0].field);
   const addNewFields = () => {
-    if (selectedPart !== '') {
-      addSession(partAndField[index].part, selectedPart, index)
+    if (index !== 6){
+      if (selectedPart !== '') {
+        addSession(partAndField[index].part, selectedPart, index)
+      }
+      else {
+        Alert.alert('운동을 선택한 후 추가해주세요')
+      }
     }
     else {
-      Alert.alert('운동을 선택한 후 추가해주세요')
+      if (fieldInput !== ''){
+        addSession(partAndField[index].part, fieldInput, index)
+      }
+      else {
+        Alert.alert('운동을 입력한 후 추가해주세요')
+      }
     }
   }
 
   return (
     <View style={inputStyles.container}>
+      {index !== 6 &&
+        <>
             <Picker
               selectedValue={selectedPart}
               onValueChange={(itemValue, itmeIndex) => setSelectedPart(itemValue)}
@@ -60,6 +72,23 @@ export default ({addSession, index}) => {
             <TouchableOpacity onPressOut={addNewFields}>
                 <MaterialCommunityIcons style={inputStyles.addBtn} size={30} name='plus-circle' />
             </TouchableOpacity>
+        </>
+      }
+
+            {
+              index === 6 &&
+              <>
+                <TextInput
+                  style={{flex:1}}
+                  value={fieldInput}
+                  onChangeText={setFieldInput}
+                  placeholder={'직접 입력하세요'}
+                />
+                <TouchableOpacity onPressOut={addNewFields} style={{alignSelf: 'flex-end'}}>
+                    <MaterialCommunityIcons style={inputStyles.addBtn} size={30} name='plus-circle' />
+                </TouchableOpacity>
+              </>
+            }
     </View>
   )
 }
