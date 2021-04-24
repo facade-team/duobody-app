@@ -1,0 +1,16 @@
+{
+    "expo": {
+     "name": "Duobody",
+     "icon": "./src/assets/logo_square.png",
+     "version": "1.0.0",
+     "slug": "duobody-app",
+     "ios": {
+       "bundleIdentifier": "duobody-app.Team-Facade",
+       "buildNumber": "1.0.0"
+     },
+     "android": {
+       "package": "duobody_app.Team_Facade",
+       "versionCode": 1
+     }
+    }
+  }
