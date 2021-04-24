@@ -79,12 +79,6 @@ function indiv_etc({ navigation }) {
     }
   }, [flag])
 
-
-  useEffect(() => {
-    console.log('isSearched: ' + isSearched)
-    console.log('flag: ' + flag)
-  })
-
   const callTraineeApi = () => {
     axios.get(`/trainee/${traineeId}`)
     .then((res)=>{
@@ -213,6 +207,7 @@ function indiv_etc({ navigation }) {
     let S = [['측정날짜', '골격근량']]
     let W = [['측정날짜', '체중']]
     
+    console.log(DataArr)
     DataArr.map((data) => {
       let bA = []
       let fA = []
@@ -240,13 +235,13 @@ function indiv_etc({ navigation }) {
     setFatArr(F)
     setSmArr(S)
     setWArr(W)
+
+    console.log(B)
   }
 
 
   const makePortfolio = () => {
     /*여기에서 자유롭게 테스트 해보면 됨*/
-    console.log(noData)
-    let htmelObj = {}
     if(!noData){
       let bmiStr = "["
       
@@ -387,6 +382,7 @@ function indiv_etc({ navigation }) {
         
         `
       }
+      console.log(htmlObj)
       createAndSavePDF(createHTML(htmlObj))
     }
     else{
