@@ -19,11 +19,6 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./src/assets/logo_square.png",
-    "splash": {
-      "image": "./src/assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
     "updates": {
       "fallbackToCacheTimeout": 0
     },
