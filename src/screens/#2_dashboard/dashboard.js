@@ -66,6 +66,7 @@ const Dash_dash = () => {
       newTrainee._id = tmp._id
       newTrainee.name = tmp.name
 
+      /*
       //chatroom 생성 - 없을시
       if(tmp.chatRoomId === undefined){
         axios.post('/messenger',{
@@ -77,6 +78,8 @@ const Dash_dash = () => {
           })
         })
       }
+      */
+    
       //chatroomid가 이미 있을 경우
       newTrainee.chatRoomId = tmp.chatRoomId
 
