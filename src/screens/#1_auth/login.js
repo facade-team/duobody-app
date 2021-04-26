@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react'
 import styled from 'styled-components'
-import { Button, TouchableOpacity, View, Text, Alert } from 'react-native';
+import { Button, TouchableOpacity, View, Text, Alert, Platform } from 'react-native';
 import GrayTextButton from '../../components/GrayTextButton';
 import UnderLinedTextInput from '../../components/UnderlinedTextInput';
 import { Spacing, Colors } from '../../styles';
@@ -68,7 +68,10 @@ export default ({navigation}) => {
     <WhiteboxContainer>
     <KeyboardAwareScrollView style = {{flex:1, padding: Spacing.SCALE_2, marginTop: Spacing.SCALE_2}}>
       <LogoContainer>
-        <LogoImage source={require('../../assets/logo_square.png')} />
+        {Platform.OS === 'ios' ? 
+        <LogoImage source = {require('../../assets/ios_logo_square.png')}/>
+        : <LogoImage source={require('../../assets/logo_square.png')} />
+        }
       </LogoContainer>
       <AuthContainer>
         <UnderLinedTextInput placeholder={'아이디'}  value={loginText} onChangeText={setLoginText} autoCapitalize={'none'}/>

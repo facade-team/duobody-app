@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import Icon from 'react-native-vector-icons/Ionicons'
-import { Image, StyleSheet } from 'react-native'
+import { Image, Platform } from 'react-native'
 
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs'
 import { Colors, Spacing } from '../styles'
@@ -24,10 +24,17 @@ import change_view from '../screens/#5_profile/change_view'
 
 function TopLogo() {
   return (
+    {...Platform.OS === 'ios' ? 
     <Image
-      style={{ width: Spacing.SCALE_150, height: 50 }}
-      source={require('../assets/toplogo_white.png')}
+      style={{ width: Spacing.SCALE_130, height: 50  }}
+      source={require('../assets/ios_toplogo_white.png')}
+      resizeMode = 'contain'
+    />:
+    <Image
+    style={{ width: Spacing.SCALE_150, height: 50 }}
+    source={require('../assets/toplogo_white.png')}
     />
+  }
   )
 }
 

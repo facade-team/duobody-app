@@ -54,7 +54,10 @@ export default ({ route, navigation}) => {
   return (
   <Container>
     <LogoContainer>
-      <LogoImage source={require('../../assets/logo_square.png')} />
+      {Platform.OS === 'ios' ? 
+        <LogoImage source = {require('../../assets/ios_logo_square.png')}/>
+        : <LogoImage source={require('../../assets/logo_square.png')} />
+      }
     </LogoContainer>
     <AuthContainer>
       <GuideText>이메일 인증코드를 입력하세요</GuideText>
