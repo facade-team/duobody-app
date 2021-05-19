@@ -1,26 +1,97 @@
 import React, {useState, useCallback, useEffect} from 'react';
+import { useFocusEffect } from '@react-navigation/native';
+import AsyncStorage from '@react-native-community/async-storage';
 import { Bubble, GiftedChat } from 'react-native-gifted-chat'
-import {StyleSheet} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
+import axios from '../../axios/api';
+import { Colors } from '../../styles';
+import Loader from '../../components/Loader';
 
-const ChatScreen = () => {
+const indiv_msg = () => {
+
+    // storage에서 chatroomId 가져오기
+    const [chatroomId, setChatroomId] = useState('')
+
+    const [trainee, setTrainee] = useState({})
+    const [trainer, setTrainer] = useState({})
+    const [isMounted, setIsMounted] = useState(true)
+
     const [messages, setMessages] = useState([]);
+    const [loading, setLoading] = useState(true)
+
+    useFocusEffect(
+        useCallback(() => {
+          const getChatRoomId = async () => {
+            try {
+              const id = await AsyncStorage.getItem('chatRoomId')
+              if (true) {
+                    setLoading(true)
+                    setChatroomId(id)
+                    setIsMounted(false)
+                    setMessages([])
+                    
+                axios.get(`/messenger/${id}`)
+                .then((res)=>{
+                    // trainee 정보 state에 저장
+                    let newData = {}
+                    newData._id = res.data.data.traineeId._id
+                    newData.name = res.data.data.traineeId.name
+                    setTrainee(newData)
+
+                    // trainer 정보 state에 저장
+                    let tData = {}
+                    tData._id = res.data.data.trainerId._id
+                    tData.name = res.data.data.trainerId.name
+                    setTrainer(tData)
+
+                    // 메시지 기록 state에 세팅
+                    res.data.data.messages.map(d=>{
+                        let msgData = {
+                            createdAt: d.createdAt,
+                            _id: d._id,
+                            text: d.content,
+                            user:{
+                                _id: tData._id,
+                                name: tData.name
+                            }
+                        }
+                        setMessages(prevArray => GiftedChat.prepend(prevArray, msgData))
+                    })
+                    setIsMounted(true)
+
+                }).catch(error=>{
+                    console.log(error)
+                })
+              }
+            } catch (err) {
+              console.log(err)
+            }
+          }
+    
+          getChatRoomId()
+    
+        }, [])
+    )
 
     useEffect(() => {
-        setMessages([
-        {
-            _id: 1,
-            text: '화면 상단에 넘어온 prop으로 대화상대 띄워야됨',
-            createdAt: new Date(),
-            user: {
-            _id: 2,
-            name: 'React Native',
-            avatar: 'https://placeimg.com/140/140/any',
-            },
-        },
-        ])
-    }, [])
+      if(loading){
+        setLoading(false)
+      }
+    }, [trainee])
 
-    const onSend = useCallback((messages = []) => {
+    const onSend = useCallback( async (messages = [], id) => {
+
+        // 서버로 전송하는 로직
+        await axios.post(`/messenger/${id}`,{
+            content: messages[0].text
+        })
+        .then((res)=> {
+            console.log(res.data)
+        })
+        .catch(error=>{
+            console.log(error)
+        })
+
         setMessages(previousMessages => GiftedChat.append(previousMessages, messages))
     }, [])
 
@@ -45,16 +116,40 @@ const ChatScreen = () => {
     }
 
     return(
-        <GiftedChat
-        messages={messages}
-        onSend={messages => onSend(messages)}
-        user={{
-            _id: 1,
-        }}
-        renderBubble={renderBubble}
-        alwaysShowSend
-        />
+        <View style={{flex:1,}}>
+          {
+            loading ? <View style={{flex:1, justifyContent: 'center', alignItems: 'center'}}><Loader /></View> :
+            <View style={{flex:1,}}>
+              <View style={styles.topbar}>
+                  <Text style={styles.title}>{trainee.name} 회원님</Text>
+              </View>
+              <GiftedChat
+              messages={messages}
+              onSend={messages => onSend(messages, chatroomId)}
+              user={{
+                  _id: trainer._id,
+              }}
+              renderBubble={renderBubble}
+              alwaysShowSend
+              />
+            </View>
+          }
+        </View>
     )
 }
 
-export default ChatScreen;
+export default indiv_msg;
+
+const styles = StyleSheet.create({
+    topbar: {
+        backgroundColor: Colors.WHITE,
+        height: 50,
+        borderWidth: 1,
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    title: {
+        fontSize: 20,
+        fontWeight: 'bold'
+      },
+})

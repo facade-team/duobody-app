@@ -1,4 +1,5 @@
 import React from 'react';
+import { NavigationEvents } from 'react-navigation';
 import styled from 'styled-components';
 import { Colors, Spacing } from '../styles'
 
@@ -7,7 +8,6 @@ const Container = styled.View`
 `;
 
 const TextInput = styled.TextInput`
-  width: ${Spacing.SCALE_200};
   padding-bottom: ${Spacing.SCALE_8};
   background-color: ${Colors.WHITE};
   border-bottom-color: ${Colors.GRAY};
@@ -21,13 +21,18 @@ const UnderLinedTextInput = ({
   value,
   onChangeText,
   secureTextEntry = false,
+  autoCapitalize,
+  width = Spacing.SCALE_200,
 }) => (
   <Container>
-    <TextInput 
+    <TextInput
+      width={width}
+      autoCapitalize='none'
       placeholder={placeholder}
       value={value}
       onChangeText={text => onChangeText(text)}
       secureTextEntry={secureTextEntry}
+      autoCapitalize = {autoCapitalize}
     />
   </Container>
 )
